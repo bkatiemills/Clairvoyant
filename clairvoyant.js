@@ -811,11 +811,9 @@ function Matrix(name, rows, columns, preDef){
   }
 
   this.dump = dump
-  this.getMtxElement = getMtxElement
   this.mtxAdd = mtxAdd
   this.mtxMulti = mtxMulti
   this.getDeterminant = getDeterminant
-
   this.getMinor = getMinor
   this.getCofactor = getCofactor
   this.getTranspose = getTranspose
@@ -835,17 +833,6 @@ function dump(){
   }
 }
 
-//Get element <i><j> from this matrix.  Rows and columns numbered starting from 0.
-function getMtxElement(i,j){
-
-  if( (i >= this.rows) || (j >= this.cols) ){
-    alert('Index out of range.  Aborting...')
-    return
-  }
-
-  return this.elements[i][j]
-
-}
 
 //return sum of <matrix> with this matrix.
 function mtxAdd(matrix){
@@ -972,35 +959,50 @@ function mtxMulti(object, side){
 }
 
 //Doolittle algo to extract determinant for this matrix.
-function getDeterminant(){
+function getDeterminant(eigenvalue){
 
   if(this.rows != this.cols){
     alert('Matrix must be square.  Aborting...')
     return
   }
 
-  //zeroth iteration:
-  var A = this
-  var L = new Matrix('L', this.rows, this.cols, 'identity')
-  var l = new Matrix('l',this.rows,this.cols)
+  //if an eigenvalue gets passed into the function, construct this-lambda*identity
+  var lambda = 0
+  if(arguments.length==1){
+    lambda = eigenvalue
+  }
+  var lambdaI = new Matrix('lambdaI', this.rows,this.cols,'identity')
+  lambdaI = lambdaI.mtxScale(-1*lambda)
+  var detMatrix = this.mtxAdd(lambdaI)
+  
 
-  for(iter=1;iter<this.rows;iter++){
+
+  //zeroth iteration:
+  var A = detMatrix
+  var L = new Matrix('L', detMatrix.rows, detMatrix.cols, 'identity')
+  var l = new Matrix('l',detMatrix.rows,detMatrix.cols)
+
+  for(iter=1;iter<detMatrix.rows;iter++){
 
     //construct this iteration's lower triangular matrix:
-    l = new Matrix('l',this.rows,this.cols,'identity')
-    for(detrow=iter; detrow<this.rows; detrow++){
+    l = new Matrix('l',detMatrix.rows,detMatrix.cols,'identity')
+    for(detrow=iter; detrow<detMatrix.rows; detrow++){
       l.elements[detrow][iter-1] = -1*A.elements[detrow][iter-1] / A.elements[iter-1][iter-1]
       L.elements[detrow][iter-1] = -1*l.elements[detrow][iter-1]
     }
 
     //update A:
     A = A.mtxMulti(l, 'left')
-    
+/* 
+    if(lambda!=0){
+      A.dump()
+    }
+*/  
   }
 
   var detA = 1
   var detL = 1
-  for(iter=0;iter<this.rows;iter++){
+  for(iter=0;iter<detMatrix.rows;iter++){
     detA = detA*A.elements[iter][iter]
     detL = detL*L.elements[iter][iter]
   }
