@@ -1,0 +1,383 @@
+<html> <head>
+  <script src="clairvoyant.js">
+  </script> </head> <body>
+
+  <script type="text/JavaScript">
+
+    var testArray = new Array()
+    testArray[0] = 0
+    testArray[1] = 1
+    testArray[2] = 2
+    testArray[3] = 3
+    testArray[4] = 4
+    testArray[5] = 5
+    testArray[6] = 6
+    testArray[7] = 7
+    testArray[8] = 8
+    testArray[9] = 9
+
+    var testPDF = new Array()
+    testPDF[0] = 1
+    testPDF[1] = 2
+    testPDF[2] = 3
+    testPDF[3] = 4
+    testPDF[4] = 5
+    testPDF[5] = 6
+    testPDF[6] = 4
+    testPDF[7] = 3
+    testPDF[8] = 2
+    testPDF[9] = 1
+
+    var testPDF2 = new Array()
+    testPDF2[0] = 1
+    testPDF2[1] = 1
+    testPDF2[2] = 1
+    testPDF2[3] = 1
+    testPDF2[4] = 1
+    testPDF2[5] = 1
+    testPDF2[6] = 1
+    testPDF2[7] = 1
+    testPDF2[8] = 1
+    testPDF2[9] = 1
+
+    var testHist = new Histo('derp', 10,0,10)
+    document.write('histo name = ')
+    document.write(testHist.name)
+
+    document.write('</br>')
+    document.write('histo bin size = ')
+    document.write(testHist.binSize)
+
+    document.write('</br>')
+    for(j=0; j<testPDF.length; j++){
+      testHist.increment(testArray[j], testPDF[j])
+    }
+
+    document.write('</br>')
+    document.write('histo weight sum = ')
+    document.write(testHist.integrate())
+
+
+    document.write('</br>')
+    testHist.normalize()
+    testHist.dumpContents()
+    document.write('</br>')
+    document.write('histo weight sum = ')
+    document.write(testHist.integrate())
+
+    document.write('</br>')
+    var histoHerp = new Histo('herp', 10,0,10)
+    for(j=0; j<testPDF.length; j++){
+      histoHerp.increment(testArray[j], testPDF[j])
+    }
+    testHist.add(histoHerp)
+    testHist.dumpContents()
+
+    document.write('</br>')
+    document.write('integral from 2 to 7 = ')
+    document.write(histoHerp.integrate(2,7))
+    document.write('</br>')
+    document.write('integral from 2.5 to 7 = ')
+    document.write(histoHerp.integrate(2.5,7))
+
+    document.write('</br>')
+    document.write('histo mean = ')
+    document.write(histoHerp.getMean())
+    document.write('</br>')
+    document.write('histo variance = ')
+    document.write(histoHerp.getVariance())
+
+    document.write('</br>')
+    document.write('histoHerp CDF: ')
+    document.write('</br>')
+    var CDF = new Histo('CDF', 10,0,10)
+    CDF = histoHerp.getCDF()
+    CDF.dumpContents()
+
+
+    document.write('</br>')
+    var histoHerp2 = new Histo('herp2', 10,0,10)
+    for(j=0; j<testPDF2.length; j++){
+      histoHerp2.increment(testArray[j], testPDF2[j])
+    }
+    document.write('</br>')
+    document.write('histoHerp2 CDF: ')
+    document.write('</br>')
+    var CDF2 = new Histo('CDF2', 10,0,10)
+    CDF2 = histoHerp2.getCDF()
+    CDF2.dumpContents()
+
+
+    document.write('KS match between histoHerp and histHerp2 = ')
+    document.write(histoHerp.KStest(histoHerp2))
+
+    document.write('</br>')
+    document.write('</br>')
+    var distro = new Histo('distro', 20,-10,10)
+    var quadratic = new Func('Quadratic', 'x[0]*x[0]')
+    distro.sample(5000,quadratic)
+    document.write('A quadratic sample with no parameters:')
+    document.write('</br>')
+    distro.dumpContents()
+
+    document.write('</br>')
+    var gaus = new Histo('gaus', 20,-10,10)
+    var gP = new Array()
+    gP[0] = 0
+    gP[1] = 1
+    var gausFunc = new Func('gausFunc', 'Gaussian(par[0],par[1],x[0])', gP)
+    var newgP = new Array()
+    newgP[0] = 2.5
+    newgP[1] = 2
+    gausFunc.setParameters(newgP)
+    gaus.sample(5000,gausFunc)
+    document.write('A gaussian sample with 2 parameters:')
+    document.write('</br>')
+    gaus.dumpContents()
+    document.write('</br>')
+    document.write('Current gaussian mu,sigma = ')
+
+    var musig=Object([])  //necessary for C++-like pbr behavior
+    gausFunc.getParameters(musig)
+    document.write(musig[0])
+    document.write(', ')
+    document.write(musig[1])
+    document.write('</br>')
+    document.write('Gaussian maximum is at x = ')
+    var extreme = new Array()
+    extreme = gausFunc.getExtremum(-5,5.34)
+    document.write(extreme[0])
+    //document.write('</br>')
+    //document.write(gausFunc.derivative(2.4999937890625))
+
+
+    document.write('</br>')
+    document.write('</br>')
+    var parz = new Array()
+    parz[0] = 3
+    var foo = new Func('quad', 'par[0]*Math.pow(x[0],2)', parz)
+    var input = new Array()
+    input[0] = 2
+    document.write('3*2^2 = ')
+    document.write(foo.evaluate(input))
+
+    document.write('</br>')
+    var fee = new Func('fee', 'Math.pow(x[0],2)')
+    var inputFee = new Array()
+    inputFee[0] = 7
+    document.write('no parameters passed to evaluate, 7^7 = ')
+    document.write(fee.evaluate(inputFee))
+
+    document.write('</br>')
+    var gausPar = new Array()
+    gausPar[0] = 0
+    gausPar[1] = 1
+    var fie = new Func('Gaus', 'Gaussian(par[0],par[1],x[0])', gausPar)
+    var gausIn = 0
+    document.write('StandardNormal(0) = ')
+    document.write(fie.evaluate(gausIn))
+    document.write('</br>')
+    //document.write('Gaussian maximum is at x = ')
+    //document.write(fie.getMaximum(-5,5))
+
+/*
+    var speedy = 0
+    for(speedTest=0; speedTest<1000000; speedTest++){
+      speedy = fie.evaluate(speedTest)
+    }
+*/
+
+    //alert(gausFunc.Maximum)
+/*
+    var pullFill = new Histo('pullFill', 20,-10,10)
+    for(fillit=0; fillit<1; fillit++){
+      gausFunc.maxFound = 0
+      pullFill.increment(gausFunc.randPull(-5,5))
+    }
+    document.write('</br>')
+    pullFill.dumpContents()
+*/
+    var parabola = new Func('parabola', 'Math.pow(x[0]-1,2)')
+    document.write('</br>')
+    //document.write('parabola maximum on [-2,2] found at x = ')
+    //document.write(parabola.getMaximum(-2,2))    
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('derivative of (x-1)^2 at x=7 is ')
+    document.write(parabola.derivative(7))
+    document.write('</br>')
+    var cubeQuad = new Func('cubeQuad', 'Math.pow(x[0],3)*Math.pow(x[1],2)')
+    var cq = new Array()
+    cq[0] = 3
+    cq[1] = 5
+    document.write('x^3*y^2(3,5) = ')
+    document.write(cubeQuad.evaluate(cq))
+    document.write('</br>')
+    document.write('d/dy x^3*y^2(3,5) = ')
+    document.write(cubeQuad.derivative(cq, 1))
+
+    document.write('</br>')
+    document.write('</br>')
+    var ddxParabola = new Func('ddxParabola', 'parabola.derivative(x[0],0,0.000001,1)')  //extra args prevent double rounding, from both .derivative and .getZero
+    document.write('derivative function of (x-1)^2(7) = ')
+    document.write(ddxParabola.evaluate(7))
+    document.write('</br>')
+    document.write('ddx parabola crosses zero at x = ')
+    document.write(ddxParabola.brentSoln(-1,2))
+
+
+    document.write('</br>')
+    document.write('</br>')
+    var line = new Func('line', '2*x[0]-4')
+    document.write('Zero of y = 2x - 4 = ')
+    document.write(line.brentSoln(1.74,31.847))
+
+    document.write('</br>')
+    var cubic = new Func('line', 'Math.pow(x[0],3) + x[0]*x[0]-12')
+    document.write('Zero of y = x^3 + x^2 - 12 = ')
+    document.write(cubic.brentSoln(-5.92,11.01))
+
+    document.write('</br>')
+    document.write('Zero of y = (x-1)^2 = ')
+    document.write(parabola.brentSoln(-5.92,11.01))
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('minimum of parabola (x-1)^2 = ')
+    var ext = parabola.getExtremum(-1,2)
+    document.write(ext[0])
+/*
+    var start = new Date().getTime()
+    for(speedTest=0; speedTest<1000; speedTest++){
+      ext = cubic.getZero(1.3458,6.12378)
+    }
+    var end = new Date().getTime() 
+    alert(end-start)
+
+    var start_b = new Date().getTime()
+    for(speedTest=0; speedTest<1000; speedTest++){
+      ext = cubic.brentSoln(1.3458,6.12378)
+    }
+    var end_b = new Date().getTime()
+    alert(end_b - start_b)
+*/
+
+    document.write('</br>')
+    document.write('</br>')
+    var cube123 = new Func('cube123', '(x[0]-1)*(x[0]-2)*(x[0]-3)')
+    document.write('Brents algo zero for (x-1)*(x-2)*(x-3) on (1.5,4) = ')
+    document.write(cube123.brentSoln(1.5,4))
+    document.write('</br>')
+    document.write('Brents algo zero for (x-1)*(x-2)*(x-3) on (2,3) = ')
+    document.write(cube123.brentSoln(2,3))
+
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('gradient at (1,2) of x^3*y^2 = ')
+    var point = new Array()
+    point[0] = 1
+    point[1] = 2
+    var gradResult = cubeQuad.gradient(point)
+    document.write(gradResult[0])
+    document.write(', ')
+    document.write(gradResult[1])
+
+    document.write('</br>')
+    document.write('</br>')
+    var testVec = new Vector('testVec', point)
+    document.write('length of testVec = ')
+    document.write(testVec.getLength())
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('test matrix:')
+    document.write('</br>')
+    var testMatrix = new Matrix('testMatrix',4,4, 'Minkowski')
+    testMatrix.dump()
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('testVec dot testVec = ')
+    document.write(testVec.dot(testVec))
+    var mink = new Array()
+    mink[0] = 1
+    mink[1] = 2
+    mink[2] = 3
+    mink[3] = 4
+    var fourVec = new Vector('fourVec',mink)
+    document.write('</br>')
+    document.write('mass squared of fourVec = ')
+    document.write(fourVec.dot(fourVec,testMatrix))
+    document.write('</br>')
+    document.write('length of fourVec = ')
+    document.write(fourVec.getLength(testMatrix))
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write('minkowski metric + 4D identity = ')
+    var testMatrix2 = new Matrix('testMatrix2',4,4, 'identity')
+    var sumMatrix = testMatrix.mtxAdd(testMatrix2)
+    document.write('</br>')
+    document.write(sumMatrix.name)
+    sumMatrix.name = 'summedMatrices'
+    document.write('</br>')
+    document.write(sumMatrix.name)
+    document.write('</br>')
+    sumMatrix.dump()
+
+    document.write('</br>')
+    sumMatrix.elements[0][3] = sumMatrix.elements[3][3]+2
+    testMatrix2.elements[3][2] = 4   
+    document.write('</br>')
+    sumMatrix.dump()
+    document.write('</br>')
+    testMatrix2.dump()
+    document.write('</br>')
+    var multMtx1 = sumMatrix.mtxMulti(testMatrix2, 'left')
+    multMtx1.dump()
+    document.write('</br>')
+    multMtx2 = sumMatrix.mtxMulti(testMatrix2, 'right')
+    multMtx2.dump()
+
+    var mtxInvTest = new Matrix('mtxInvTest',3,3)
+    mtxInvTest.elements[0][0] = 1
+    mtxInvTest.elements[0][1] = 3
+    mtxInvTest.elements[0][2] = 1
+    mtxInvTest.elements[1][0] = 1
+    mtxInvTest.elements[1][1] = 1
+    mtxInvTest.elements[1][2] = 2
+    mtxInvTest.elements[2][0] = 2
+    mtxInvTest.elements[2][1] = 3
+    mtxInvTest.elements[2][2] = 4
+
+    document.write('</br>')
+    document.write('mtxInvTest = ')
+    document.write('</br>')
+    mtxInvTest.dump()
+
+    document.write('determinant of mtxInvTest = ')
+    document.write(mtxInvTest.getDeterminant())
+
+    document.write('</br>')
+    document.write('inverse of mtxInvTest = ')
+    var invertedMtx = mtxInvTest.getInverse() 
+    document.write('</br>')
+    invertedMtx.dump()
+    document.write('</br>')
+    var id = mtxInvTest.mtxMulti(invertedMtx,'right')
+    id.dump()
+
+    document.write('</br>')
+    document.write('</br>')
+    document.write(detrow)
+    
+  </script>
+
+
+
+</body> </html>
+
+
+
