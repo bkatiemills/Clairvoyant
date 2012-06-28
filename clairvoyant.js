@@ -15,7 +15,6 @@ function Histo(name, nBins, min, max){
 
   //initialize member functions
   this.dumpContents = dumpContents;
-  this.clone = clone;
   this.increment = increment;
   this.integrate = integrate;
   this.normalize = normalize;
@@ -44,17 +43,6 @@ function dumpContents(){
   }
 
   return 0;
-}
-
-//return a clone of this histo
-function clone(){
-  
-  var cloneHist = new Histo(this.name, this.nBins, this.min, this.max);
-  for(var j=0; j<this.bins.length; j++){
-    cloneHist.increment(this.bins[j].lo, this.bins[j].weight);
-  }
-
-  return cloneHist;
 }
 
 //increment the bin in which <value> falls by <amount>;
@@ -126,7 +114,9 @@ function integrate(min, max){
     total += this.bins[minBin].weight*(this.bins[minBin+1].lo-min) / (this.bins[minBin+1].lo-this.bins[minBin].lo);
 
     //similarly for the last bin
-    total += this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo-this.bins[maxBin].lo);
+    if(minBin!=maxBin){
+      total += this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo-this.bins[maxBin].lo);
+    }
   
     return total;
 
@@ -152,21 +142,26 @@ function normalize(factor){
 
 //increment this histo by the corresponding weights in <otherHisto>, multiplied by <scale>;
 //<scale> default = 1
-function add(otherHisto, scale){
+function add(otherHisto, scale1, scale2){
+
   if(this.nBins != otherHisto.nBins || this.min != otherHisto.min || this.max != otherHisto.max){
     alert('Can\'t add histrograms with different binning.  Aborting...');
     return -999;
   }
+
+  var sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
   
   if(arguments.length==1){
-    scale = 1;
+    scale1 = 1;
+    scale2 = 1;
   }
 
   for(var j=0; j<this.bins.length; j++){
-    this.increment(otherHisto.bins[j].lo, scale*otherHisto.bins[j].weight);
+    sumHisto.increment(this.bins[j].lo, scale1*this.bins[j].weight);
+    sumHisto.increment(otherHisto.bins[j].lo, scale2*otherHisto.bins[j].weight);
   }
 
-  return 0;
+  return sumHisto;
 }
 
 
@@ -199,7 +194,7 @@ function getVariance(){
 //returns the cumulative distribution function of this (normalized) histogram
 function getCDF(){
 
-  var cloneHist = this.clone();
+  var cloneHist = this;
   cloneHist.normalize();
 
   for(var i=1; i<cloneHist.bins.length-1; i++){

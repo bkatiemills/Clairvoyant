@@ -1,0 +1,253 @@
+<html> <head>
+  <script src="clairvoyant.js">
+  </script> </head> <body>
+
+  <script type="text/JavaScript">
+
+  /*-----Intro to Clairvoyant Histo class-----------------------------
+  
+  One of the core objects in Clairvoyant is the Histo class of objects. 
+  Histo(grams) allow users to collect and bin data in a format 
+  familiar and convenient for doing statistics on.  Veterans of CERN's
+  ROOT package will find a lot of this familiar; however, Clairvoyant
+  will attempt in the future to improve on usability over ROOT by having 
+  a single, unified histogram class in arbitrary dimensions - current
+  implementation is for 1D histograms only.
+  
+  -----------------------------------------------------------------*/
+  
+  //-----The Constructor---------------------------------------------
+  //Histo(<name>,<nbins>,<min>,<max>)
+  //  <name>	a string name for this histo
+  //  <nbins>	number of bins in the histogram
+  //  <min>     lower edge of first bin (included)
+  //  <max> 	upper edge of last bin (excluded)
+
+  //Declare a new Histo like so:
+  var firstHist = new Histo('firstHist',10,0,10)
+
+  //firstHist has 10 bins, [0,1),[1,2)...[9,10).  Notice that bins
+  //include their lower edge, and exclude their upper edge!
+
+  //-----------------------------------------------------------------
+
+  //-----dumpContents Method---------------------------------------------
+  //dumpContents() - no arguments
+  //Return type: 0 on successful exit
+
+  document.write('/////////////////// .dumpContents examples //////////////////////////////////</br>');
+
+  //dumpContents writes out the name of the histo, and the index and value 
+  //of each bin in this histo, from first to last, as index:value
+  firstHist.dumpContents();
+  document.write('Notice firstHist has all bins initialized to 0 by default.');
+  document.write('</br>Important!  Notice there is an extra bin at the end, entry 10 : 0');
+  document.write('</br>All Histo objects end with an empty bin, to indicate the end of the histogram.');
+
+  //-----increment Method---------------------------------------------
+  //increment(<value>,<amount>)
+  //  <value>	unbinned quantity to be incremented in the histo.
+  //  <amount>	(optional)amount by which to increment the bin that <value> falls into; default 1.
+  //Return type: 0 on successful exit, -999 if <value> out of histogram range.
+
+  document.write('</br></br>/////////////////// .increment examples //////////////////////////////////</br>');
+
+  //The increment method allows function bins to be incremented by 
+  //a user-defined weight.  Let's fill firstHist with some random 
+  //points:
+
+  for(var i=0;i<1000; i++){
+    firstHist.increment(10*Math.random());
+  }
+  firstHist.dumpContents();
+
+  document.write('</br>And if we increment the histo at 0 by 3 and at 10 by 7:');
+  firstHist.increment(0,3);
+  firstHist.increment(10,7);
+  firstHist.dumpContents();
+  document.write('</br>Notice the 0 bin got incremented by 3 since 0 is included, but incrementing 10 by 7 did nothing since 10 (the upper bound of the histo) is excluded.');
+
+
+  //-----integrate Method---------------------------------------------
+  //integrate(<min>,<max>)
+  //  <min>	lower bound of integration range
+  //  <max>	upper bound of integration range
+  //Return type: float on successful exit, -999 if <min> or <max> out of histogram range.
+
+  document.write('</br></br>/////////////////// .integrate examples //////////////////////////////////</br>');
+
+  //integrate approximates the integral of the histo from <min> to <max>
+  //by adding up the weights of all bins completely included in the range,
+  //and approximating the contribution of fractionally included bins by
+  //assuming their weight is distributed flat across them.  If no arguments
+  //are given, the entire histogram range is integrated:
+
+  document.write('</br>Integral of firstHist from 0 to 10 = '+firstHist.integrate());
+  document.write('</br>(Thats 1000 random pulls, plus 3 from when we incremented 0 with a weight of 3.)');
+
+  //Or we can integrate a given sub-range:
+  document.write('</br></br>Integral of firstHist from 2 to 4 = '+firstHist.integrate(2,4));
+  document.write('</br>So bins 2 and 3, corresponding to the ranges [2,3) + [3,4), got addded up and returned.');
+
+  //If the given sub-range has bounds that do not coincide with bin boundaries, then 
+  //the bin's weight is included in the same fraction as the bin's range:
+  document.write('</br></br>Integral of firstHist from 2 to 3.5 = '+firstHist.integrate(2,3.5));
+  document.write('</br>So all of [2,3) and half of [3,4) were added and returned.');
+
+  //-----normalize Method---------------------------------------------
+  //normalize(<factor>)
+  //  <factor>     (optional)Noramalize this histogram to this total weight.  Default=1              
+  //Return type: 0 on successful exit.
+
+  document.write('</br></br>/////////////////// .normalize examples //////////////////////////////////</br>');
+
+  //normalize multiplies every bin in the histo by a factor such that
+  //the resulting integral over the histo range will equal the user-defined
+  //normalization factor (1 by default).
+
+  firstHist.normalize(7);
+  document.write('</br></br>firstHist normalized to 7:');
+  firstHist.dumpContents();
+  document.write('firstHist integral is now: '+firstHist.integrate());
+
+  //Had the argument 7 not been provided, the histogram would have 
+  //been normalized to 1 (like for prob. density functions).
+
+
+  //-----add Method---------------------------------------------
+  //normalize(<histo>,<scale1>,<scale2>)
+  //  <histo>	the histogram to add to this one.
+  //  <scale1>  (optional) scale to multiply this histo by before adding (default 1).
+  //  <scale2>  (optional) scale to multiply <histo> by before adding (default 1).
+  //Return type: Histo on success, -999 if histogram binning doesn't match
+  
+  document.write('</br></br>/////////////////// .add examples //////////////////////////////////</br>');
+
+  //The add method allows you to add two histograms, possibly after multiplying them
+  //by some scale factor:
+
+  var histA = new Histo('histA',10,0,10);
+  var histB = new Histo('histB',10,0,10);
+  for(i=0;i<100;i++){
+    histA.increment(10*Math.random());
+    histB.increment(10*Math.random());
+  } 
+
+  histA.dumpContents();
+  histB.dumpContents();
+
+  var sumHist = histA.add(histB);
+  document.write('</br>Sum of histA+histB:');
+  sumHist.dumpContents();
+
+  //Or, if we define some scale factors:
+  document.write('</br>Sum of 2*histA + 3*histB:')
+  sumHist = histA.add(histB,2,3);
+  sumHist.dumpContents();
+
+
+  //-----getMean Method---------------------------------------------
+  //getMean() - no arguments
+  //Return type: float on success.
+  
+  document.write('</br></br>/////////////////// .getMean examples //////////////////////////////////</br>');
+
+  //getMean returns the weighted average of the histogram bins, *where the
+  //weight is attributed to the low edge of the bin!*
+
+  var meanHist = new Histo('meanHist',5,0,5);
+  for(i=0;i<10;i++){
+    meanHist.increment(5*Math.random());
+  }
+
+  meanHist.dumpContents();
+
+  document.write('mean of meanHist = '+meanHist.getMean());
+
+  //-----getVariance Method---------------------------------------------
+  //getVariance() - no arguments          
+  //Return type: float on success.                                        
+  
+  document.write('</br></br>/////////////////// .getVariance examples //////////////////////////////////</br>');
+
+  //getVariance returns the variance of the histogram, *where the 
+  //weight of each bin is attributed to the low edge of the bin!*
+  
+  document.write('</br>variance of meanHist = '+meanHist.getVariance());
+
+
+  //-----getCDF Method---------------------------------------------
+  //getCDF() - no arguments  
+  //Return type: Histo on success.                                        
+  
+  document.write('</br></br>/////////////////// .getCDF examples //////////////////////////////////</br>');
+
+  //getCDF returns the cumulative distribution function for this histogram:
+
+  var CDF = meanHist.getCDF();
+  CDF.dumpContents();
+  document.write('Notice the nth bin of the CDF includes all the weight of the nth bin of the original histogram.')
+
+
+
+
+  //-----KStest Method---------------------------------------------
+  //KStest(<target>)
+  //  <target> Histo to compare this Histo with in a Kolmogorov-Smirnov test. 
+  //Return type: float on success, -999 if histo binning doesn't match.
+  
+  document.write('</br></br>/////////////////// .KStest examples //////////////////////////////////</br>');
+
+  //KStest performs a Kolmogorov-Smirnov test on this histo and the histo
+  //passed to it as an argument, and returns the probability that these
+  //histos came from the same parent distribution:
+
+  var flatHisto1 = new Histo('flatHisto1', 10,0,10);
+  var flatHisto2 = new Histo('flatHisto2', 10,0,10);
+  for(i=0;i<10000;i++){
+    flatHisto1.increment(10*Math.random());
+    flatHisto2.increment(10*Math.random());
+  }
+
+  flatHisto1.dumpContents();
+  flatHisto2.dumpContents();
+  document.write('</br>flatHisto1 and flatHisto2 come from the same parent with probability = '+flatHisto1.KStest(flatHisto2)+', a high probability.');
+
+  //Now if we compare a histogram that definitely doesn't come from a flat distribution:
+
+  var spike = new Histo('spike',10,0,10);
+  spike.increment(0,10000);
+  spike.dumpContents();
+
+  document.write('Probability that flatHisto1 and spike come from the same parent: '+flatHisto1.KStest(spike)+', a very low probability.');
+
+  //Recall an important feature of KS matching: it makes weaker statements if there aren't many hits in one of the histograms!
+  spike = new Histo('spike',10,0,10);
+  spike.increment(0,1);
+  spike.dumpContents();
+
+  document.write('Probability that flatHisto1 and spike come from the same parent when spike has only one count: '+flatHisto1.KStest(spike)+', much higher than when we knew more about spike!');
+  
+
+  //-----sample Method---------------------------------------------
+  //sample(<nSamples>,<source>)
+  //  <nSamples>	Number of samples to take.
+  //  <source>		a Func object to draw               
+  //Return type: 0 on success.
+  
+  document.write('</br></br>/////////////////// .sample examples //////////////////////////////////</br>');
+  //The sample method populates this histogram with random pulls
+  //from a Func object, within the histogram range:
+
+  var parabola = new Func('parabola','x[0]*x[0]');
+  var parabolaSample = new Histo('parabolaSample',20,-10,10);
+  
+  parabolaSample.sample(10000,parabola);
+
+  document.write('</br>10000 samples from x^2:');
+  parabolaSample.dumpContents();
+
+
+  </script>   
+  
+</body> </html>
