@@ -1,0 +1,209 @@
+<html> <head>
+  <script src="clairvoyant.js">
+  </script> </head> <body>
+
+  <script type="text/JavaScript">
+
+  /*-----Intro to Clairvoyant Func class-----------------------------
+
+  One of the core objects in Clairvoyant is the Func class of objects.
+  Funcs allow the user to declare math functions so that all of 
+  Clairvoyant's methods for doing interesting things to them can
+  handle them.  
+
+  -----------------------------------------------------------------*/
+
+  //-----The Constructor---------------------------------------------
+  //Declare a new Func like so:
+
+  var parabola = new Func('parabola', 'x[0]*x[0]');
+
+  //quadratic has been declared with the name 'Quadratic', and the 
+  //functional form 'x[0]*x[0]' - a 1D parabola with no parameters.
+  //The notation for the string describing the functional form is 
+  //as follows:
+  //  n coordinate space dimensions are denoted as: 
+  //  x[0], x[1], ..., x[n]
+  //  m parameters are denoted as:
+  //  par[0], par[1], ..., par[m]/
+  //So we could also declare things like:
+
+  var quadCube = new Func('quadCube', 'x[0]*x[0]*Math.pow(x[1],3)');
+
+  //which is a quadratic times a cubic, perhaps more readable as the
+  //familiar z = x^2*y^3.  If we want parameters, we can do:
+
+  var quad = new Func('quad', 'Math.pow(x[0]-par[0],2) + par[1]');
+
+  //which is the same parabola as above, but with its center shifted
+  //left by par[0] and up by par[1].  As declared, quad's par[0] will
+  //be initialized as 0, and all the rest will be undefined.  You can
+  //them via things like:
+
+  quad.params[0] = 4;
+  quad.params[1] = -3;
+
+  //Or, if you have an Array() of parameters when you declare the Func,
+  //you can pass it in as the third argument to the constructor to the same
+  //effect:
+
+  var parameters = new Array();
+  parameters[0] = 4;
+  parameters[1] = -3;
+  quad = new Func('quad', 'Math.pow(x[0]-par[0],2) + par[1]', parameters);
+
+  //-----------------------------------------------------------------
+
+  //-----Evaluate Method---------------------------------------------
+
+  //Funcs rely on JavaScript's eval() method to parse the string you passed the
+  //constructor as its second argument.  You can pass a single variable function
+  //a single value:
+
+  document.write('/////////////////// .evaluate examples //////////////////////////////////</br>');
+  document.write('</br>x^2 evaluated at x = 2 returns: ');
+  document.write(parabola.evaluate(2));  
+
+  //or, you can pass an Array() of values to a higher-dimensional function:
+
+  var point = new Array();
+  point[0] = 3;
+  point[1] = 5;
+  document.write('</br>x^2y^3 evaluated at x = 3 and y = 5 returns: ');
+  document.write(quadCube.evaluate(point))
+
+  //-----------------------------------------------------------------
+
+  //-----getParameters Method----------------------------------------
+
+  //Given a function, getParameters(<array>) will load that function's
+  //parameters into <array>, thusly:
+
+  document.write('</br></br>/////////////////// .getParameters examples //////////////////////////////////</br>');
+  var whatParams = new Array();
+  quad.getParameters(whatParams);
+  document.write('</br>func quad had the parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
+
+  //-----setParameters Method----------------------------------------
+
+  //All the parameters of a given function can be reset at once, with
+  //a new array as follows:
+
+  document.write('</br></br>/////////////////// .setParameters examples //////////////////////////////////</br>');
+  var newParams = new Array();
+  newParams[0] = -3;
+  newParams[1] = 2;
+  quad.setParameters(newParams);
+  quad.getParameters(whatParams);
+  document.write('</br>func quad has the new parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
+  
+  //-----getExtremum Method------------------------------------------
+
+  //Clairvoyant uses Brent's Algorithm (http://en.wikipedia.org/wiki/Brent's_method)
+  //on the derivative of func objects as evaluated by Richardson's Extrapolation
+  //(http://en.wikipedia.org/wiki/Richardson_extrapolation) as a fast extremum finder 
+  //for 1D functions.  In order for this toconverge, you must start with a guess good 
+  //enough to bracket a single zero.  Upon convergence, an array is returned with the 
+  //x[0] coordinate of the extremum in the first entry; the second entry indicates
+  //whether it is a minima (0) or maxima (1), as per the following:
+
+  document.write('</br></br>/////////////////// .getExtremum examples //////////////////////////////////</br>');
+  document.write('</br>If I guess the bottom of the parabola defined by quad is somewhere between -10 and 10, Clairvoyant finds it at x[0] = ');
+  document.write((quad.getExtremum(-10,10))[0]); 
+  if((quad.getExtremum(-10,10))[1]==0){
+    document.write(', and this is a minima.')
+  }    
+  if((quad.getExtremum(-10,10))[1]==1){
+    document.write(', and this is a maxima.')
+  }
+  
+  //By default, getExtremum finds the extremum to within a tolerance
+  //of 1 part in a million; you can override this by including your
+  //desired tolerance as a third argument in getExtremum().
+
+
+  //-----randPull Method----------------------------------------------
+  
+  //Clairvoyant can generate random pulls from a 1D Func object by treating
+  //it as a probability density function over some range.  In order for this
+  //to make sense, the func had better be nonnegative and finite throughout
+  //the range requested!  Support for higher dimensional Funcs coming soon...
+
+  document.write('</br></br>/////////////////// .randPull examples //////////////////////////////////</br>');
+  document.write('</br>Ten random pulls from Func parabola on x[0] within -1..1:</br>');
+  for(var i=0; i<10; i++){
+    document.write(parabola.randPull(-1,1)+'</br>');
+  }
+  document.write('Notice that more of them are near the edges of the range than the center, as we would expect from this distribution.');
+
+  //-----brentSoln Method----------------------------------------------
+
+  //Clairvoyant uses Brent's Algorithm (http://en.wikipedia.org/wiki/Brent's_method)
+  //to find the zero of a 1D Func between a user-defined minimum and maximum  value for
+  //x[0]:
+
+  document.write('</br></br>/////////////////// .brentSoln examples //////////////////////////////////</br>');
+  var cubic = new Func('cubic', '(x[0]-1)*(x[0]-2)*(x[0]-3)');
+  document.write('</br>The cubic (x-1)*(x-2)*(x-3) has a zero between x=1.5 and x=2.7 at x = ');
+  document.write(cubic.brentSoln(1.5,2.7));
+
+  //Bad things happen if there is not exactly 1 zero in the search range!  
+  //Examples to come, try it yourself for now.  Zeroes are found to a 
+  //default tolerance of 0.000001, but this can be overridden with by an 
+  //optional third argument to brentSoln()
+
+  //-----biSoln Method-------------------------------------------------
+
+  //When Brent's Algorithm runs into problems (usually because the user didn't
+  //bracket a unique zero), a slow but robust grid search and bisection is 
+  //performed to find a function zero.  This is VERY slow, and should only be
+  //called as a last-ditch attempt to find a zero.
+
+  document.write('</br></br>/////////////////// .biSoln examples //////////////////////////////////</br>');
+
+  document.write('</br>The cubic (x-1)*(x-2)*(x-3) has a zero between x=2.1 and x=10.6 at x = ');
+  document.write(cubic.biSoln(2.1,10.6));
+
+  //Default tolerance is 1 part in a million; override with third argument
+  //to biSoln().
+
+  //-----derivative Method----------------------------------------------
+
+  //Clairvoyant uses Richardson's Extrapolation 
+  //(http://en.wikipedia.org/wiki/Richardson_extrapolation) to approximate
+  //the derivative of a function in any dimension at a given point. derivative()
+  //accepts 4 arguments:
+  //  <x> is the point at which the derivative will be evaluated; it can be a 
+  //    number for a 1D function, or an Array() for higher dimensionality.
+  //  <dim> is the dimension the derivative will be taken in; <dim>=n corresponds
+  //    to taking the derivative WRT x[n]
+  //  <tol> is the tolerance to which the derivative is estimated; default is 0.000001
+  //  <roundoff> is a flag that decides whether to round the result off to the nearest
+  //    multiple of the tolerance.  Default is yes (<roundoff>=1), may set to 0 (no),
+  //    useful for avoiding compounding roundoff errors when other functions call this.
+
+  document.write('</br></br>/////////////////// .derivative examples //////////////////////////////////</br>');
+  document.write('</br>The derivative of x^2*y^3 WRT x at x=3,y=5 is: ');
+  document.write(quadCube.derivative(point,0));
+
+ 
+  //-----gradient Method------------------------------------------------
+
+  //evaluates the derivative of the Func along every dimension at the specified 
+  //point, and returns the reuslts in an array:
+
+  document.write('</br></br>/////////////////// .gradient examples //////////////////////////////////</br>');
+  document.write('</br>The gradient of x^2*y^3 at x=3,y=5 is: '+quadCube.gradient(point)[0]+' in x and '+quadCube.gradient(point)[1]+' in y.');
+  document.write('</br>Beware of roundoff error!  Bugfix coming soon.')
+
+
+  </script>
+
+  
+
+
+
+</body> </html>
+
+
+
