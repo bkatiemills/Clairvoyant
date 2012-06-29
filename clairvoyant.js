@@ -781,11 +781,12 @@ function Matrix(name, rows, columns, preDef){
 
 }
 
-//writes out the contesnts of this matrix.
+//writes out the contents of this matrix.
 function dump(){
+  document.write('</br>');
   for(var row=0; row<this.rows; row++){
     for(var col=0; col<this.cols; col++){
-      document.write(this.elements[row][col]);
+      document.write(this.elements[row][col]+' ');
     }
     document.write('</br>');
   }
@@ -919,49 +920,34 @@ function mtxMulti(object, side){
 }
 
 //Doolittle algo to extract determinant for this matrix.
-function getDeterminant(eigenvalue){
+function getDeterminant(){
 
   if(this.rows != this.cols){
     alert('Matrix must be square.  Aborting...');
     return -999;
-  }
-
-  //if an eigenvalue gets passed into the function, construct this-lambda*identity
-  var lambda = 0;
-  if(arguments.length==1){
-    lambda = eigenvalue;
-  }
-  var lambdaI = new Matrix('lambdaI', this.rows,this.cols,'identity');
-  lambdaI = lambdaI.mtxScale(-1*lambda);
-  var detMatrix = this.mtxAdd(lambdaI);
-  
+  }  
 
   //zeroth iteration:
-  var A = detMatrix;
-  var L = new Matrix('L', detMatrix.rows, detMatrix.cols, 'identity');
-  var l = new Matrix('l',detMatrix.rows,detMatrix.cols);
+  var A = this;
+  var L = new Matrix('L', this.rows, this.cols, 'identity');
+  var l = new Matrix('l',this.rows,this.cols);
 
-  for(var iter=1;iter<detMatrix.rows;iter++){
+  for(var iter=1;iter<this.rows;iter++){
 
     //construct this iteration's lower triangular matrix:
-    l = new Matrix('l',detMatrix.rows,detMatrix.cols,'identity');
-    for(var row=iter; row<detMatrix.rows; row++){
+    l = new Matrix('l',this.rows,this.cols,'identity');
+    for(var row=iter; row<this.rows; row++){
       l.elements[row][iter-1] = -1*A.elements[row][iter-1] / A.elements[iter-1][iter-1];
       L.elements[row][iter-1] = -1*l.elements[row][iter-1];
     }
 
     //update A:
     A = A.mtxMulti(l, 'left');
-/* 
-    if(lambda!=0){
-      A.dump()
-    }
-*/  
   }
 
   var detA = 1;
   var detL = 1;
-  for(iter=0;iter<detMatrix.rows;iter++){
+  for(iter=0;iter<this.rows;iter++){
     detA = detA*A.elements[iter][iter];
     detL = detL*L.elements[iter][iter];
   }
@@ -1059,7 +1045,7 @@ function mtxScale(scale){
   return scaled;
 }
 
-//function get the inverse of this matrix
+//function to get the inverse of this matrix
 function getInverse(){
 
   var deter = this.getDeterminant();

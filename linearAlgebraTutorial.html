@@ -1,0 +1,275 @@
+<html> <head>
+  <script src="clairvoyant.js">
+  </script> </head> <body>
+
+  <script type="text/JavaScript">
+
+  /*-----Intro to Clairvoyant Vector and Matrix classes---------------
+  
+  Clairvoyant provides Vector and Matrix classes for all your linear
+  algebra applications.
+  
+  -----------------------------------------------------------------*/
+
+  //-----Vector Constructor---------------------------------------------
+  //Vector(<name>,<elements>)
+  //  <name>    	a string name for the Vector
+  //  <elements>	(optional)an Array() containing the initial 
+  //                    elements of the vector (default 1 element set to 0)
+
+  //Declare a vector with elements (1,2):
+
+  var elements = new Array();
+  elements[0]=1;
+  elements[1]=2;
+  var arrow = new Vector('arrow',elements);
+
+  //Vector objects also carry around an internal element .dim, which is
+  //the vector's dimension.  It's initialized to the length of the Array
+  //the object is initialized with, or 1 if no Array is given.
+
+
+  //-----dot Method---------------------------------------------
+  //dot(<vector>,<metric>)
+  //  <vector>	the vector to take the dot product of this vector with.
+  //  <metric>  (optional) a Matrix object containing the metric of the 
+  //            space the vectors live in(default rectangular Cartesian).
+  //Return type: float on successful exit, -999 if <vector> isn't a valid vector.
+
+  document.write('/////////////////// .dot examples //////////////////////////////////</br>'); 
+
+  //The dot method takes the dot product between this vector and a vector passed to it, by default in
+  //a rectangular Cartsian space.  A different metric may be provided as a Matrix in the optional second
+  //argument.
+
+  var elements2 = new Array();
+  elements2[0] = 3;
+  elements2[1] = -1;
+  var arrow2 = new Vector('arrow2',elements2);
+
+  document.write('</br>Dot product of (1,2) and (3,-1) = '+arrow.dot(arrow2));
+
+
+  //-----getLength Method---------------------------------------------
+  //getLength(<metric>)               
+  //  <metric>  (optional) a Matrix object containing the metric of the 
+  //            space the vector lives in(default rectangular Cartesian).
+  //Return type: float on successful exit.
+
+  document.write('</br></br>/////////////////// .getLength examples //////////////////////////////////</br>');
+
+  //getLength computes the length of this vector, in rectangular cartesian space by default,
+  //or under another metric passed as a Matrix object as an optional argument.
+
+  document.write('</br>Length of vector (1,2) = '+arrow.getLength());
+  document.write('</br>Length of vector (3,-1) = '+arrow2.getLength());
+
+
+  //-----Matrix Constructor---------------------------------------------
+  //Matrix(<name>,<rows>,<columns>,<predef>)
+  //  <name>	a string naming this Matrix.
+  //  <rows>	number of rows in this Matrix.
+  //  <columns>	number of columns in this Matrix.
+  //  <predef>	(optional) option to initialize Matrix as one of a few
+  //            different things.
+
+
+  //Initialize a 3 by 4 matrix as per:
+  var mtx = new Matrix('mtx',3,4);
+  //All elements are initialized to 0.
+
+  //individual elements can be initialized as follows:
+  var exampleMtx = new Matrix('exampleMtx',3,3);
+  exampleMtx.elements[0][0] = 1
+  exampleMtx.elements[0][1] = 3
+  exampleMtx.elements[0][2] = 1
+  exampleMtx.elements[1][0] = 1
+  exampleMtx.elements[1][1] = 1
+  exampleMtx.elements[1][2] = 2
+  exampleMtx.elements[2][0] = 2
+  exampleMtx.elements[2][1] = 3
+  exampleMtx.elements[2][2] = 4 
+
+  //Matrices can be optionally initialized as one of a few different types:
+  //get an identity matrix by using 'identity' predef:
+  var id = new Matrix('id',4,4,'identity');
+  //identity may be any dimension, but must be square.
+
+  //'Minkowski' predef:
+  var Mink = new Matrix('Mink',4,4,'Minkowski');
+  //Minkowski preddef must be declared as 4 by 4.
+ 
+
+  //-----dump Method---------------------------------------------
+  //dump() - no arguments
+  //Return type: 0 on successful exit
+
+  document.write('</br></br>/////////////////// .dump examples //////////////////////////////////</br>');
+
+  //The dump method just writes out this Matrix to the window:
+
+  document.write('</br>An identity matrix:');
+  id.dump();
+ 
+  document.write('</br>the Minkowski metric:');
+  Mink.dump();
+
+
+  //-----mtxAdd Method---------------------------------------------
+  //mtxAdd(<matrix>)
+  //  <matrix>  Matrix object to be added to this Matrix.  
+  //Return type: Matrix on successful exit, -999 if problems arise.
+
+  document.write('</br></br>/////////////////// .mtxAdd examples //////////////////////////////////</br>');
+
+  //mtxAdd adds a <Matrix> passed as an argument to this Matrix, and 
+  //returns the result.  Both Matrices must have the same dimensions 
+  //for this to make sense!
+
+  var sumMtx = id.mtxAdd(Mink);
+  document.write('4D identity matrix + Minkowski metric:');
+  sumMtx.dump();
+
+  //-----mtxMulti Method---------------------------------------------
+  //mtxMulti(<object>,<side>)       
+  //  <object>	Either a Matrix or a Vector object to be multiplied by this Matrix.
+  //  <side>    The side of this Matrix to place <object> on before multiplying.
+  //Return type: Matrix or Vector on successful exit, -999 if problems arise.
+
+  document.write('</br></br>/////////////////// .mtxMulti examples //////////////////////////////////</br>');
+
+  //mtxMulti handles the multiplication of Matrix and Vector objects, as follows:
+
+  var anotherMtx = new Matrix('anotherMtx',3,3,'identity');
+  anotherMtx.elements[0][2] = 4;
+  anotherMtx.elements[2][0] = -1;
+
+  document.write('anotherMtx:');
+  anotherMtx.dump();
+  document.write('</br>exampleMtx');
+  exampleMtx.dump();
+
+  var productMtx = anotherMtx.mtxMulti(exampleMtx,'left');
+  document.write('</br>exampleMtx*anotherMtx:');
+  productMtx.dump();
+
+  document.write('</br>Matrix multiplication is generally noncommutative:</br>anotherMtx*exampleMtx:');
+  productMtx = anotherMtx.mtxMulti(exampleMtx,'right');  
+  productMtx.dump();
+
+  //We can also multiply Vector objects by Matrices:
+
+  var coords = new Array();
+  coords[0] = 5;
+  coords[1] = 3;
+  coords[2] = -2
+  var spaceVec = new Vector('spaceVec',coords);
+
+  var transVec = exampleMtx.mtxMulti(spaceVec,'right');
+  document.write('</br>exampleMtx*(5,3,-2) = ('+transVec.elts[0]+', '+transVec.elts[1]+', '+transVec.elts[2]+')');
+
+
+  //-----getDeterminant Method---------------------------------------------
+  //getDeterminant()  no arguments
+  //Return type: float on successful exit, -999 if problems arise.
+
+  document.write('</br></br>/////////////////// .getDeterminant examples //////////////////////////////////</br>');
+
+  //getDeterminant employs the Doolittle algorithm (http://en.wikipedia.org/wiki/LU_decomposition)
+  //to try and quickly compute the determinant of a square Matrix.  Doolittle can have problems if any
+  //of the diagonal elements become 0 at any step in the algo, so alternatives will be implemented
+  //for these cases.
+
+  var smallMtx = new Matrix('smallMtx',2,2);
+  smallMtx.elements[0][0] = 3;
+  smallMtx.elements[0][1] = 6;
+  smallMtx.elements[1][0] = -2;
+  smallMtx.elements[1][1] = 1;
+
+  document.write('</br>smallMtx:');
+  smallMtx.dump();
+  document.write('Determinant of smallMtx = '+smallMtx.getDeterminant());
+  document.write('</br>Determinant of exampleMtx = '+exampleMtx.getDeterminant());
+
+  //-----getMinor Method---------------------------------------------
+  //getMinor()  no arguments
+  //Return type: Matrix
+
+  document.write('</br></br>/////////////////// .getMinor examples //////////////////////////////////</br>');
+
+  //the getMinor method returns the minor of this Matrix.  Recall that element [n][m] of a matrix's minor is the 
+  //determinant of the matrix generated by deleting row n and column m from the original matrix.
+
+  var minorSmall = smallMtx.getMinor();
+  document.write('</br>Minor of smallMtx:');
+  minorSmall.dump();
+
+  var minorExample = exampleMtx.getMinor();
+  document.write('</br>Minor of exampleMtx:');
+  minorExample.dump();
+
+
+  //-----getCofactor Method---------------------------------------------
+  //getCofactor()  no arguments
+  //Return type: Matrix                                             
+
+  document.write('</br></br>/////////////////// .getCofactor examples //////////////////////////////////</br>');
+
+  //getCofactor returns the cofactor Matrix of this Matrix.  Recall that the cofactor matrix is the same as the 
+  //minor matrix, with element ij multiplied by (-1)^(i+j).
+
+  var cofactorExample = exampleMtx.getCofactor();
+  document.write('</br>Cofactor Matrix of exampleMtx:');
+  cofactorExample.dump();
+
+
+  //-----getTranspose Method---------------------------------------------
+  //getTranspose()  no arguments
+  //Return type: Matrix
+
+  document.write('</br></br>/////////////////// .getTranspose examples //////////////////////////////////</br>');
+
+  //getTranspose returns the transpose of this Matrix.
+
+  var exampleTranspose = exampleMtx.getTranspose();
+  document.write('</br>Transpose of exampleMtx:');
+  exampleTranspose.dump();
+
+
+  //-----mtxScale Method---------------------------------------------
+  //mtxScale(<scale>) 
+  //  <scale>	float by which to multiply every element of this Matrix.
+  //Return type: Matrix
+
+  document.write('</br></br>/////////////////// .mtxScale examples //////////////////////////////////</br>');
+
+  //mtxScale multiplies every element of this Matrix by <scale>:
+
+  var scaledMtx = exampleMtx.mtxScale(3);
+  document.write('</br>exampleMtx times 3:');
+  scaledMtx.dump();
+
+  //-----getInverse Method---------------------------------------------
+  //getInverse()              
+  //Return type: Matrix
+
+  document.write('</br></br>/////////////////// .getInverse examples //////////////////////////////////</br>');
+
+  //getInverse attempts to return the inverse of this Matrix.  Relies on the Doolittle
+  //determinant calculation.
+
+  document.write('</br>Inverse of exampleMtx:');
+  var exampleInv = exampleMtx.getInverse();
+  exampleInv.dump();
+
+  document.write('exampleMtx*exampleInv:');
+  (exampleMtx.mtxMulti(exampleInv, 'right')).dump();
+
+
+
+
+
+
+  </script>
+  
+</body> </html>
