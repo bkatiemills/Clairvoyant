@@ -1,5 +1,7 @@
 // define 1 - D histogram class ---------------------------------------------------------------- 
 function Histo(name, nBins, min, max) {
+    var i;
+
     this.name = name;
     this.nBins = nBins;
     this.min = min;
@@ -8,7 +10,7 @@ function Histo(name, nBins, min, max) {
     // set up array of histogram bins
     this.binSize = (max - min) / nBins;
     this.bins = [];
-    for (var i=0; i<nBins; i++) {
+    for (i=0; i<nBins; i++) {
         this.bins.push({lo: this.min + i*this.binSize, weight: 0});
     }
     this.bins.push({lo: max, weight: 0});
@@ -32,10 +34,12 @@ function Histo(name, nBins, min, max) {
 
 // write all contents of histogram as <lo edge> : <weight>
 function dumpContents() {
+    var i;
+
     document.write('</br>');
     document.write(this.name);
     document.write('</br>');
-    for (var i=0; i<this.bins.length; i++) {
+    for (i=0; i<this.bins.length; i++) {
         document.write(this.bins[i].lo);
         document.write(' : ');
         document.write(this.bins[i].weight);
@@ -48,6 +52,9 @@ function dumpContents() {
 // increment the bin in which <value> falls by <amount>;
 // increments this bin by 1 if no value provided for <amount>.
 function increment(value, amount) {
+    var i, index;
+    index = 0;
+
     if(arguments.length == 1) {
         amount = 1;
     }
@@ -56,8 +63,7 @@ function increment(value, amount) {
         return -999;
     }
     
-    var index = 0;
-    for (var i = 0; i<this.bins.length; i++) {
+    for (i = 0; i<this.bins.length; i++) {
         if(this.bins[i].lo <= value) {
             index = i;
         }
@@ -74,11 +80,14 @@ function increment(value, amount) {
 // returns integral of whole histo if no args provided;
 // if bound is in the middle of a bin, treats weight as distributed flat across the bin
 function integrate(min, max) {
+    var i, maxBin, minBin, total;
+    maxBin = -1;
+    minBin = -1;
+    total = 0;
 
     // return integral of whole histo if no arguments provided
     if(arguments.length==0) {
-        var total = 0;
-        for (var i=0; i<this.bins.length; i++) {
+        for (i=0; i<this.bins.length; i++) {
             total+= this.bins[i].weight;
         }
         return total;
@@ -92,8 +101,6 @@ function integrate(min, max) {
             return -999;
         }
 
-        var minBin = -1;
-        var maxBin = -1;
         for (i=0; i<this.bins.length; i++) {
             if(this.bins[i].lo <= min) {
                 minBin = i;
@@ -103,7 +110,7 @@ function integrate(min, max) {
             }
         }
 
-        var total = 0;
+        total = 0;
         // integrate all bins in range except for fractionally included ones:
         for (i=minBin+1; i<maxBin; i++) {
             total += this.bins[i].weight;
@@ -125,13 +132,15 @@ function integrate(min, max) {
 // normalize the histogram to <factor>;
 // <factor> set to 1 if not provided
 function normalize(factor) {
+    var i, total;
+
     if(arguments.length==0) {
         factor = 1;
     }
 
-    var total = this.integrate();
+    total = this.integrate();
 
-    for (var i=0; i<this.bins.length; i++) {
+    for (i=0; i<this.bins.length; i++) {
         this.bins[i].weight = factor*this.bins[i].weight / total;
     }
     
@@ -141,20 +150,21 @@ function normalize(factor) {
 // increment this histo by the corresponding weights in <otherHisto>, multiplied by <scale>;
 // <scale> default = 1
 function add(otherHisto, scale1, scale2) {
+    var j, sumHisto;
 
     if(this.nBins != otherHisto.nBins || this.min != otherHisto.min || this.max != otherHisto.max) {
         alert('Can\'t add histrograms with different binning.    Aborting...');
         return -999;
     }
 
-    var sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
+    sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
     
     if(arguments.length==1) {
         scale1 = 1;
         scale2 = 1;
     }
 
-    for (var j=0; j<this.bins.length; j++) {
+    for (j=0; j<this.bins.length; j++) {
         sumHisto.increment(this.bins[j].lo, scale1*this.bins[j].weight);
         sumHisto.increment(otherHisto.bins[j].lo, scale2*otherHisto.bins[j].weight);
     }
@@ -165,9 +175,11 @@ function add(otherHisto, scale1, scale2) {
 
 // returns the mean of the distribution.    bin weight is attributed to the low edge of the bin
 function getMean() {
-    var totalWeight = this.integrate();
-    var weightedSum = 0;
-    for (var i=0; i<this.bins.length - 1; i++) {
+    var i, totalWeight, weightedSum;
+
+    totalWeight = this.integrate();
+    weightedSum = 0;
+    for (i=0; i<this.bins.length - 1; i++) {
         weightedSum += this.bins[i].lo * this.bins[i].weight;
     }
 
@@ -176,26 +188,28 @@ function getMean() {
 
 // returns the variance of the distribution.
 function getVariance() {
+    var i, mean, meanSquare, totalWeight, weightedSquares;
 
-    var totalWeight = this.integrate();
-    var weightedSquares = 0;
-    for (var i=0; i<this.bins.length - 1; i++) {
+    totalWeight = this.integrate();
+    weightedSquares = 0;
+    for (i=0; i<this.bins.length - 1; i++) {
         weightedSquares += Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
     }
-    var meanSquare = weightedSquares / totalWeight;
+    meanSquare = weightedSquares / totalWeight;
 
-    var mean = this.getMean();
+    mean = this.getMean();
 
     return meanSquare - mean*mean;
 }
 
 // returns the cumulative distribution function of this (normalized) histogram
 function getCDF() {
+    var cloneHist, i;
 
-    var cloneHist = this;
+    cloneHist = this;
     cloneHist.normalize();
 
-    for (var i=1; i<cloneHist.bins.length - 1; i++) {
+    for (i=1; i<cloneHist.bins.length - 1; i++) {
             cloneHist.bins[i].weight += cloneHist.bins[i - 1].weight;
     }
 
@@ -205,22 +219,24 @@ function getCDF() {
 
 // perform a KS match between this histo and <target> histo
 function KStest(target) {
+    var CDF1, CDF2, delta, i, KSstat, weight1, weight2;
+
     if( (this.nBins != target.nBins)    ||    (this.min != target.min)    || (this.max != target.max) ) {
         document.write('</br>');
         document.write('histos must have same min, max and divisions for KS test, abandoning test...');
         return -999;
     }
 
-    var CDF1 = new Histo('CDF1', 10,0,10);
+    CDF1 = new Histo('CDF1', 10,0,10);
     CDF1 = this.getCDF();
-    var CDF2 = new Histo('CDF2', 10,0,10);
+    CDF2 = new Histo('CDF2', 10,0,10);
     CDF2 = target.getCDF();
 
-    var weight1 = this.integrate();
-    var weight2 = target.integrate();
+    weight1 = this.integrate();
+    weight2 = target.integrate();
  
-    var delta = 0;
-    for (var i=0; i<this.bins.length; i++) {
+    delta = 0;
+    for (i=0; i<this.bins.length; i++) {
         if(Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight)>delta) {
             delta = Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight);
         }
@@ -232,13 +248,14 @@ function KStest(target) {
 }
 
 function sample(nSamples,source) {
+    var nP, p, pull, x;
 
-    var x = [];
-    var p = [];
-    for (var nP=0; nP<source.params.length; nP++) {
+    x = [];
+    p = [];
+    for (nP=0; nP<source.params.length; nP++) {
         p[nP] = source.params[nP];
     }
-    for (var pull=0; pull<nSamples; pull++) {
+    for (pull=0; pull<nSamples; pull++) {
         x[0] = Math.random()*(this.max - this.min) + this.min;
         this.increment(x[0],source.evaluate(x,p));
     }
@@ -288,10 +305,12 @@ function Func(name, userString, parameters) {
 // parameters set on creation of the function or on a call to this.setParameters
 // <inputs> may be either an Array or a single number
 function evaluate(inputs) {
-    var x = [];
+    var ins, par, x;
+    
+    x = [];
     
     if(inputs instanceof Array) {
-        for (var ins=0; ins<inputs.length; ins++) {
+        for (ins=0; ins<inputs.length; ins++) {
             x[ins] = inputs[ins];
         }
     }
@@ -299,7 +318,7 @@ function evaluate(inputs) {
         x[0] = inputs;
     }
 
-    var par = [];
+    par = [];
     for (ins=0; ins<this.params.length; ins++) {
             par[ins] = this.params[ins];
     }
@@ -310,8 +329,9 @@ function evaluate(inputs) {
 
 // load the current parameters of the Func into an Array
 function getParameters(pbr) {
+    var getP;
 
-    for (var getP=0; getP<this.params.length; getP++) {
+    for (getP=0; getP<this.params.length; getP++) {
         pbr[getP]=this.params[getP];
     }
 
@@ -320,8 +340,9 @@ function getParameters(pbr) {
 
 // set the parameters of a Func to some new values
 function setParameters(newParam) {
+    var newP;
 
-    for (var newP=0; newP<newParam.length; newP++) {
+    for (newP=0; newP<newParam.length; newP++) {
         this.params[newP] = newParam[newP];
     }
 
@@ -332,19 +353,20 @@ function setParameters(newParam) {
 // zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies <tol>.    Returns an array,
 // first element = coordinate of extrema, second element is 0 for minima and 1 for maxima. 
 function getExtremum(min, max, tol) {
+    var concavity, ddx, extrema, funcString, results, tolerance;
 
-    var tolerance = 0.000001;
+    tolerance = 0.000001;
     if(arguments.length == 3) {
         tolerance = tol;
     }
 
-    var funcString = this.name+'.derivative(x[0],0,0.000001,0)';
+    funcString = this.name+'.derivative(x[0],0,0.000001,0)';
 
-    var ddx = new Func('ddx', funcString);
-    var extrema = ddx.brentSoln(min,max,tolerance);
-    var concavity = ddx.derivative(extrema);
+    ddx = new Func('ddx', funcString);
+    extrema = ddx.brentSoln(min,max,tolerance);
+    concavity = ddx.derivative(extrema);
 
-    var results = [];
+    results = [];
     results[0] = Math.round(extrema / tolerance)*tolerance;
     if(concavity>0) {
         results[1] = 0;
@@ -363,17 +385,18 @@ function getExtremum(min, max, tol) {
 // Function must be non - negative and pole - free across the requested 
 // range for this to make sense. 
 function randPull(min, max) {
+    var decision, done, extreme, thresh, x; 
  
-    var done = 0;
+    done = 0;
 
     // find the highest point of the function in range: grid search to find global maximum,
     // then getExtremum to zero in on it.
-    var extreme = [];
+    extreme = [];
     extreme = this.getExtremum(min,max);
 
-    var x = 0;
-    var thresh = 0;
-    var decision = 0;
+    x = 0;
+    thresh = 0;
+    decision = 0;
 
     while(done==0) {
         // choose a point in range
@@ -399,47 +422,48 @@ function randPull(min, max) {
 // between <hi> and <lo>.    Letters label the steps in the wikipedia
 // factoring of the algorithm; step (a) is the function call itself. 
 function brentSoln(lo, hi, tol) {
+    var a, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
 
-    var tolerance = 0.000001;
+    tolerance = 0.000001;
     if(arguments.length == 3) {
         tolerance = tol;
     }
 
     // (b)
-    var initHi = this.evaluate(hi);
+    initHi = this.evaluate(hi);
     // (c)
-    var initLo = this.evaluate(lo);
+    initLo = this.evaluate(lo);
     // (d)
     if( (initHi*initLo>=0) ) {
         alert('Range provided does not bracket a unique zero, attempting to recover...');
         return this.biSoln(lo, hi);
     }
     // (e)
-    var a = lo;
-    var b = hi;
+    a = lo;
+    b = hi;
     if(Math.abs(initLo) < Math.abs(initHi)) {
         a = hi;
         b = lo;
     }
     // (f)
-    var c = a;
+    c = a;
     // (g)
-    var mflag = 1;
+    mflag = 1;
 
     // (h)
-    var f_a = this.evaluate(a);
-    var f_b = this.evaluate(b);
-    var f_c = this.evaluate(c);
-    var s = b - f_b*(b - a) / (f_b - f_a);
-    var f_s = this.evaluate(s);
-    var d = 0;
-    var buffer = 0;
-    var loops = 0;
+    f_a = this.evaluate(a);
+    f_b = this.evaluate(b);
+    f_c = this.evaluate(c);
+    s = b - f_b*(b - a) / (f_b - f_a);
+    f_s = this.evaluate(s);
+    d = 0;
+    buffer = 0;
+    loops = 0;
     while(f_b!=0 && f_s!=0 && Math.abs(b - a)>tolerance) {
         loops++;
-        var f_a = this.evaluate(a);
-        var f_b = this.evaluate(b);
-        var f_c = this.evaluate(c);
+        f_a = this.evaluate(a);
+        f_b = this.evaluate(b);
+        f_c = this.evaluate(c);
 
         // (h_i)
         if(f_a!=f_c && f_b!=f_c) {
