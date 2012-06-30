@@ -954,12 +954,12 @@ function getMinor() {
         for (col = 0; col < this.cols; col++) {
 
             rMap = 0;
-            for (subRow = 0;subRow < subMtx.rows;subRow++) {
+            for (subRow = 0; subRow < subMtx.rows; subRow++) {
                 if (rMap == row) {
                     rMap++;
                 }
                 cMap = 0;
-                for (subCol = 0;subCol < subMtx.cols;subCol++) {
+                for (subCol = 0; subCol < subMtx.cols; subCol++) {
                     if (cMap == col) {
                         cMap++;
                     }
@@ -981,13 +981,13 @@ function getMinor() {
 // function to calculate cofactor matrix of this matrix
 function getCofactor() {
     var cofac, col, minor, row;
- 
+
     minor = this.getMinor();
     cofac = new Matrix('cofac', this.rows, this.cols);
 
     for (row = 0; row < cofac.rows; row++) {
         for (col = 0; col < cofac.cols; col++) {
-            cofac.elements[row][col] = Math.pow(- 1, row + col) * minor.elements[row][col];
+            cofac.elements[row][col] = Math.pow(-1, row + col) * minor.elements[row][col];
         }
     }
 
@@ -1055,12 +1055,12 @@ function getInverse() {
 function Kolmogorov(z) {
     var j;
 
-    Kprob = 2 * Math.exp(- 2 * z * z);    // start with first term (ie j = 1)
+    Kprob = 2 * Math.exp(-2 * z * z);    // start with first term (ie j = 1)
 
     // keep addting terms on to fp precision
     j = 2;
-    while (2 * Math.pow(- 1, j - 1) * Math.exp(- 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
-        Kprob  += 2 * Math.pow(- 1, j - 1) * Math.exp(- 2 * j * j * z * z);
+    while (2 * Math.pow(-1, j - 1) * Math.exp(-2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
+        Kprob  += 2 * Math.pow(-1, j - 1) * Math.exp(-2 * j * j * z * z);
         j++;
     }
 
@@ -1070,15 +1070,5 @@ function Kolmogorov(z) {
 }
 
 function Gaussian(mu, sigma, x) {
-    return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp(- 0.5 * Math.pow((x - mu) / sigma, 2));
+    return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
 }
-
-
-
-
-
-
-
-
-
-
