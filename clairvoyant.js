@@ -493,7 +493,7 @@ function brentSoln(lo, hi, tol) {
     } else {
         answer = Math.round(s / tolerance) * tolerance;
     }
-    
+
     return answer;
 
 }
@@ -510,7 +510,7 @@ function biSoln(min, max, tol) {
     gridMin = Math.abs(this.evaluate(min));
     lowestPoint = here;
     for (gridS = 0; gridS < gridSteps; gridS++) {
-        if (Math.abs(this.evaluate(here))  <  gridMin ) {
+        if (Math.abs(this.evaluate(here))  <  gridMin) {
             lowestPoint = here;
             gridMin = Math.abs(this.evaluate(here));
         }
@@ -596,7 +596,7 @@ function derivative(x, dim, tol, roundoff) {
 
 function gradient(x) {
     var dim, dimension, grad;
- 
+
     dimension = x.length;
     grad = [];
 
@@ -656,7 +656,7 @@ function dot(vec, metric) {
         return -999;
     }
     if (this.dim !=  vec.dim) {
-        alert('Vectors must be the same length to take dot product.    Aborting...');        
+        alert('Vectors must be the same length to take dot product.    Aborting...');
         return -999;
     }
 
@@ -695,7 +695,7 @@ function getLength(metric) {
     if (arguments.length == 1) {
         length = Math.pow((metric.mtxMulti(this, 'left')).dot(this), 0.5);
     }
-    
+
     return length;
 }
 
@@ -709,7 +709,7 @@ function Matrix(name, rows, columns, preDef) {
 
     this.name = name;
     this.rows = rows;
-    this.cols = columns; 
+    this.cols = columns;
     this.elements = new Array(rows);
 
     // start with all entries = 0
