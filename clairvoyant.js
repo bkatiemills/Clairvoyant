@@ -10,7 +10,7 @@ function Histo(name, nBins, min, max) {
     // set up array of histogram bins
     this.binSize = (max - min) / nBins;
     this.bins = [];
-    for (i = 0; i < nBins; i++ ) {
+    for (i = 0; i < nBins; i++) {
         this.bins.push({lo: this.min  +  i * this.binSize, weight: 0});
     }
     this.bins.push({lo: max, weight: 0});
@@ -39,7 +39,7 @@ function dumpContents() {
     document.write(' </br> ');
     document.write(this.name);
     document.write(' </br> ');
-    for (i = 0; i < this.bins.length; i++ ) {
+    for (i = 0; i < this.bins.length; i++) {
         document.write(this.bins[i].lo);
         document.write(' : ');
         document.write(this.bins[i].weight);
@@ -61,7 +61,7 @@ function increment(value, amnt) {
         return -999;
     }
 
-    for (i = 0; i < this.bins.length; i++ ) {
+    for (i = 0; i < this.bins.length; i++) {
         if (this.bins[i].lo  <=  value) {
             index = i;
         }
@@ -85,7 +85,7 @@ function integrate(min, max) {
 
     // return integral of whole histo if no arguments provided
     if (arguments.length == 0) {
-        for (i = 0; i < this.bins.length; i++ ) {
+        for (i = 0; i < this.bins.length; i++) {
             total  += this.bins[i].weight;
         }
         return total;
@@ -99,7 +99,7 @@ function integrate(min, max) {
             return -999;
         }
 
-        for (i = 0; i < this.bins.length; i++ ) {
+        for (i = 0; i < this.bins.length; i++) {
             if (this.bins[i].lo  <=  min) {
                 minBin = i;
             }
@@ -110,7 +110,7 @@ function integrate(min, max) {
 
         total = 0;
         // integrate all bins in range except for fractionally included ones:
-        for (i = minBin + 1; i < maxBin; i++ ) {
+        for (i = minBin + 1; i < maxBin; i++) {
             total  += this.bins[i].weight;
         }
         // treat weight as distributed evenly across a bin for fractionally included first bin
@@ -136,7 +136,7 @@ function normalize(fac) {
 
     total = this.integrate();
 
-    for (i = 0; i < this.bins.length; i++ ) {
+    for (i = 0; i < this.bins.length; i++) {
         this.bins[i].weight = factor * this.bins[i].weight / total;
     }
     
@@ -158,7 +158,7 @@ function add(otherHisto, sc1, sc2) {
     scale1 = sc1 || 1;
     scale2 = sc2 || 1;
 
-    for (j = 0; j < this.bins.length; j++ ) {
+    for (j = 0; j < this.bins.length; j++) {
         sumHisto.increment(this.bins[j].lo, scale1 * this.bins[j].weight);
         sumHisto.increment(otherHisto.bins[j].lo, scale2 * otherHisto.bins[j].weight);
     }
@@ -173,7 +173,7 @@ function getMean() {
 
     totalWeight = this.integrate();
     weightedSum = 0;
-    for (i = 0; i < this.bins.length - 1; i++ ) {
+    for (i = 0; i < this.bins.length - 1; i++) {
         weightedSum  += this.bins[i].lo * this.bins[i].weight;
     }
 
@@ -186,7 +186,7 @@ function getVariance() {
 
     totalWeight = this.integrate();
     weightedSquares = 0;
-    for (i = 0; i < this.bins.length - 1; i++ ) {
+    for (i = 0; i < this.bins.length - 1; i++) {
         weightedSquares  += Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
     }
     meanSquare = weightedSquares / totalWeight;
@@ -203,7 +203,7 @@ function getCDF() {
     cloneHist = this;
     cloneHist.normalize();
 
-    for (i = 1; i < cloneHist.bins.length - 1; i++ ) {
+    for (i = 1; i < cloneHist.bins.length - 1; i++) {
             cloneHist.bins[i].weight  += cloneHist.bins[i - 1].weight;
     }
 
@@ -230,7 +230,7 @@ function KStest(target) {
     weight2 = target.integrate();
  
     delta = 0;
-    for (i = 0; i < this.bins.length; i++ ) {
+    for (i = 0; i < this.bins.length; i++) {
         if (Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight) > delta) {
             delta = Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight);
         }
@@ -246,10 +246,10 @@ function sample(nSamples,source) {
 
     x = [];
     p = [];
-    for (nP = 0; nP < source.params.length; nP++ ) {
+    for (nP = 0; nP < source.params.length; nP++) {
         p[nP] = source.params[nP];
     }
-    for (pull = 0; pull < nSamples; pull++ ) {
+    for (pull = 0; pull < nSamples; pull++) {
         x[0] = Math.random() * (this.max - this.min)  +  this.min;
         this.increment(x[0],source.evaluate(x,p));
     }
@@ -304,7 +304,7 @@ function evaluate(inputs) {
     x = [];
     
     if (inputs instanceof Array) {
-        for (ins = 0; ins < inputs.length; ins++ ) {
+        for (ins = 0; ins < inputs.length; ins++) {
             x[ins] = inputs[ins];
         }
     }
@@ -313,7 +313,7 @@ function evaluate(inputs) {
     }
 
     par = [];
-    for (ins = 0; ins < this.params.length; ins++ ) {
+    for (ins = 0; ins < this.params.length; ins++) {
             par[ins] = this.params[ins];
     }
 
@@ -325,7 +325,7 @@ function evaluate(inputs) {
 function getParameters(pbr) {
     var getP;
 
-    for (getP = 0; getP < this.params.length; getP++ ) {
+    for (getP = 0; getP < this.params.length; getP++) {
         pbr[getP] = this.params[getP];
     }
 
@@ -336,7 +336,7 @@ function getParameters(pbr) {
 function setParameters(newParam) {
     var newP;
 
-    for (newP = 0; newP < newParam.length; newP++ ) {
+    for (newP = 0; newP < newParam.length; newP++) {
         this.params[newP] = newParam[newP];
     }
 
@@ -520,7 +520,7 @@ function biSoln(min, max, tol) {
     here = min;
     gridMin = Math.abs(this.evaluate(min));
     lowestPoint = here;
-    for (gridS = 0; gridS < gridSteps; gridS++ ) {
+    for (gridS = 0; gridS < gridSteps; gridS++) {
         if ( Math.abs(this.evaluate(here))  <  gridMin ) {
             lowestPoint = here;
             gridMin = Math.abs(this.evaluate(here));
@@ -580,7 +580,7 @@ function derivative(x, dim, tol, roundoff) {
         Xhi2 = [];
         Xlo2 = [];
 
-        for (vary = 0; vary < x.length; vary++ ) {
+        for (vary = 0; vary < x.length; vary++) {
             Xhi[vary] = x[vary];
             Xlo[vary] = x[vary];
             Xhi2[vary] = x[vary];
@@ -613,7 +613,7 @@ function gradient(x) {
     dimension = x.length;
     grad = [];
 
-    for (dim = 0; dim < dimension; dim++ ) {
+    for (dim = 0; dim < dimension; dim++) {
         grad[dim] = this.derivative(x,dim); // *  direction[dim]
     }
 
@@ -676,7 +676,7 @@ function dot(vec, metric) {
     sum = 0;
 
     if (arguments.length == 1) {
-        for (dim = 0; dim < this.dim; dim++ ) {
+        for (dim = 0; dim < this.dim; dim++) {
             sum  += this.elts[dim] * vec.elts[dim];
         }
         return sum;
@@ -688,7 +688,7 @@ function dot(vec, metric) {
             return -999;
         }
         left = metric.mtxMulti(this,'left');
-        for (dim = 0; dim < left.dim; dim++ ) {
+        for (dim = 0; dim < left.dim; dim++) {
             sum  += left.elts[dim] * vec.elts[dim];
         }
         return sum;
@@ -726,9 +726,9 @@ function Matrix(name, rows, columns, preDef) {
     this.elements = new Array(rows);
 
     // start with all entries = 0
-    for (row = 0; row < this.rows; row++ ) {
+    for (row = 0; row < this.rows; row++) {
         this.elements[row] = new Array(this.cols);
-        for (col = 0; col < this.cols; col++ ) {
+        for (col = 0; col < this.cols; col++) {
             this.elements[row][col] = 0;
         }
     }
@@ -741,7 +741,7 @@ function Matrix(name, rows, columns, preDef) {
                 alert('Identity matrix must be square.    Aborting...');
                 return -999;
             }
-            for (dim = 0; dim < this.rows; dim++ ) {
+            for (dim = 0; dim < this.rows; dim++) {
                 this.elements[dim][dim] = 1;
             }
 
@@ -752,7 +752,7 @@ function Matrix(name, rows, columns, preDef) {
                 alert('Minkowski space has a 4 by 4 metric, please adjust rows & columns accordingly.    Aborting...');
                 return -999;
             }
-            for (dim = 1; dim < this.rows; dim++ ) {
+            for (dim = 1; dim < this.rows; dim++) {
                 this.elements[dim][dim] = 1;
             }
             this.elements[0][0] = -1;
@@ -778,8 +778,8 @@ function dump() {
     var col, row;
 
     document.write(' </br> ');
-    for (row = 0; row < this.rows; row++ ) {
-        for (col = 0; col < this.cols; col++ ) {
+    for (row = 0; row < this.rows; row++) {
+        for (col = 0; col < this.cols; col++) {
             document.write(this.elements[row][col] + ' ');
         }
         document.write(' </br> ');
@@ -808,8 +808,8 @@ function mtxAdd(matrix) {
     name = name1  +  'plus'  +  name2;
     result = new Matrix(name, this.rows, this.cols);
 
-    for (row = 0; row < this.rows; row++ ) {
-        for (col = 0; col < this.cols; col++ ) {
+    for (row = 0; row < this.rows; row++) {
+        for (col = 0; col < this.cols; col++) {
             result.elements[row][col] = this.elements[row][col]  +  matrix.elements[row][col];
         }
     }
@@ -834,8 +834,8 @@ function mtxMulti(object, side) {
         }
         result = new Vector('result');
         sum = 0;
-        for (col = 0;col < this.cols;col++ ) {
-            for (row = 0;row < this.rows;row++ ) {
+        for (col = 0;col < this.cols;col++) {
+            for (row = 0;row < this.rows;row++) {
                 sum  += object.elts[row] * this.elements[row][col];
             }
             result.setVal(sum,col);
@@ -851,8 +851,8 @@ function mtxMulti(object, side) {
         }
         result = new Vector('result');
         sum = 0;
-        for (row = 0;row < this.rows;row++ ) {
-            for (col = 0;col < this.cols;col++ ) {
+        for (row = 0;row < this.rows;row++) {
+            for (col = 0;col < this.cols;col++) {
                 sum  += object.elts[col] * this.elements[row][col];
             }
             result.setVal(sum,row);
@@ -874,9 +874,9 @@ function mtxMulti(object, side) {
         result = new Matrix(name, object.rows, this.cols);
 
         sum = 0;
-        for (row = 0;row < object.rows;row++ ) {
-            for (col = 0;col < this.cols;col++ ) {
-                for (elt = 0;elt < this.rows;elt++ ) {
+        for (row = 0;row < object.rows;row++) {
+            for (col = 0;col < this.cols;col++) {
+                for (elt = 0;elt < this.rows;elt++) {
                     sum  += object.elements[row][elt] * this.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -900,9 +900,9 @@ function mtxMulti(object, side) {
         result = new Matrix(name, object.rows, this.cols);
 
         sum = 0;
-        for (row = 0;row < object.rows;row++ ) {
-            for (col = 0;col < this.cols;col++ ) {
-                for (elt = 0;elt < this.rows;elt++ ) {
+        for (row = 0;row < object.rows;row++) {
+            for (col = 0;col < this.cols;col++) {
+                for (elt = 0;elt < this.rows;elt++) {
                     sum  += this.elements[row][elt] * object.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -929,11 +929,11 @@ function getDeterminant() {
     L = new Matrix('L', this.rows, this.cols, 'identity');
     l = new Matrix('l',this.rows,this.cols);
 
-    for (iter = 1;iter < this.rows;iter++ ) {
+    for (iter = 1;iter < this.rows;iter++) {
 
         // construct this iteration's lower triangular matrix:
         l = new Matrix('l',this.rows,this.cols,'identity');
-        for (row = iter; row < this.rows; row++ ) {
+        for (row = iter; row < this.rows; row++) {
             l.elements[row][iter - 1] = -1 * A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
             L.elements[row][iter - 1] = -1 * l.elements[row][iter - 1];
         }
@@ -944,7 +944,7 @@ function getDeterminant() {
 
     detA = 1;
     detL = 1;
-    for (iter = 0;iter < this.rows;iter++ ) {
+    for (iter = 0;iter < this.rows;iter++) {
         detA = detA * A.elements[iter][iter];
         detL = detL * L.elements[iter][iter];
     }
@@ -963,16 +963,16 @@ function getMinor() {
     rMap = 0;
     cMap = 0;
 
-    for (row = 0;row < this.rows;row++ ) {
-        for (col = 0;col < this.cols;col++ ) {
+    for (row = 0;row < this.rows;row++) {
+        for (col = 0;col < this.cols;col++) {
 
             rMap = 0;
-            for (subRow = 0;subRow < subMtx.rows;subRow++ ) {
+            for (subRow = 0;subRow < subMtx.rows;subRow++) {
                 if (rMap == row) {
                     rMap++ ;
                 }
                 cMap = 0;
-                for (subCol = 0;subCol < subMtx.cols;subCol++ ) {
+                for (subCol = 0;subCol < subMtx.cols;subCol++) {
                     if (cMap == col) {
                         cMap++ ;
                     }
@@ -998,8 +998,8 @@ function getCofactor() {
     minor = this.getMinor();
     cofac = new Matrix('cofac', this.rows, this.cols);
 
-    for (row = 0;row < cofac.rows;row++ ) {
-        for (col = 0;col < cofac.cols;col++ ) {
+    for (row = 0;row < cofac.rows;row++) {
+        for (col = 0;col < cofac.cols;col++) {
             cofac.elements[row][col] = Math.pow( - 1,row + col) * minor.elements[row][col];
         }
     }
@@ -1014,8 +1014,8 @@ function getTranspose() {
 
     trans = new Matrix('trans',this.cols,this.rows);
 
-    for (row = 0;row < trans.rows;row++ ) {
-        for (col = 0;col < trans.cols;col++ ) {
+    for (row = 0;row < trans.rows;row++) {
+        for (col = 0;col < trans.cols;col++) {
             trans.elements[row][col] = this.elements[col][row];
         }
     }
@@ -1038,8 +1038,8 @@ function mtxScale(scale) {
 
     scaled = new Matrix('scaled',this.rows,this.cols);
 
-    for (row = 0;row < scaled.rows;row++ ) {
-        for (col = 0;col < scaled.cols;col++ ) {
+    for (row = 0;row < scaled.rows;row++) {
+        for (col = 0;col < scaled.cols;col++) {
             scaled.elements[row][col] = scale * this.elements[row][col];
         }
     }
