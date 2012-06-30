@@ -237,7 +237,6 @@ function KStest(target) {
     }
 
     KSstat = Math.sqrt(weight1 * weight2 / (weight1 + weight2)) * delta;
-
     return Kolmogorov(KSstat);
 }
 
@@ -273,12 +272,10 @@ function Func(name, userString, parameters) {
     if (arguments.length  ==  3) {
         if (parameters instanceof Array) {
             this.params = parameters;
-        }
-        else{
+        } else{
             this.params[0] = parameters;
         }
-    }
-    else{
+    } else{
         this.params[0] = 0;    // dummy for no - parameter functions;
     }
 
@@ -307,8 +304,7 @@ function evaluate(inputs) {
         for (ins = 0; ins < inputs.length; ins++) {
             x[ins] = inputs[ins];
         }
-    }
-    else{
+    } else{
         x[0] = inputs;
     }
 
@@ -401,8 +397,7 @@ function randPull(min, max) {
         if (decision  <  thresh) {
             // alert(x)
             return x;
-        }
-        else{
+        } else{
             done = 0;
         }
     }
@@ -457,9 +452,7 @@ function brentSoln(lo, hi, tol) {
         if (f_a != f_c && f_b != f_c) {
             // (h_i_1)
             s = a * f_b * f_c / (f_a - f_b) / (f_a - f_c)  +  b * f_a * f_c / (f_b - f_a) / (f_b - f_c)  +  c * f_a * f_b / (f_c - f_a) / (f_c - f_b);
-        }
-        // (h_ii)
-        else{
+        } else{ //(h_ii)
             // (h_ii_1)
             s = b - f_b * (b - a) / (f_b - f_a);
         }
@@ -470,9 +463,7 @@ function brentSoln(lo, hi, tol) {
             s = (a + b) / 2;
             // (h_iv_2)
             mflag = 1;
-        }
-        // (h_v)
-        else{
+        } else{ //(h_v)
             // (h_v_1)
             mflag = 0;
         }
@@ -486,8 +477,7 @@ function brentSoln(lo, hi, tol) {
         // (h_x)
         if (f_a * f_s < 0) {
             b = s;
-        }
-        else{
+        } else{
             a = s;
         }
         // (h_xi)
@@ -502,8 +492,7 @@ function brentSoln(lo, hi, tol) {
     // (i)
     if (this.evaluate(b) == 0) {
         return Math.round(b / tolerance) * tolerance;
-    }
-    else{
+    } else{
         return Math.round(s / tolerance) * tolerance;
     }
 
@@ -544,8 +533,7 @@ function biSoln(min, max, tol) {
         if (f_a  >  f_b && f_a  >  f_c) {
             a = c;
             f_a = Math.abs(this.evaluate(a));
-        }
-        else if (f_b  >  f_a && f_b  >  f_c) {
+        } else if (f_b  >  f_a && f_b  >  f_c) {
             b = c;
             f_b = Math.abs(this.evaluate(b));
         }
@@ -573,8 +561,7 @@ function derivative(x, dim, tol, roundoff) {
     if ( !(x instanceof Array)) {
         dtol = ( this.evaluate(x + tolerance) - this.evaluate(x - tolerance)) / (2 * tolerance);
         dtol2 = ( this.evaluate(x + tolerance / 2) - this.evaluate(x - tolerance / 2)) / tolerance;
-    }
-    else{
+    } else{
         Xhi = [];
         Xlo = [];
         Xhi2 = [];
