@@ -191,14 +191,14 @@
 
 
 
-  //-----KStest Method---------------------------------------------
-  //KStest(<target>)
+  //-----ksTest Method---------------------------------------------
+  //ksTest(<target>)
   //  <target> Histo to compare this Histo with in a Kolmogorov-Smirnov test. 
   //Return type: float on success, -999 if histo binning doesn't match.
   
-  document.write('</br></br>/////////////////// .KStest examples //////////////////////////////////</br>');
+  document.write('</br></br>/////////////////// .ksTest examples //////////////////////////////////</br>');
 
-  //KStest performs a Kolmogorov-Smirnov test on this histo and the histo
+  //ksTest performs a Kolmogorov-Smirnov test on this histo and the histo
   //passed to it as an argument, and returns the probability that these
   //histos came from the same parent distribution:
 
@@ -211,7 +211,7 @@
 
   flatHisto1.dumpContents();
   flatHisto2.dumpContents();
-  document.write('</br>flatHisto1 and flatHisto2 come from the same parent with probability = '+flatHisto1.KStest(flatHisto2)+', a high probability.');
+  document.write('</br>flatHisto1 and flatHisto2 come from the same parent with probability = '+flatHisto1.ksTest(flatHisto2)+', a high probability.');
 
   //Now if we compare a histogram that definitely doesn't come from a flat distribution:
 
@@ -219,14 +219,14 @@
   spike.increment(0,10000);
   spike.dumpContents();
 
-  document.write('Probability that flatHisto1 and spike come from the same parent: '+flatHisto1.KStest(spike)+', a very low probability.');
+  document.write('Probability that flatHisto1 and spike come from the same parent: '+flatHisto1.ksTest(spike)+', a very low probability.');
 
   //Recall an important feature of KS matching: it makes weaker statements if there aren't many hits in one of the histograms!
   spike = new Histo('spike',10,0,10);
   spike.increment(0,1);
   spike.dumpContents();
 
-  document.write('Probability that flatHisto1 and spike come from the same parent when spike has only one count: '+flatHisto1.KStest(spike)+', much higher than when we knew more about spike!');
+  document.write('Probability that flatHisto1 and spike come from the same parent when spike has only one count: '+flatHisto1.ksTest(spike)+', much higher than when we knew more about spike!');
   
 
   //-----sample Method---------------------------------------------

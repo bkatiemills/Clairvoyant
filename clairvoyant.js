@@ -15,17 +15,17 @@ function Histo(name, nBins, min, max) {
     }
     this.bins.push({lo: max, weight: 0});
 
-    // initialize member functions
-    this.dumpContents = dumpContents;
-    this.increment = increment;
-    this.integrate = integrate;
-    this.normalize = normalize;
-    this.add = add;
-    this.getMean = getMean;
-    this.getVariance = getVariance;
-    this.getCDF = getCDF;
-    this.KStest = KStest;
-    this.sample = sample;
+    //initialize member functions - jsLint doesn't like this though, use prototypes for now.
+    //this.dumpContents = dumpContents;
+    //this.increment = increment;
+    //this.integrate = integrate;
+    //this.normalize = normalize;
+    //this.add = add;
+    //this.getMean = getMean;
+    //this.getVariance = getVariance;
+    //this.getCDF = getCDF;
+    //this.ksTest = ksTest;
+    //this.sample = sample;
 
 }
 
@@ -48,6 +48,7 @@ function dumpContents() {
 
     return 0;
 }
+Histo.prototype.dumpContents = dumpContents;
 
 // increment the bin in which  < value >  falls by  < amount > ;
 // increments this bin by 1 if no value provided for  < amount > .
@@ -71,7 +72,7 @@ function increment(value, amnt) {
 
     return 0;
 }
-
+Histo.prototype.increment = increment;
 
 
 // integrate from  < min >  to  < max > ;
@@ -126,6 +127,7 @@ function integrate(min, max) {
     }
 
 }
+Histo.prototype.integrate = integrate;
 
 // normalize the histogram to  < factor > ;
 //  < factor >  set to 1 if not provided
@@ -142,6 +144,7 @@ function normalize(fac) {
 
     return 0;
 }
+Histo.prototype.normalize = normalize;
 
 // increment this histo by the corresponding weights in  < otherHisto > , multiplied by  < scale > ;
 //  < scale >  default = 1
@@ -165,6 +168,7 @@ function add(otherHisto, sc1, sc2) {
 
     return sumHisto;
 }
+Histo.prototype.add = add;
 
 
 // returns the mean of the distribution.    bin weight is attributed to the low edge of the bin
@@ -179,6 +183,7 @@ function getMean() {
 
     return weightedSum / totalWeight;
 }
+Histo.prototype.getMean = getMean;
 
 // returns the variance of the distribution.
 function getVariance() {
@@ -195,6 +200,7 @@ function getVariance() {
 
     return meanSquare - mean * mean;
 }
+Histo.prototype.getVariance = getVariance;
 
 // returns the cumulative distribution function of this (normalized) histogram
 function getCDF() {
@@ -210,9 +216,10 @@ function getCDF() {
     return cloneHist;
 
 }
+Histo.prototype.getCDF = getCDF;
 
 // perform a KS match between this histo and  < target >  histo
-function KStest(target) {
+function ksTest(target) {
     var CDF1, CDF2, delta, i, KSstat, weight1, weight2;
 
     if ((this.nBins !=  target.nBins)    ||    (this.min !=  target.min)    || (this.max !=  target.max)) {
@@ -237,8 +244,9 @@ function KStest(target) {
     }
 
     KSstat = Math.sqrt(weight1 * weight2 / (weight1 + weight2)) * delta;
-    return Kolmogorov(KSstat);
+    return kolmogorov(KSstat);
 }
+Histo.prototype.ksTest = ksTest;
 
 function sample(nSamples, source) {
     var nP, p, pull, x;
@@ -255,6 +263,7 @@ function sample(nSamples, source) {
 
     return 0;
 }
+Histo.prototype.sample = sample;
 
 //  ----  - end 1D histo methods --------------------------------------------  -- 
 
@@ -279,15 +288,15 @@ function Func(name, userString, parameters) {
         this.params[0] = 0;    // dummy for no - parameter functions;
     }
 
-    this.evaluate = evaluate;
-    this.getParameters = getParameters;
-    this.setParameters = setParameters;
-    this.getExtremum = getExtremum;
-    this.randPull = randPull;
-    this.brentSoln = brentSoln;
-    this.biSoln = biSoln;
-    this.derivative = derivative;
-    this.gradient = gradient;
+    //this.evaluate = evaluate;
+    //this.getParameters = getParameters;
+    //this.setParameters = setParameters;
+    //this.getExtremum = getExtremum;
+    //this.randPull = randPull;
+    //this.brentSoln = brentSoln;
+    //this.biSoln = biSoln;
+    //this.derivative = derivative;
+    //this.gradient = gradient;
 }
 
 //  ---- - methods for user defined function class ------------------------  -- 
@@ -316,6 +325,7 @@ function evaluate(inputs) {
     return eval(this.userString);
 
 }
+Func.prototype.evaluate = evaluate;
 
 // load the current parameters of the Func into an Array
 function getParameters(pbr) {
@@ -327,6 +337,7 @@ function getParameters(pbr) {
 
     return 0;
 }
+Func.prototype.getParameters = getParameters;
 
 // set the parameters of a Func to some new values
 function setParameters(newParam) {
@@ -338,6 +349,7 @@ function setParameters(newParam) {
 
     return 0;
 }
+Func.prototype.setParameters = setParameters;
 
 // function to find this function's extremum on  < min > .. < max >  by finding the derivative
 // zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies  < tol > .    Returns an array, 
@@ -364,7 +376,7 @@ function getExtremum(min, max, tol) {
 
     return results;
 }
-
+Func.prototype.getExtremum = getExtremum;
 
 
 
@@ -401,12 +413,13 @@ function randPull(min, max) {
     }
 
 }
+Func.prototype.randPull = randPull;
 
 // implementation of Brent's Algo for finding the zero of a 1D function
 // between  < hi >  and  < lo > .    Letters label the steps in the wikipedia
 // factoring of the algorithm; step (a) is the function call itself. 
 function brentSoln(lo, hi, tol) {
-    var a, answer, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
+    var a, answer, b, buffer, c, d, f_a, f_b, f_c, f_s, initHi, initLo, loops, mflag, s, tolerance;
 
     tolerance = tol || 0.000001;
 
@@ -497,11 +510,12 @@ function brentSoln(lo, hi, tol) {
     return answer;
 
 }
+Func.prototype.brentSoln = brentSoln;
 
 // Simple grid search  +  bisection method for finding a function zero in the range  < min > .. < max >  to tolerance  < tol > .
 // This is SLOW, and should only be called to help brentSoln recover when the user fails to bracket a unique zero.
 function biSoln(min, max, tol) {
-    var a, b, c, f_a, f_b, f_c, gridMin, gridS, gridSize, gridSteps, here, high, low, lowestPoint, stepSize, tolerance;
+    var a, b, c, f_a, f_b, f_c, gridMin, gridS, gridSteps, here, high, low, lowestPoint, stepSize, tolerance;
 
     // grid search to find some zero, very slow
     gridSteps = 1000;
@@ -544,13 +558,14 @@ function biSoln(min, max, tol) {
     return Math.round(c / tolerance) * tolerance;
 
 }
+Func.prototype.biSoln = biSoln;
 
 // Richardson's extrapolation for derivative computation in 1D, evaluated at  < x >  in
 // dimension  < dim >  (default 0) to tolerance  < tol >  (default 1 / 10^6).     < roundoff >  flag
 // chooses whether or not to round the result to tolerance (default yes = 1); needs to
 // be 0 for maxima finding so tolerances don't compound.
 function derivative(x, dim, tol, roundoff) {
-    var D, dimension, doRound, dtol1, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
+    var D, dimension, doRound, dtol, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
 
     dimension = dim || 0;
 
@@ -593,6 +608,7 @@ function derivative(x, dim, tol, roundoff) {
     }
 
 }
+Func.prototype.derivative = derivative;
 
 function gradient(x) {
     var dim, dimension, grad;
@@ -607,6 +623,7 @@ function gradient(x) {
     return grad;
 
 }
+Func.prototype.gradient = gradient;
 
 
 
@@ -627,9 +644,9 @@ function Vector(name, elements) {
         this.dim = elements.length;
     }
 
-    this.setVal = setVal;
-    this.dot = dot;
-    this.getLength = getLength;
+    //this.setVal = setVal;
+    //this.dot = dot;
+    //this.getLength = getLength;
 
 }
 
@@ -647,6 +664,7 @@ function setVal(value, position) {
         return 0;
     }
 }
+Vector.prototype.setVal = setVal;
 
 function dot(vec, metric) {
     var dim, left, sum;
@@ -682,6 +700,7 @@ function dot(vec, metric) {
     }
 
 }
+Vector.prototype.dot = dot;
 
 function getLength(metric) {
     var length;
@@ -698,6 +717,7 @@ function getLength(metric) {
 
     return length;
 }
+Vector.prototype.getLength = getLength;
 
 //  ----  - end Vector Class ------------------------------------------------  -- 
 
@@ -747,16 +767,16 @@ function Matrix(name, rows, columns, preDef) {
 
     }
 
-    this.dump = dump;
-    this.mtxAdd = mtxAdd;
-    this.mtxMulti = mtxMulti;
-    this.getDeterminant = getDeterminant;
-    this.getMinor = getMinor;
-    this.getCofactor = getCofactor;
-    this.getTranspose = getTranspose;
-    this.getAdjugate = getAdjugate;
-    this.mtxScale = mtxScale;
-    this.getInverse = getInverse;
+    //this.dump = dump;
+    //this.mtxAdd = mtxAdd;
+    //this.mtxMulti = mtxMulti;
+    //this.getDeterminant = getDeterminant;
+    //this.getMinor = getMinor;
+    //this.getCofactor = getCofactor;
+    //this.getTranspose = getTranspose;
+    //this.getAdjugate = getAdjugate;
+    //this.mtxScale = mtxScale;
+    //this.getInverse = getInverse;
 
 }
 
@@ -774,7 +794,7 @@ function dump() {
 
     return 0;
 }
-
+Matrix.prototype.dump = dump;
 
 // return sum of  < matrix >  with this matrix.
 function mtxAdd(matrix) {
@@ -804,6 +824,7 @@ function mtxAdd(matrix) {
     return result;
 
 }
+Matrix.prototype.mtxAdd = mtxAdd;
 
 // places  < object >  on side  < side >  of this matrix, and multiplies
 function mtxMulti(object, side) {
@@ -901,6 +922,7 @@ function mtxMulti(object, side) {
     }
 
 }
+Matrix.prototype.mtxMulti = mtxMulti;
 
 // Doolittle algo to extract determinant for this matrix.
 function getDeterminant() {
@@ -939,6 +961,7 @@ function getDeterminant() {
     return detA * detL;
 
 }
+Matrix.prototype.getDeterminant = getDeterminant;
 
 // function to calculate the minor matrix of this matrix
 function getMinor() {
@@ -977,6 +1000,7 @@ function getMinor() {
     return mtxMinor;
 
 }
+Matrix.prototype.getMinor = getMinor;
 
 // function to calculate cofactor matrix of this matrix
 function getCofactor() {
@@ -994,6 +1018,7 @@ function getCofactor() {
     return cofac;
 
 }
+Matrix.prototype.getCofactor = getCofactor;
 
 // function to calculate the transpose of this matrix
 function getTranspose() {
@@ -1010,6 +1035,7 @@ function getTranspose() {
     return trans;
 
 }
+Matrix.prototype.getTranspose = getTranspose;
 
 // function to return adjugate of matrix
 function getAdjugate() {
@@ -1018,6 +1044,7 @@ function getAdjugate() {
     cof = this.getCofactor();
     return cof.getTranspose();
 }
+Matrix.prototype.getAdjugate = getAdjugate;
 
 // function to scale matrix by  < scale > 
 function mtxScale(scale) {
@@ -1033,6 +1060,7 @@ function mtxScale(scale) {
 
     return scaled;
 }
+Matrix.prototype.mtxScale = mtxScale;
 
 // function to get the inverse of this matrix
 function getInverse() {
@@ -1044,6 +1072,7 @@ function getInverse() {
     return adjug.mtxScale(1 / deter);
 
 }
+Matrix.prototype.getInverse = getInverse;
 
 
 //  ----  - end Matrix Class ------------------------------------------------  -- 
@@ -1052,8 +1081,8 @@ function getInverse() {
 
 //  ----  - Statistical Distributions ----------------------------------------  - 
 
-function Kolmogorov(z) {
-    var j;
+function kolmogorov(z) {
+    var j, Kprob;
 
     Kprob = 2 * Math.exp(-2 * z * z);    // start with first term (ie j = 1)
 
@@ -1069,6 +1098,6 @@ function Kolmogorov(z) {
 
 }
 
-function Gaussian(mu, sigma, x) {
+function gaussian(mu, sigma, x) {
     return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
 }
