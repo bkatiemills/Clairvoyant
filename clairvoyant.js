@@ -1,19 +1,19 @@
-//define 1 - D histogram class ---------------------------------------------------------------- 
+// define 1 - D histogram class ---------------------------------------------------------------- 
 function Histo(name, nBins, min, max) {
     this.name = name;
     this.nBins = nBins;
     this.min = min;
     this.max = max;
 
-    //set up array of histogram bins
-    this.binSize = (max - min)/nBins;
+    // set up array of histogram bins
+    this.binSize = (max - min) / nBins;
     this.bins = new Array();
     for(var i=0; i<nBins; i++) {
         this.bins.push({lo: this.min + i*this.binSize, weight: 0});
     }
     this.bins.push({lo: max, weight: 0});
 
-    //initialize member functions
+    // initialize member functions
     this.dumpContents = dumpContents;
     this.increment = increment;
     this.integrate = integrate;
@@ -27,10 +27,10 @@ function Histo(name, nBins, min, max) {
 
 }
 
-//function definitions: --------------------------------------------------------------------  - 
+// function definitions: --------------------------------------------------------------------  - 
 
 
-//write all contents of histogram as <lo edge> : <weight>
+// write all contents of histogram as <lo edge> : <weight>
 function dumpContents() {
     document.write('</br>');
     document.write(this.name);
@@ -45,8 +45,8 @@ function dumpContents() {
     return 0;
 }
 
-//increment the bin in which <value> falls by <amount>;
-//increments this bin by 1 if no value provided for <amount>.
+// increment the bin in which <value> falls by <amount>;
+// increments this bin by 1 if no value provided for <amount>.
 function increment(value, amount) {
     if(arguments.length == 1) {
         amount = 1;
@@ -63,8 +63,6 @@ function increment(value, amount) {
         }
     }
 
-    //document.write(index)
-    //document.write('</br>')
     this.bins[index].weight += amount;
 
     return 0;
@@ -72,12 +70,12 @@ function increment(value, amount) {
 
 
 
-//integrate from <min> to <max>;
-//returns integral of whole histo if no args provided;
-//if bound is in the middle of a bin, treats weight as distributed flat across the bin
+// integrate from <min> to <max>;
+// returns integral of whole histo if no args provided;
+// if bound is in the middle of a bin, treats weight as distributed flat across the bin
 function integrate(min, max) {
 
-    //return integral of whole histo if no arguments provided
+    // return integral of whole histo if no arguments provided
     if(arguments.length==0) {
         var total = 0;
         for(var i=0; i<this.bins.length; i++) {
@@ -86,7 +84,7 @@ function integrate(min, max) {
         return total;
     }
 
-    //otherwise integrate from min to max:
+    // otherwise integrate from min to max:
     if(arguments.length==2) {
 
         if(min < this.min || max > this.max) {
@@ -106,14 +104,14 @@ function integrate(min, max) {
         }
 
         var total = 0;
-        //integrate all bins in range except for fractionally included ones:
+        // integrate all bins in range except for fractionally included ones:
         for(i=minBin+1; i<maxBin; i++) {
             total += this.bins[i].weight;
         }
-        //treat weight as distributed evenly across a bin for fractionally included first bin
+        // treat weight as distributed evenly across a bin for fractionally included first bin
         total += this.bins[minBin].weight*(this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
 
-        //similarly for the last bin
+        // similarly for the last bin
         if(minBin!=maxBin) {
             total += this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
         }
@@ -124,8 +122,8 @@ function integrate(min, max) {
 
 }
 
-//normalize the histogram to <factor>;
-//<factor> set to 1 if not provided
+// normalize the histogram to <factor>;
+// <factor> set to 1 if not provided
 function normalize(factor) {
     if(arguments.length==0) {
         factor = 1;
@@ -134,14 +132,14 @@ function normalize(factor) {
     var total = this.integrate();
 
     for(var i=0; i<this.bins.length; i++) {
-        this.bins[i].weight = factor*this.bins[i].weight/total;
+        this.bins[i].weight = factor*this.bins[i].weight / total;
     }
     
     return 0;
 }
 
-//increment this histo by the corresponding weights in <otherHisto>, multiplied by <scale>;
-//<scale> default = 1
+// increment this histo by the corresponding weights in <otherHisto>, multiplied by <scale>;
+// <scale> default = 1
 function add(otherHisto, scale1, scale2) {
 
     if(this.nBins != otherHisto.nBins || this.min != otherHisto.min || this.max != otherHisto.max) {
@@ -165,7 +163,7 @@ function add(otherHisto, scale1, scale2) {
 }
 
 
-//returns the mean of the distribution.    bin weight is attributed to the low edge of the bin
+// returns the mean of the distribution.    bin weight is attributed to the low edge of the bin
 function getMean() {
     var totalWeight = this.integrate();
     var weightedSum = 0;
@@ -176,7 +174,7 @@ function getMean() {
     return weightedSum / totalWeight;
 }
 
-//returns the variance of the distribution.
+// returns the variance of the distribution.
 function getVariance() {
 
     var totalWeight = this.integrate();
@@ -191,7 +189,7 @@ function getVariance() {
     return meanSquare - mean*mean;
 }
 
-//returns the cumulative distribution function of this (normalized) histogram
+// returns the cumulative distribution function of this (normalized) histogram
 function getCDF() {
 
     var cloneHist = this;
@@ -205,7 +203,7 @@ function getCDF() {
         
 }
 
-//perform a KS match between this histo and <target> histo
+// perform a KS match between this histo and <target> histo
 function KStest(target) {
     if( (this.nBins != target.nBins)    ||    (this.min != target.min)    || (this.max != target.max) ) {
         document.write('</br>');
@@ -228,7 +226,7 @@ function KStest(target) {
         }
     }
 
-    KSstat = Math.sqrt(weight1*weight2/(weight1+weight2))*delta;
+    KSstat = Math.sqrt(weight1*weight2 / (weight1+weight2))*delta;
 
     return Kolmogorov(KSstat);
 }
@@ -248,14 +246,14 @@ function sample(nSamples,source) {
     return 0;
 }
 
-// ----  - end 1D histo methods --------------------------------------------  -- 
+//  ----  - end 1D histo methods --------------------------------------------  -- 
 
-// ----  - user defined function class ------------------------------------  --  - 
-//USAGE: userString must be some evaluate - able expression in n dimensions, where
-//the coordinates are represented as x[0], x[1], ..., x[n - 1], and m parameters are 
-//represented similarly as par[0], par[1], ..., par[m - 1].
-//Currently <name> needs to be the same as the var name of the object itself in order for getExtremum
-//to work, might fix this in future.
+//  ----  - user defined function class ------------------------------------  --  - 
+// USAGE: userString must be some evaluate - able expression in n dimensions, where
+// the coordinates are represented as x[0], x[1], ..., x[n - 1], and m parameters are 
+// represented similarly as par[0], par[1], ..., par[m - 1].
+// Currently <name> needs to be the same as the var name of the object itself in order for getExtremum
+// to work, might fix this in future.
 function Func(name, userString, parameters) {
     this.name = name;
     this.userString = userString;
@@ -270,7 +268,7 @@ function Func(name, userString, parameters) {
         }
     }
     else{
-        this.params[0] = 0    //dummy for no - parameter functions;
+        this.params[0] = 0;    // dummy for no - parameter functions;
     }
 
     this.evaluate = evaluate;
@@ -284,11 +282,11 @@ function Func(name, userString, parameters) {
     this.gradient = gradient;
 }
 
-// ---- - methods for user defined function class ------------------------  -- 
+//  ---- - methods for user defined function class ------------------------  -- 
 
-//evaluates the function at the coordinate <inputs> in phase space, using the
-//parameters set on creation of the function or on a call to this.setParameters
-//<inputs> may be either an Array or a single number
+// evaluates the function at the coordinate <inputs> in phase space, using the
+// parameters set on creation of the function or on a call to this.setParameters
+// <inputs> may be either an Array or a single number
 function evaluate(inputs) {
     var x = new Array();
     
@@ -310,7 +308,7 @@ function evaluate(inputs) {
 
 }
 
-//load the current parameters of the Func into an Array
+// load the current parameters of the Func into an Array
 function getParameters(pbr) {
 
     for(var getP=0; getP<this.params.length; getP++) {
@@ -320,7 +318,7 @@ function getParameters(pbr) {
     return 0;
 }
 
-//set the parameters of a Func to some new values
+// set the parameters of a Func to some new values
 function setParameters(newParam) {
 
     for(var newP=0; newP<newParam.length; newP++) {
@@ -330,9 +328,9 @@ function setParameters(newParam) {
     return 0;
 }
 
-//function to find this function's extremum on <min>..<max> by finding the derivative
-//zeroes.    Tolerance defaults to 1/10^6 unless user specifies <tol>.    Returns an array,
-//first element = coordinate of extrema, second element is 0 for minima and 1 for maxima. 
+// function to find this function's extremum on <min>..<max> by finding the derivative
+// zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies <tol>.    Returns an array,
+// first element = coordinate of extrema, second element is 0 for minima and 1 for maxima. 
 function getExtremum(min, max, tol) {
 
     var tolerance = 0.000001;
@@ -347,7 +345,7 @@ function getExtremum(min, max, tol) {
     var concavity = ddx.derivative(extrema);
 
     var results = new Array();
-    results[0] = Math.round(extrema/tolerance)*tolerance;
+    results[0] = Math.round(extrema / tolerance)*tolerance;
     if(concavity>0) {
         results[1] = 0;
     }
@@ -361,15 +359,15 @@ function getExtremum(min, max, tol) {
 
 
 
-//return a random pull from a 1D function, between <min> and <max>.    
-//Function must be non - negative and pole - free across the requested 
-//range for this to make sense. 
+// return a random pull from a 1D function, between <min> and <max>.    
+// Function must be non - negative and pole - free across the requested 
+// range for this to make sense. 
 function randPull(min, max) {
  
     var done = 0;
 
-    //find the highest point of the function in range: grid search to find global maximum,
-    //then getExtremum to zero in on it.
+    // find the highest point of the function in range: grid search to find global maximum,
+    // then getExtremum to zero in on it.
     var extreme = new Array();
     extreme = this.getExtremum(min,max);
 
@@ -378,16 +376,16 @@ function randPull(min, max) {
     var decision = 0;
 
     while(done==0) {
-        //choose a point in range
+        // choose a point in range
         x = min + (max - min)*Math.random();
 
-        //find normalized height of the function at x
+        // find normalized height of the function at x
         thresh = this.evaluate(x) / extreme[0];
 
-        //decide if we should keep the pull
+        // decide if we should keep the pull
         decision = Math.random();
         if(decision < thresh) {
-            //alert(x)
+            // alert(x)
             return x;
         }
         else{
@@ -397,9 +395,9 @@ function randPull(min, max) {
 
 }
 
-//implementation of Brent's Algo for finding the zero of a 1D function
-//between <hi> and <lo>.    Letters label the steps in the wikipedia
-//factoring of the algorithm; step (a) is the function call itself. 
+// implementation of Brent's Algo for finding the zero of a 1D function
+// between <hi> and <lo>.    Letters label the steps in the wikipedia
+// factoring of the algorithm; step (a) is the function call itself. 
 function brentSoln(lo, hi, tol) {
 
     var tolerance = 0.000001;
@@ -407,32 +405,32 @@ function brentSoln(lo, hi, tol) {
         tolerance = tol;
     }
 
-    //(b)
+    // (b)
     var initHi = this.evaluate(hi);
-    //(c)
+    // (c)
     var initLo = this.evaluate(lo);
-    //(d)
+    // (d)
     if( (initHi*initLo>=0) ) {
         alert('Range provided does not bracket a unique zero, attempting to recover...');
         return this.biSoln(lo, hi);
     }
-    //(e)
+    // (e)
     var a = lo;
     var b = hi;
     if(Math.abs(initLo) < Math.abs(initHi)) {
         a = hi;
         b = lo;
     }
-    //(f)
+    // (f)
     var c = a;
-    //(g)
+    // (g)
     var mflag = 1;
 
-    //(h)
+    // (h)
     var f_a = this.evaluate(a);
     var f_b = this.evaluate(b);
     var f_c = this.evaluate(c);
-    var s = b - f_b*(b - a)/(f_b - f_a);
+    var s = b - f_b*(b - a) / (f_b - f_a);
     var f_s = this.evaluate(s);
     var d = 0;
     var buffer = 0;
@@ -443,44 +441,44 @@ function brentSoln(lo, hi, tol) {
         var f_b = this.evaluate(b);
         var f_c = this.evaluate(c);
 
-        //(h_i)
+        // (h_i)
         if(f_a!=f_c && f_b!=f_c) {
-            //(h_i_1)
-            s = a*f_b*f_c/(f_a - f_b)/(f_a - f_c) + b*f_a*f_c/(f_b - f_a)/(f_b - f_c) + c*f_a*f_b/(f_c - f_a)/(f_c - f_b);
+            // (h_i_1)
+            s = a*f_b*f_c / (f_a - f_b) / (f_a - f_c) + b*f_a*f_c / (f_b - f_a) / (f_b - f_c) + c*f_a*f_b / (f_c - f_a) / (f_c - f_b);
         }
-        //(h_ii)
+        // (h_ii)
         else{
-            //(h_ii_1)
-            s = b - f_b*(b - a)/(f_b - f_a);
+            // (h_ii_1)
+            s = b - f_b*(b - a) / (f_b - f_a);
         }
-        //(h_iii)
-        //(h_iv)
-        if( ((s>b && s>(3*a+b)/4)||(s<b && s<(3*a+b)/4)) || (mflag==1 && Math.abs(s - b) >= Math.abs(b - c)/2) || (mflag==0 && Math.abs(s - b) >= Math.abs(c - d)/2) || (mflag==1 && Math.abs(b - c)<tolerance) || (mflag==0 && Math.abs(c - d)<tolerance) ) {
-            //(h_iv_1)
-            s = (a+b)/2;
-            //(h_iv_2)
+        // (h_iii)
+        // (h_iv)
+        if( ((s>b && s>(3*a+b) / 4)||(s<b && s<(3*a+b) / 4)) || (mflag==1 && Math.abs(s - b) >= Math.abs(b - c) / 2) || (mflag==0 && Math.abs(s - b) >= Math.abs(c - d) / 2) || (mflag==1 && Math.abs(b - c)<tolerance) || (mflag==0 && Math.abs(c - d)<tolerance) ) {
+            // (h_iv_1)
+            s = (a+b) / 2;
+            // (h_iv_2)
             mflag = 1;
         }
-        //(h_v)
+        // (h_v)
         else{
-            //(h_v_1)
+            // (h_v_1)
             mflag = 0;
         }
-        //(h_vi)
-        //(h_vii)
+        // (h_vi)
+        // (h_vii)
         f_s = this.evaluate(s);
-        //(h_viii)        
+        // (h_viii)        
         d = c;
-        //(h_ix)
+        // (h_ix)
         c = b;
-        //(h_x)
+        // (h_x)
         if(f_a*f_s<0) {
             b = s;
         }
         else{
             a = s;
         }
-        //(h_xi)
+        // (h_xi)
         if( Math.abs(this.evaluate(a)) < Math.abs(this.evaluate(b)) ) {
             buffer = a;
             a = b;
@@ -489,23 +487,23 @@ function brentSoln(lo, hi, tol) {
     }
 
 
-    //(i)
+    // (i)
     if(this.evaluate(b)==0) {
-        return Math.round(b/tolerance)*tolerance;
+        return Math.round(b / tolerance)*tolerance;
     }
     else{
-        return Math.round(s/tolerance)*tolerance;
+        return Math.round(s / tolerance)*tolerance;
     }
 
 }
 
-//Simple grid search + bisection method for finding a function zero in the range <min>..<max> to tolerance <tol>.
-//This is SLOW, and should only be called to help brentSoln recover when the user fails to bracket a unique zero.
+// Simple grid search + bisection method for finding a function zero in the range <min>..<max> to tolerance <tol>.
+// This is SLOW, and should only be called to help brentSoln recover when the user fails to bracket a unique zero.
 function biSoln(min, max, tol) {
 
-    //grid search to find some zero, very slow
+    // grid search to find some zero, very slow
     var gridSteps = 1000;
-    var stepSize = (max - min)/gridSteps;
+    var stepSize = (max - min) / gridSteps;
     var here = min;
     var gridMin = Math.abs(this.evaluate(min));
     var lowestPoint = here;
@@ -529,7 +527,7 @@ function biSoln(min, max, tol) {
     var b = high;
     var f_a = Math.abs(this.evaluate(a));
     var f_b = Math.abs(this.evaluate(b));
-    var c = (a+b)/2;
+    var c = (a+b) / 2;
     var f_c = Math.abs(this.evaluate(c));
 
     while(Math.abs(a - b) > tolerance) {
@@ -541,18 +539,18 @@ function biSoln(min, max, tol) {
             b = c;
             f_b = Math.abs(this.evaluate(b));
         }
-        c = (a+b)/2;
+        c = (a+b) / 2;
         f_c = Math.abs(this.evaluate(c));
     }
 
-    return Math.round(c/tolerance)*tolerance;
+    return Math.round(c / tolerance)*tolerance;
 
 }
 
-//Richardson's extrapolation for derivative computation in 1D, evaluated at <x> in
-//dimension <dim> (default 0) to tolerance <tol> (default 1/10^6).    <roundoff> flag
-//chooses whether or not to round the result to tolerance (default yes=1); needs to
-//be 0 for maxima finding so tolerances don't compound.
+// Richardson's extrapolation for derivative computation in 1D, evaluated at <x> in
+// dimension <dim> (default 0) to tolerance <tol> (default 1 / 10^6).    <roundoff> flag
+// chooses whether or not to round the result to tolerance (default yes=1); needs to
+// be 0 for maxima finding so tolerances don't compound.
 function derivative(x, dim, tol, roundoff) {
 
     var dimension = 0;
@@ -572,7 +570,7 @@ function derivative(x, dim, tol, roundoff) {
 
     if( !(x instanceof Array) ) {
         var dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2*tolerance);
-        var dtol2 = ( this.evaluate(x+tolerance/2) - this.evaluate(x - tolerance/2) ) / tolerance;
+        var dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
     }
     else{
         var Xhi = new Array();
@@ -588,8 +586,8 @@ function derivative(x, dim, tol, roundoff) {
         }
         Xhi[dimension] += tolerance;
         Xlo[dimension]  -= tolerance;
-        Xhi2[dimension] += tolerance/2;
-        Xlo2[dimension]  -= tolerance/2;
+        Xhi2[dimension] += tolerance / 2;
+        Xlo2[dimension]  -= tolerance / 2;
 
         var dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2*tolerance);
         var dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
@@ -608,10 +606,10 @@ function derivative(x, dim, tol, roundoff) {
 }
 
 function gradient(x) {
-/*
+ /*
     var dimension = direction.length
 
-    //normalize direction vector
+    // normalize direction vector
     var length = 0
     for(var dim=0; dim<dimension; dim++) {
         length += direction[dim]*direction[dim]
@@ -620,7 +618,7 @@ function gradient(x) {
     for(dim=0; dim<dimension; dim++) {
         direction[dim] = direction[dim] / length
     }
-*/
+*/ 
 
     var dimension = x.length;
     var grad = new Array();
@@ -635,10 +633,10 @@ function gradient(x) {
 
 
 
-// ----  - end user defined function class --------------------------------  --  - 
+//  ----  - end user defined function class --------------------------------  --  - 
 
 
-// ----  - Vector Class ----------------------------------------------------  -- 
+//  ----  - Vector Class ----------------------------------------------------  -- 
 
 function Vector(name, elements) {
     this.name = name;
@@ -722,10 +720,10 @@ function getLength(metric) {
     return length;
 }
 
-// ----  - end Vector Class ------------------------------------------------  -- 
+//  ----  - end Vector Class ------------------------------------------------  -- 
 
 
-// ----  - Matrix Class ----------------------------------------------------  -- 
+//  ----  - Matrix Class ----------------------------------------------------  -- 
 
 function Matrix(name, rows, columns, preDef) {
     this.name = name;
@@ -733,7 +731,7 @@ function Matrix(name, rows, columns, preDef) {
     this.cols = columns; 
     this.elements = new Array(rows);
 
-    //start with all entries = 0
+    // start with all entries = 0
     for(var row=0; row<this.rows; row++) {
         this.elements[row] = new Array(this.cols);
         for(var col=0; col<this.cols; col++) {
@@ -781,7 +779,7 @@ function Matrix(name, rows, columns, preDef) {
 
 }
 
-//writes out the contents of this matrix.
+// writes out the contents of this matrix.
 function dump() {
     document.write('</br>');
     for(var row=0; row<this.rows; row++) {
@@ -795,7 +793,7 @@ function dump() {
 }
 
 
-//return sum of <matrix> with this matrix.
+// return sum of <matrix> with this matrix.
 function mtxAdd(matrix) {
 
     if( !(matrix instanceof Matrix) ) {
@@ -823,7 +821,7 @@ function mtxAdd(matrix) {
 
 }
 
-//places <object> on side <side> of this matrix, and multiplies
+// places <object> on side <side> of this matrix, and multiplies
 function mtxMulti(object, side) {
 
     if(side != 'left' && side != 'right') {
@@ -919,7 +917,7 @@ function mtxMulti(object, side) {
 
 }
 
-//Doolittle algo to extract determinant for this matrix.
+// Doolittle algo to extract determinant for this matrix.
 function getDeterminant() {
 
     if(this.rows != this.cols) {
@@ -927,21 +925,21 @@ function getDeterminant() {
         return -999;
     }    
 
-    //zeroth iteration:
+    // zeroth iteration:
     var A = this;
     var L = new Matrix('L', this.rows, this.cols, 'identity');
     var l = new Matrix('l',this.rows,this.cols);
 
     for(var iter=1;iter<this.rows;iter++) {
 
-        //construct this iteration's lower triangular matrix:
+        // construct this iteration's lower triangular matrix:
         l = new Matrix('l',this.rows,this.cols,'identity');
         for(var row=iter; row<this.rows; row++) {
             l.elements[row][iter - 1] = -1*A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
             L.elements[row][iter - 1] = -1*l.elements[row][iter - 1];
         }
 
-        //update A:
+        // update A:
         A = A.mtxMulti(l, 'left');
     }
 
@@ -956,7 +954,7 @@ function getDeterminant() {
 
 }
 
-//function to calculate the minor matrix of this matrix
+// function to calculate the minor matrix of this matrix
 function getMinor() {
 
     var subMtx = new Matrix('subMtx',this.rows - 1,this.cols - 1);
@@ -993,7 +991,7 @@ function getMinor() {
 
 }
 
-//function to calculate cofactor matrix of this matrix
+// function to calculate cofactor matrix of this matrix
 function getCofactor() {
  
     var minor = this.getMinor();
@@ -1010,7 +1008,7 @@ function getCofactor() {
 
 }
 
-//function to calculate the transpose of this matrix
+// function to calculate the transpose of this matrix
 function getTranspose() {
 
     var trans = new Matrix('trans',this.cols,this.rows);
@@ -1025,13 +1023,13 @@ function getTranspose() {
 
 }
 
-//function to return adjugate of matrix
+// function to return adjugate of matrix
 function getAdjugate() {
     var cof = this.getCofactor();
     return cof.getTranspose();
 }
 
-//function to scale matrix by <scale>
+// function to scale matrix by <scale>
 function mtxScale(scale) {
 
     var scaled = new Matrix('scaled',this.rows,this.cols);
@@ -1045,28 +1043,28 @@ function mtxScale(scale) {
     return scaled;
 }
 
-//function to get the inverse of this matrix
+// function to get the inverse of this matrix
 function getInverse() {
 
     var deter = this.getDeterminant();
     var adjug = this.getAdjugate();
 
-    return adjug.mtxScale(1/deter);
+    return adjug.mtxScale(1 / deter);
 
 }
 
 
-// ----  - end Matrix Class ------------------------------------------------  -- 
+//  ----  - end Matrix Class ------------------------------------------------  -- 
 
 
 
-// ----  - Statistical Distributions ----------------------------------------  - 
+//  ----  - Statistical Distributions ----------------------------------------  - 
 
 function Kolmogorov(z) {
 
-    Kprob = 2*Math.exp( - 2*z*z);    //start with first term (ie j=1)
+    Kprob = 2*Math.exp( - 2*z*z);    // start with first term (ie j=1)
 
-    //keep addting terms on to fp precision
+    // keep addting terms on to fp precision
     var j = 2;
     while(2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z)+Kprob != Kprob && j<1000000) {
         Kprob +=2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z);
@@ -1079,7 +1077,7 @@ function Kolmogorov(z) {
 }
 
 function Gaussian(mu, sigma, x) {
-    return 1/sigma/Math.sqrt(2*3.14159265358979)*Math.exp( - 0.5*Math.pow((x - mu)/sigma,2));
+    return 1 / sigma / Math.sqrt(2*3.14159265358979)*Math.exp( - 0.5*Math.pow((x - mu) / sigma,2));
 }
 
 
