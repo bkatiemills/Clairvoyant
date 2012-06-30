@@ -710,11 +710,11 @@ function Matrix(name, rows, columns, preDef) {
     this.name = name;
     this.rows = rows;
     this.cols = columns;
-    this.elements = new Array(rows);
+    this.elements = [];
 
     // start with all entries = 0
     for (row = 0; row < this.rows; row++) {
-        this.elements[row] = new Array(this.cols);
+        this.elements[row] = [];
         for (col = 0; col < this.cols; col++) {
             this.elements[row][col] = 0;
         }
