@@ -7,7 +7,7 @@ function Histo(name, nBins, min, max) {
 
     // set up array of histogram bins
     this.binSize = (max - min) / nBins;
-    this.bins = new Array();
+    this.bins = [];
     for(var i=0; i<nBins; i++) {
         this.bins.push({lo: this.min + i*this.binSize, weight: 0});
     }
@@ -233,8 +233,8 @@ function KStest(target) {
 
 function sample(nSamples,source) {
 
-    var x = new Array();
-    var p = new Array();
+    var x = [];
+    var p = [];
     for(var nP=0; nP<source.params.length; nP++) {
         p[nP] = source.params[nP];
     }
@@ -288,7 +288,7 @@ function Func(name, userString, parameters) {
 // parameters set on creation of the function or on a call to this.setParameters
 // <inputs> may be either an Array or a single number
 function evaluate(inputs) {
-    var x = new Array();
+    var x = [];
     
     if(inputs instanceof Array) {
         for(var ins=0; ins<inputs.length; ins++) {
@@ -299,7 +299,7 @@ function evaluate(inputs) {
         x[0] = inputs;
     }
 
-    var par = new Array();
+    var par = [];
     for(ins=0; ins<this.params.length; ins++) {
             par[ins] = this.params[ins];
     }
@@ -344,7 +344,7 @@ function getExtremum(min, max, tol) {
     var extrema = ddx.brentSoln(min,max,tolerance);
     var concavity = ddx.derivative(extrema);
 
-    var results = new Array();
+    var results = [];
     results[0] = Math.round(extrema / tolerance)*tolerance;
     if(concavity>0) {
         results[1] = 0;
@@ -368,7 +368,7 @@ function randPull(min, max) {
 
     // find the highest point of the function in range: grid search to find global maximum,
     // then getExtremum to zero in on it.
-    var extreme = new Array();
+    var extreme = [];
     extreme = this.getExtremum(min,max);
 
     var x = 0;
@@ -573,10 +573,10 @@ function derivative(x, dim, tol, roundoff) {
         var dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
     }
     else{
-        var Xhi = new Array();
-        var Xlo = new Array();
-        var Xhi2 = new Array();
-        var Xlo2 = new Array();
+        var Xhi = [];
+        var Xlo = [];
+        var Xhi2 = [];
+        var Xlo2 = [];
 
         for(var vary=0; vary<x.length; vary++) {
             Xhi[vary] = x[vary];
@@ -621,7 +621,7 @@ function gradient(x) {
 */ 
 
     var dimension = x.length;
-    var grad = new Array();
+    var grad = [];
 
     for(var dim=0; dim<dimension; dim++) {
         grad[dim] = this.derivative(x,dim); //* direction[dim]
