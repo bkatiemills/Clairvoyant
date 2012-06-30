@@ -524,14 +524,15 @@ function brentSoln(lo, hi, tol) {
 // Simple grid search + bisection method for finding a function zero in the range <min>..<max> to tolerance <tol>.
 // This is SLOW, and should only be called to help brentSoln recover when the user fails to bracket a unique zero.
 function biSoln(min, max, tol) {
+    var a, b, c, f_a, f_b, f_c, gridMin, gridS, gridSize, gridSteps, here, high, low, lowestPoint, stepSize, tolerance;
 
     // grid search to find some zero, very slow
-    var gridSteps = 1000;
-    var stepSize = (max - min) / gridSteps;
-    var here = min;
-    var gridMin = Math.abs(this.evaluate(min));
-    var lowestPoint = here;
-    for (var gridS=0; gridS<gridSteps; gridS++) {
+    gridSteps = 1000;
+    stepSize = (max - min) / gridSteps;
+    here = min;
+    gridMin = Math.abs(this.evaluate(min));
+    lowestPoint = here;
+    for (gridS=0; gridS<gridSteps; gridS++) {
         if( Math.abs(this.evaluate(here)) < gridMin ) {
             lowestPoint = here;
             gridMin = Math.abs(this.evaluate(here));
@@ -539,20 +540,20 @@ function biSoln(min, max, tol) {
         here += stepSize;
     }
 
-    var low = lowestPoint - stepSize;
-    var high = lowestPoint + stepSize;
+    low = lowestPoint - stepSize;
+    high = lowestPoint + stepSize;
 
-    var tolerance = 0.000001;
+    tolerance = 0.000001;
     if(arguments.length == 3) {
         tolerance = tol;
     }
 
-    var a = low;
-    var b = high;
-    var f_a = Math.abs(this.evaluate(a));
-    var f_b = Math.abs(this.evaluate(b));
-    var c = (a+b) / 2;
-    var f_c = Math.abs(this.evaluate(c));
+    a = low;
+    b = high;
+    f_a = Math.abs(this.evaluate(a));
+    f_b = Math.abs(this.evaluate(b));
+    c = (a+b) / 2;
+    f_c = Math.abs(this.evaluate(c));
 
     while(Math.abs(a - b) > tolerance) {
         if(f_a > f_b && f_a > f_c) {
@@ -576,33 +577,34 @@ function biSoln(min, max, tol) {
 // chooses whether or not to round the result to tolerance (default yes=1); needs to
 // be 0 for maxima finding so tolerances don't compound.
 function derivative(x, dim, tol, roundoff) {
+    var D, dimension, doRound, dtol1, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
 
-    var dimension = 0;
+    dimension = 0;
     if(arguments.length==2) {
         dimension = dim;
     }
 
-    var tolerance = 0.000001;
+    tolerance = 0.000001;
     if(arguments.length==3) {
         tolerance = tol;
     }
 
-    var doRound = 1;
+    doRound = 1;
     if(arguments.length==4) {
         doRound = roundoff;
     }
 
     if( !(x instanceof Array) ) {
-        var dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2*tolerance);
-        var dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
+        dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2*tolerance);
+        dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
     }
     else{
-        var Xhi = [];
-        var Xlo = [];
-        var Xhi2 = [];
-        var Xlo2 = [];
+        Xhi = [];
+        Xlo = [];
+        Xhi2 = [];
+        Xlo2 = [];
 
-        for (var vary=0; vary<x.length; vary++) {
+        for (vary=0; vary<x.length; vary++) {
             Xhi[vary] = x[vary];
             Xlo[vary] = x[vary];
             Xhi2[vary] = x[vary];
@@ -613,12 +615,12 @@ function derivative(x, dim, tol, roundoff) {
         Xhi2[dimension] += tolerance / 2;
         Xlo2[dimension]  -= tolerance / 2;
 
-        var dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2*tolerance);
-        var dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
+        dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2*tolerance);
+        dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
     }
 
 
-    var D = (4*dtol2 - dtol) / 3;
+    D = (4*dtol2 - dtol) / 3;
 
     if(doRound == 0) {
         return D;
@@ -630,24 +632,12 @@ function derivative(x, dim, tol, roundoff) {
 }
 
 function gradient(x) {
- /*
-    var dimension = direction.length
+    var dim, dimension, grad;
+ 
+    dimension = x.length;
+    grad = [];
 
-    // normalize direction vector
-    var length = 0
-    for (var dim=0; dim<dimension; dim++) {
-        length += direction[dim]*direction[dim]
-    }
-    length = Math.pow(length,0.5)
     for (dim=0; dim<dimension; dim++) {
-        direction[dim] = direction[dim] / length
-    }
-*/ 
-
-    var dimension = x.length;
-    var grad = [];
-
-    for (var dim=0; dim<dimension; dim++) {
         grad[dim] = this.derivative(x,dim); //* direction[dim]
     }
 
@@ -696,6 +686,7 @@ function setVal(value, position) {
 }
 
 function dot(vec, metric) {
+    var dim, left, sum;
 
     if( !(vec instanceof Vector) ) {
         alert('Must take dot product with another Vector.    Aborting...');
@@ -706,10 +697,10 @@ function dot(vec, metric) {
         return -999;
     }
 
-    var sum = 0;
+    sum = 0;
 
     if(arguments.length==1) {
-        for (var dim=0; dim<this.dim; dim++) {
+        for (dim=0; dim<this.dim; dim++) {
             sum += this.elts[dim]*vec.elts[dim];
         }
         return sum;
@@ -720,7 +711,7 @@ function dot(vec, metric) {
             alert('Incorrect metric dimension.    Aborting...');
             return -999;
         }
-        var left = metric.mtxMulti(this,'left');
+        left = metric.mtxMulti(this,'left');
         for (dim=0; dim<left.dim; dim++) {
             sum += left.elts[dim]*vec.elts[dim];
         }
@@ -730,8 +721,9 @@ function dot(vec, metric) {
 }
 
 function getLength(metric) {
+    var length;
 
-    var length = 0;
+    length = 0;
 
     if(arguments.length==0) {
         length = Math.pow(this.dot(this), 0.5);
@@ -750,15 +742,17 @@ function getLength(metric) {
 //  ----  - Matrix Class ----------------------------------------------------  -- 
 
 function Matrix(name, rows, columns, preDef) {
+    var col, row;
+
     this.name = name;
     this.rows = rows;
     this.cols = columns; 
     this.elements = new Array(rows);
 
     // start with all entries = 0
-    for (var row=0; row<this.rows; row++) {
+    for (row=0; row<this.rows; row++) {
         this.elements[row] = new Array(this.cols);
-        for (var col=0; col<this.cols; col++) {
+        for (col=0; col<this.cols; col++) {
             this.elements[row][col] = 0;
         }
     }
@@ -805,9 +799,11 @@ function Matrix(name, rows, columns, preDef) {
 
 // writes out the contents of this matrix.
 function dump() {
+    var col, row;
+
     document.write('</br>');
-    for (var row=0; row<this.rows; row++) {
-        for (var col=0; col<this.cols; col++) {
+    for (row=0; row<this.rows; row++) {
+        for (col=0; col<this.cols; col++) {
             document.write(this.elements[row][col]+' ');
         }
         document.write('</br>');
@@ -819,6 +815,7 @@ function dump() {
 
 // return sum of <matrix> with this matrix.
 function mtxAdd(matrix) {
+    var col, name, name1, name2, result, row;
 
     if( !(matrix instanceof Matrix) ) {
         alert('Argument is not a matrix.    Aborting...');
@@ -830,13 +827,13 @@ function mtxAdd(matrix) {
         return -999;
     }
 
-    var name1 = this.name;
-    var name2 = matrix.name;
-    var name = name1 + 'plus' + name2;
-    var result = new Matrix(name, this.rows, this.cols);
+    name1 = this.name;
+    name2 = matrix.name;
+    name = name1 + 'plus' + name2;
+    result = new Matrix(name, this.rows, this.cols);
 
-    for (var row=0; row<this.rows; row++) {
-        for (var col=0; col<this.cols; col++) {
+    for (row=0; row<this.rows; row++) {
+        for (col=0; col<this.cols; col++) {
             result.elements[row][col] = this.elements[row][col] + matrix.elements[row][col];
         }
     }
@@ -847,6 +844,7 @@ function mtxAdd(matrix) {
 
 // places <object> on side <side> of this matrix, and multiplies
 function mtxMulti(object, side) {
+    var col, elt, name, name1, name2, result, row, sum;
 
     if(side != 'left' && side != 'right') {
         alert('Second argument must be either left or right, indicating which side of the matrix you want to place the first argument on before multiplying.    Aborting...');
@@ -858,10 +856,10 @@ function mtxMulti(object, side) {
             alert('Vector*Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
             return -999;
         }
-        var result = new Vector('result');
-        var sum = 0;
-        for (var col=0;col<this.cols;col++) {
-            for (var row=0;row<this.rows;row++) {
+        result = new Vector('result');
+        sum = 0;
+        for (col=0;col<this.cols;col++) {
+            for (row=0;row<this.rows;row++) {
                 sum += object.elts[row] * this.elements[row][col];
             }
             result.setVal(sum,col);
@@ -875,10 +873,10 @@ function mtxMulti(object, side) {
             alert('Matrix*Vector requires length of Vector = number of columns in Matrix.    Aborting...');
             return -999;
         }
-        var result = new Vector('result');
-        var sum = 0;
-        for (var row=0;row<this.rows;row++) {
-            for (var col=0;col<this.cols;col++) {
+        result = new Vector('result');
+        sum = 0;
+        for (row=0;row<this.rows;row++) {
+            for (col=0;col<this.cols;col++) {
                 sum += object.elts[col] * this.elements[row][col];
             }
             result.setVal(sum,row);
@@ -894,15 +892,15 @@ function mtxMulti(object, side) {
             return -999;
         }
 
-        var name1 = object.name;
-        var name2 = this.name;
-        var name = name1 + 'times' + name2;
-        var result = new Matrix(name, object.rows, this.cols);
+        name1 = object.name;
+        name2 = this.name;
+        name = name1 + 'times' + name2;
+        result = new Matrix(name, object.rows, this.cols);
 
-        var sum = 0;
-        for (var row=0;row<object.rows;row++) {
-            for (var col=0;col<this.cols;col++) {
-                for (var elt=0;elt<this.rows;elt++) {
+        sum = 0;
+        for (row=0;row<object.rows;row++) {
+            for (col=0;col<this.cols;col++) {
+                for (elt=0;elt<this.rows;elt++) {
                     sum += object.elements[row][elt] * this.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -920,15 +918,15 @@ function mtxMulti(object, side) {
             return -999;
         }
 
-        var name1 = this.name;
-        var name2 = object.name;
-        var name = name1 + 'times' + name2;
-        var result = new Matrix(name, object.rows, this.cols);
+        name1 = this.name;
+        name2 = object.name;
+        name = name1 + 'times' + name2;
+        result = new Matrix(name, object.rows, this.cols);
 
-        var sum = 0;
-        for (var row=0;row<object.rows;row++) {
-            for (var col=0;col<this.cols;col++) {
-                for (var elt=0;elt<this.rows;elt++) {
+        sum = 0;
+        for (row=0;row<object.rows;row++) {
+            for (col=0;col<this.cols;col++) {
+                for (elt=0;elt<this.rows;elt++) {
                     sum += this.elements[row][elt] * object.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -943,6 +941,7 @@ function mtxMulti(object, side) {
 
 // Doolittle algo to extract determinant for this matrix.
 function getDeterminant() {
+    var A, detA, detL, iter, L, l, row;
 
     if(this.rows != this.cols) {
         alert('Matrix must be square.    Aborting...');
@@ -950,15 +949,15 @@ function getDeterminant() {
     }    
 
     // zeroth iteration:
-    var A = this;
-    var L = new Matrix('L', this.rows, this.cols, 'identity');
-    var l = new Matrix('l',this.rows,this.cols);
+    A = this;
+    L = new Matrix('L', this.rows, this.cols, 'identity');
+    l = new Matrix('l',this.rows,this.cols);
 
-    for (var iter=1;iter<this.rows;iter++) {
+    for (iter=1;iter<this.rows;iter++) {
 
         // construct this iteration's lower triangular matrix:
         l = new Matrix('l',this.rows,this.cols,'identity');
-        for (var row=iter; row<this.rows; row++) {
+        for (row=iter; row<this.rows; row++) {
             l.elements[row][iter - 1] = -1*A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
             L.elements[row][iter - 1] = -1*l.elements[row][iter - 1];
         }
@@ -967,8 +966,8 @@ function getDeterminant() {
         A = A.mtxMulti(l, 'left');
     }
 
-    var detA = 1;
-    var detL = 1;
+    detA = 1;
+    detL = 1;
     for (iter=0;iter<this.rows;iter++) {
         detA = detA*A.elements[iter][iter];
         detL = detL*L.elements[iter][iter];
@@ -980,23 +979,24 @@ function getDeterminant() {
 
 // function to calculate the minor matrix of this matrix
 function getMinor() {
+    var cMap, col, mtxMinor, rMap, row, subCol, subMtx, subRow;
 
-    var subMtx = new Matrix('subMtx',this.rows - 1,this.cols - 1);
-    var mtxMinor = new Matrix('mtxMinor', this.rows, this.cols);
+    subMtx = new Matrix('subMtx',this.rows - 1,this.cols - 1);
+    mtxMinor = new Matrix('mtxMinor', this.rows, this.cols);
 
-    var rMap=0;
-    var cMap=0;
+    rMap=0;
+    cMap=0;
 
-    for (var row=0;row<this.rows;row++) {
-        for (var col=0;col<this.cols;col++) {
+    for (row=0;row<this.rows;row++) {
+        for (col=0;col<this.cols;col++) {
 
             rMap=0;
-            for (var subRow=0;subRow<subMtx.rows;subRow++) {
+            for (subRow=0;subRow<subMtx.rows;subRow++) {
                 if(rMap==row) {
                     rMap++;
                 }
                 cMap=0;
-                for (var subCol=0;subCol<subMtx.cols;subCol++) {
+                for (subCol=0;subCol<subMtx.cols;subCol++) {
                     if(cMap==col) {
                         cMap++;
                     }
@@ -1017,13 +1017,13 @@ function getMinor() {
 
 // function to calculate cofactor matrix of this matrix
 function getCofactor() {
+    var cofac, col, minor, row;
  
-    var minor = this.getMinor();
+    minor = this.getMinor();
+    cofac = new Matrix('cofac', this.rows, this.cols);
 
-    var cofac = new Matrix('cofac', this.rows, this.cols);
-
-    for (var row=0;row<cofac.rows;row++) {
-        for (var col=0;col<cofac.cols;col++) {
+    for (row=0;row<cofac.rows;row++) {
+        for (col=0;col<cofac.cols;col++) {
             cofac.elements[row][col] = Math.pow( - 1,row+col)*minor.elements[row][col];
         }
     }
@@ -1034,11 +1034,12 @@ function getCofactor() {
 
 // function to calculate the transpose of this matrix
 function getTranspose() {
+    var col, row, trans;
 
-    var trans = new Matrix('trans',this.cols,this.rows);
+    trans = new Matrix('trans',this.cols,this.rows);
 
-    for (var row=0;row<trans.rows;row++) {
-        for (var col=0;col<trans.cols;col++) {
+    for (row=0;row<trans.rows;row++) {
+        for (col=0;col<trans.cols;col++) {
             trans.elements[row][col] = this.elements[col][row];
         }
     }
@@ -1049,17 +1050,20 @@ function getTranspose() {
 
 // function to return adjugate of matrix
 function getAdjugate() {
-    var cof = this.getCofactor();
+    var cof;
+
+    cof = this.getCofactor();
     return cof.getTranspose();
 }
 
 // function to scale matrix by <scale>
 function mtxScale(scale) {
+    var col, row, scaled;
 
-    var scaled = new Matrix('scaled',this.rows,this.cols);
+    scaled = new Matrix('scaled',this.rows,this.cols);
 
-    for (var row=0;row<scaled.rows;row++) {
-        for (var col=0;col<scaled.cols;col++) {
+    for (row=0;row<scaled.rows;row++) {
+        for (col=0;col<scaled.cols;col++) {
             scaled.elements[row][col] = scale*this.elements[row][col];
         }
     }
@@ -1069,9 +1073,10 @@ function mtxScale(scale) {
 
 // function to get the inverse of this matrix
 function getInverse() {
+    var adjug, deter;
 
-    var deter = this.getDeterminant();
-    var adjug = this.getAdjugate();
+    deter = this.getDeterminant();
+    adjug = this.getAdjugate();
 
     return adjug.mtxScale(1 / deter);
 
@@ -1085,11 +1090,12 @@ function getInverse() {
 //  ----  - Statistical Distributions ----------------------------------------  - 
 
 function Kolmogorov(z) {
+    var j;
 
     Kprob = 2*Math.exp( - 2*z*z);    // start with first term (ie j=1)
 
     // keep addting terms on to fp precision
-    var j = 2;
+    j = 2;
     while(2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z)+Kprob != Kprob && j<1000000) {
         Kprob +=2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z);
         j++;
