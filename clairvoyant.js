@@ -1,4 +1,4 @@
-//define 1-D histogram class----------------------------------------------------------------
+//define 1 - D histogram class ---------------------------------------------------------------- 
 function Histo(name, nBins, min, max) {
     this.name = name;
     this.nBins = nBins;
@@ -6,7 +6,7 @@ function Histo(name, nBins, min, max) {
     this.max = max;
 
     //set up array of histogram bins
-    this.binSize = (max-min)/nBins;
+    this.binSize = (max - min)/nBins;
     this.bins = new Array();
     for(var i=0; i<nBins; i++) {
         this.bins.push({lo: this.min + i*this.binSize, weight: 0});
@@ -27,7 +27,7 @@ function Histo(name, nBins, min, max) {
 
 }
 
-//function definitions:---------------------------------------------------------------------
+//function definitions: --------------------------------------------------------------------  - 
 
 
 //write all contents of histogram as <lo edge> : <weight>
@@ -111,11 +111,11 @@ function integrate(min, max) {
             total += this.bins[i].weight;
         }
         //treat weight as distributed evenly across a bin for fractionally included first bin
-        total += this.bins[minBin].weight*(this.bins[minBin+1].lo-min) / (this.bins[minBin+1].lo-this.bins[minBin].lo);
+        total += this.bins[minBin].weight*(this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
 
         //similarly for the last bin
         if(minBin!=maxBin) {
-            total += this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo-this.bins[maxBin].lo);
+            total += this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
         }
     
         return total;
@@ -169,7 +169,7 @@ function add(otherHisto, scale1, scale2) {
 function getMean() {
     var totalWeight = this.integrate();
     var weightedSum = 0;
-    for(var i=0; i<this.bins.length-1; i++) {
+    for(var i=0; i<this.bins.length - 1; i++) {
         weightedSum += this.bins[i].lo * this.bins[i].weight;
     }
 
@@ -181,7 +181,7 @@ function getVariance() {
 
     var totalWeight = this.integrate();
     var weightedSquares = 0;
-    for(var i=0; i<this.bins.length-1; i++) {
+    for(var i=0; i<this.bins.length - 1; i++) {
         weightedSquares += Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
     }
     var meanSquare = weightedSquares / totalWeight;
@@ -197,8 +197,8 @@ function getCDF() {
     var cloneHist = this;
     cloneHist.normalize();
 
-    for(var i=1; i<cloneHist.bins.length-1; i++) {
-            cloneHist.bins[i].weight += cloneHist.bins[i-1].weight;
+    for(var i=1; i<cloneHist.bins.length - 1; i++) {
+            cloneHist.bins[i].weight += cloneHist.bins[i - 1].weight;
     }
 
     return cloneHist;
@@ -248,12 +248,12 @@ function sample(nSamples,source) {
     return 0;
 }
 
-//-----end 1D histo methods----------------------------------------------
+// ----  - end 1D histo methods --------------------------------------------  -- 
 
-//-----user defined function class---------------------------------------
-//USAGE: userString must be some evaluate-able expression in n dimensions, where
-//the coordinates are represented as x[0], x[1], ..., x[n-1], and m parameters are 
-//represented similarly as par[0], par[1], ..., par[m-1].
+// ----  - user defined function class ------------------------------------  --  - 
+//USAGE: userString must be some evaluate - able expression in n dimensions, where
+//the coordinates are represented as x[0], x[1], ..., x[n - 1], and m parameters are 
+//represented similarly as par[0], par[1], ..., par[m - 1].
 //Currently <name> needs to be the same as the var name of the object itself in order for getExtremum
 //to work, might fix this in future.
 function Func(name, userString, parameters) {
@@ -270,7 +270,7 @@ function Func(name, userString, parameters) {
         }
     }
     else{
-        this.params[0] = 0    //dummy for no-parameter functions;
+        this.params[0] = 0    //dummy for no - parameter functions;
     }
 
     this.evaluate = evaluate;
@@ -284,7 +284,7 @@ function Func(name, userString, parameters) {
     this.gradient = gradient;
 }
 
-//----- methods for user defined function class--------------------------
+// ---- - methods for user defined function class ------------------------  -- 
 
 //evaluates the function at the coordinate <inputs> in phase space, using the
 //parameters set on creation of the function or on a call to this.setParameters
@@ -362,7 +362,7 @@ function getExtremum(min, max, tol) {
 
 
 //return a random pull from a 1D function, between <min> and <max>.    
-//Function must be non-negative and pole-free across the requested 
+//Function must be non - negative and pole - free across the requested 
 //range for this to make sense. 
 function randPull(min, max) {
  
@@ -379,7 +379,7 @@ function randPull(min, max) {
 
     while(done==0) {
         //choose a point in range
-        x = min + (max-min)*Math.random();
+        x = min + (max - min)*Math.random();
 
         //find normalized height of the function at x
         thresh = this.evaluate(x) / extreme[0];
@@ -432,12 +432,12 @@ function brentSoln(lo, hi, tol) {
     var f_a = this.evaluate(a);
     var f_b = this.evaluate(b);
     var f_c = this.evaluate(c);
-    var s = b - f_b*(b-a)/(f_b-f_a);
+    var s = b - f_b*(b - a)/(f_b - f_a);
     var f_s = this.evaluate(s);
     var d = 0;
     var buffer = 0;
     var loops = 0;
-    while(f_b!=0 && f_s!=0 && Math.abs(b-a)>tolerance) {
+    while(f_b!=0 && f_s!=0 && Math.abs(b - a)>tolerance) {
         loops++;
         var f_a = this.evaluate(a);
         var f_b = this.evaluate(b);
@@ -446,16 +446,16 @@ function brentSoln(lo, hi, tol) {
         //(h_i)
         if(f_a!=f_c && f_b!=f_c) {
             //(h_i_1)
-            s = a*f_b*f_c/(f_a-f_b)/(f_a-f_c) + b*f_a*f_c/(f_b-f_a)/(f_b-f_c) + c*f_a*f_b/(f_c-f_a)/(f_c-f_b);
+            s = a*f_b*f_c/(f_a - f_b)/(f_a - f_c) + b*f_a*f_c/(f_b - f_a)/(f_b - f_c) + c*f_a*f_b/(f_c - f_a)/(f_c - f_b);
         }
         //(h_ii)
         else{
             //(h_ii_1)
-            s = b - f_b*(b-a)/(f_b-f_a);
+            s = b - f_b*(b - a)/(f_b - f_a);
         }
         //(h_iii)
         //(h_iv)
-        if( ((s>b && s>(3*a+b)/4)||(s<b && s<(3*a+b)/4)) || (mflag==1 && Math.abs(s-b) >= Math.abs(b-c)/2) || (mflag==0 && Math.abs(s-b) >= Math.abs(c-d)/2) || (mflag==1 && Math.abs(b-c)<tolerance) || (mflag==0 && Math.abs(c-d)<tolerance) ) {
+        if( ((s>b && s>(3*a+b)/4)||(s<b && s<(3*a+b)/4)) || (mflag==1 && Math.abs(s - b) >= Math.abs(b - c)/2) || (mflag==0 && Math.abs(s - b) >= Math.abs(c - d)/2) || (mflag==1 && Math.abs(b - c)<tolerance) || (mflag==0 && Math.abs(c - d)<tolerance) ) {
             //(h_iv_1)
             s = (a+b)/2;
             //(h_iv_2)
@@ -505,7 +505,7 @@ function biSoln(min, max, tol) {
 
     //grid search to find some zero, very slow
     var gridSteps = 1000;
-    var stepSize = (max-min)/gridSteps;
+    var stepSize = (max - min)/gridSteps;
     var here = min;
     var gridMin = Math.abs(this.evaluate(min));
     var lowestPoint = here;
@@ -532,7 +532,7 @@ function biSoln(min, max, tol) {
     var c = (a+b)/2;
     var f_c = Math.abs(this.evaluate(c));
 
-    while(Math.abs(a-b) > tolerance) {
+    while(Math.abs(a - b) > tolerance) {
         if(f_a > f_b && f_a > f_c) {
             a = c;
             f_a = Math.abs(this.evaluate(a));
@@ -571,8 +571,8 @@ function derivative(x, dim, tol, roundoff) {
     }
 
     if( !(x instanceof Array) ) {
-        var dtol = ( this.evaluate(x+tolerance) - this.evaluate(x-tolerance) ) / (2*tolerance);
-        var dtol2 = ( this.evaluate(x+tolerance/2) - this.evaluate(x-tolerance/2) ) / tolerance;
+        var dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2*tolerance);
+        var dtol2 = ( this.evaluate(x+tolerance/2) - this.evaluate(x - tolerance/2) ) / tolerance;
     }
     else{
         var Xhi = new Array();
@@ -587,9 +587,9 @@ function derivative(x, dim, tol, roundoff) {
             Xlo2[vary] = x[vary];
         }
         Xhi[dimension] += tolerance;
-        Xlo[dimension] -= tolerance;
+        Xlo[dimension]  -= tolerance;
         Xhi2[dimension] += tolerance/2;
-        Xlo2[dimension] -= tolerance/2;
+        Xlo2[dimension]  -= tolerance/2;
 
         var dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2*tolerance);
         var dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
@@ -635,10 +635,10 @@ function gradient(x) {
 
 
 
-//-----end user defined function class-----------------------------------
+// ----  - end user defined function class --------------------------------  --  - 
 
 
-//-----Vector Class------------------------------------------------------
+// ----  - Vector Class ----------------------------------------------------  -- 
 
 function Vector(name, elements) {
     this.name = name;
@@ -722,10 +722,10 @@ function getLength(metric) {
     return length;
 }
 
-//-----end Vector Class--------------------------------------------------
+// ----  - end Vector Class ------------------------------------------------  -- 
 
 
-//-----Matrix Class------------------------------------------------------
+// ----  - Matrix Class ----------------------------------------------------  -- 
 
 function Matrix(name, rows, columns, preDef) {
     this.name = name;
@@ -937,8 +937,8 @@ function getDeterminant() {
         //construct this iteration's lower triangular matrix:
         l = new Matrix('l',this.rows,this.cols,'identity');
         for(var row=iter; row<this.rows; row++) {
-            l.elements[row][iter-1] = -1*A.elements[row][iter-1] / A.elements[iter-1][iter-1];
-            L.elements[row][iter-1] = -1*l.elements[row][iter-1];
+            l.elements[row][iter - 1] = -1*A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
+            L.elements[row][iter - 1] = -1*l.elements[row][iter - 1];
         }
 
         //update A:
@@ -959,7 +959,7 @@ function getDeterminant() {
 //function to calculate the minor matrix of this matrix
 function getMinor() {
 
-    var subMtx = new Matrix('subMtx',this.rows-1,this.cols-1);
+    var subMtx = new Matrix('subMtx',this.rows - 1,this.cols - 1);
     var mtxMinor = new Matrix('mtxMinor', this.rows, this.cols);
 
     var rMap=0;
@@ -1002,7 +1002,7 @@ function getCofactor() {
 
     for(var row=0;row<cofac.rows;row++) {
         for(var col=0;col<cofac.cols;col++) {
-            cofac.elements[row][col] = Math.pow(-1,row+col)*minor.elements[row][col];
+            cofac.elements[row][col] = Math.pow( - 1,row+col)*minor.elements[row][col];
         }
     }
 
@@ -1056,20 +1056,20 @@ function getInverse() {
 }
 
 
-//-----end Matrix Class--------------------------------------------------
+// ----  - end Matrix Class ------------------------------------------------  -- 
 
 
 
-//-----Statistical Distributions-----------------------------------------
+// ----  - Statistical Distributions ----------------------------------------  - 
 
 function Kolmogorov(z) {
 
-    Kprob = 2*Math.exp(-2*z*z);    //start with first term (ie j=1)
+    Kprob = 2*Math.exp( - 2*z*z);    //start with first term (ie j=1)
 
     //keep addting terms on to fp precision
     var j = 2;
-    while(2*Math.pow(-1,j-1)*Math.exp(-2*j*j*z*z)+Kprob != Kprob && j<1000000) {
-        Kprob +=2*Math.pow(-1,j-1)*Math.exp(-2*j*j*z*z);
+    while(2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z)+Kprob != Kprob && j<1000000) {
+        Kprob +=2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z);
         j++;
     }
 
@@ -1079,7 +1079,7 @@ function Kolmogorov(z) {
 }
 
 function Gaussian(mu, sigma, x) {
-    return 1/sigma/Math.sqrt(2*3.14159265358979)*Math.exp(-0.5*Math.pow((x-mu)/sigma,2));
+    return 1/sigma/Math.sqrt(2*3.14159265358979)*Math.exp( - 0.5*Math.pow((x - mu)/sigma,2));
 }
 
 
