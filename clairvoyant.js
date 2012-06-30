@@ -771,7 +771,7 @@ function dump() {
         }
         document.write(' </br> ');
     }
-    
+
     return 0;
 }
 
@@ -821,8 +821,8 @@ function mtxMulti(object, side) {
         }
         result = new Vector('result');
         sum = 0;
-        for (col = 0;col < this.cols;col++) {
-            for (row = 0;row < this.rows;row++) {
+        for (col = 0; col < this.cols; col++) {
+            for (row = 0; row < this.rows; row++) {
                 sum  += object.elts[row] * this.elements[row][col];
             }
             result.setVal(sum, col);
@@ -838,8 +838,8 @@ function mtxMulti(object, side) {
         }
         result = new Vector('result');
         sum = 0;
-        for (row = 0;row < this.rows;row++) {
-            for (col = 0;col < this.cols;col++) {
+        for (row = 0; row < this.rows; row++) {
+            for (col = 0; col < this.cols; col++) {
                 sum  += object.elts[col] * this.elements[row][col];
             }
             result.setVal(sum, row);
@@ -861,8 +861,8 @@ function mtxMulti(object, side) {
         result = new Matrix(name, object.rows, this.cols);
 
         sum = 0;
-        for (row = 0;row < object.rows;row++) {
-            for (col = 0;col < this.cols;col++) {
+        for (row = 0; row < object.rows; row++) {
+            for (col = 0; col < this.cols; col++) {
                 for (elt = 0;elt < this.rows;elt++) {
                     sum  += object.elements[row][elt] * this.elements[elt][col];
                 }
@@ -887,8 +887,8 @@ function mtxMulti(object, side) {
         result = new Matrix(name, object.rows, this.cols);
 
         sum = 0;
-        for (row = 0;row < object.rows;row++) {
-            for (col = 0;col < this.cols;col++) {
+        for (row = 0; row < object.rows; row++) {
+            for (col = 0; col < this.cols; col++) {
                 for (elt = 0;elt < this.rows;elt++) {
                     sum  += this.elements[row][elt] * object.elements[elt][col];
                 }
@@ -950,8 +950,8 @@ function getMinor() {
     rMap = 0;
     cMap = 0;
 
-    for (row = 0;row < this.rows;row++) {
-        for (col = 0;col < this.cols;col++) {
+    for (row = 0; row < this.rows; row++) {
+        for (col = 0; col < this.cols; col++) {
 
             rMap = 0;
             for (subRow = 0;subRow < subMtx.rows;subRow++) {
@@ -985,8 +985,8 @@ function getCofactor() {
     minor = this.getMinor();
     cofac = new Matrix('cofac', this.rows, this.cols);
 
-    for (row = 0;row < cofac.rows;row++) {
-        for (col = 0;col < cofac.cols;col++) {
+    for (row = 0; row < cofac.rows; row++) {
+        for (col = 0; col < cofac.cols; col++) {
             cofac.elements[row][col] = Math.pow(- 1, row + col) * minor.elements[row][col];
         }
     }
@@ -1001,8 +1001,8 @@ function getTranspose() {
 
     trans = new Matrix('trans', this.cols, this.rows);
 
-    for (row = 0;row < trans.rows;row++) {
-        for (col = 0;col < trans.cols;col++) {
+    for (row = 0; row < trans.rows; row++) {
+        for (col = 0; col < trans.cols; col++) {
             trans.elements[row][col] = this.elements[col][row];
         }
     }
@@ -1025,8 +1025,8 @@ function mtxScale(scale) {
 
     scaled = new Matrix('scaled', this.rows, this.cols);
 
-    for (row = 0;row < scaled.rows;row++) {
-        for (col = 0;col < scaled.cols;col++) {
+    for (row = 0; row < scaled.rows; row++) {
+        for (col = 0; col < scaled.cols; col++) {
             scaled.elements[row][col] = scale * this.elements[row][col];
         }
     }
