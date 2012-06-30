@@ -397,8 +397,6 @@ function randPull(min, max) {
         if (decision  <  thresh) {
             // alert(x)
             return x;
-        } else {
-            done = 0;
         }
     }
 
@@ -443,7 +441,7 @@ function brentSoln(lo, hi, tol) {
     buffer = 0;
     loops = 0;
     while (f_b != 0 && f_s != 0 && Math.abs(b - a) > tolerance) {
-        loops++ ;
+        loops++;
         f_a = this.evaluate(a);
         f_b = this.evaluate(b);
         f_c = this.evaluate(c);
@@ -458,7 +456,7 @@ function brentSoln(lo, hi, tol) {
         }
         // (h_iii)
         // (h_iv)
-        if (((s > b && s > (3 * a + b) / 4)||(s < b && s < (3 * a + b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance)) {
+        if (((s > b && s > (3 * a + b) / 4) || (s < b && s < (3 * a + b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance)) {
             // (h_iv_1)
             s = (a + b) / 2;
             // (h_iv_2)
@@ -956,17 +954,17 @@ function getMinor() {
             rMap = 0;
             for (subRow = 0;subRow < subMtx.rows;subRow++) {
                 if (rMap == row) {
-                    rMap++ ;
+                    rMap++;
                 }
                 cMap = 0;
                 for (subCol = 0;subCol < subMtx.cols;subCol++) {
                     if (cMap == col) {
-                        cMap++ ;
+                        cMap++;
                     }
                     subMtx.elements[subRow][subCol] = this.elements[rMap][cMap];
-                    cMap++ ;
+                    cMap++;
                 }
-                rMap++ ;
+                rMap++;
             }
 
             mtxMinor.elements[row][col] = subMtx.getDeterminant();
@@ -1061,7 +1059,7 @@ function Kolmogorov(z) {
     j = 2;
     while (2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
         Kprob  += 2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z);
-        j++ ;
+        j++;
     }
 
 
