@@ -51,13 +51,11 @@ function dumpContents() {
 
 // increment the bin in which  < value >  falls by  < amount > ;
 // increments this bin by 1 if no value provided for  < amount > .
-function increment(value, amount) {
-    var i, index;
+function increment(value, amnt) {
+    var amount, i, index;
     index = 0;
 
-    if (arguments.length  ==  1) {
-        amount = 1;
-    }
+    amount = amnt || 1;
 
     if (value  <  this.min || value  >=  this.max) {
         return -999;
@@ -69,7 +67,7 @@ function increment(value, amount) {
         }
     }
 
-    this.bins[index].weight +=  amount;
+    this.bins[index].weight += amount;
 
     return 0;
 }
@@ -88,7 +86,7 @@ function integrate(min, max) {
     // return integral of whole histo if no arguments provided
     if (arguments.length == 0) {
         for (i = 0; i < this.bins.length; i++) {
-            total+=  this.bins[i].weight;
+            total += this.bins[i].weight;
         }
         return total;
     }
@@ -113,14 +111,14 @@ function integrate(min, max) {
         total = 0;
         // integrate all bins in range except for fractionally included ones:
         for (i = minBin+1; i < maxBin; i++) {
-            total +=  this.bins[i].weight;
+            total += this.bins[i].weight;
         }
         // treat weight as distributed evenly across a bin for fractionally included first bin
-        total +=  this.bins[minBin].weight * (this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
+        total += this.bins[minBin].weight * (this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
 
         // similarly for the last bin
         if (minBin!= maxBin) {
-            total +=  this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
+            total += this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
         }
     
         return total;
@@ -131,12 +129,10 @@ function integrate(min, max) {
 
 // normalize the histogram to  < factor > ;
 //  < factor >  set to 1 if not provided
-function normalize(factor) {
-    var i, total;
+function normalize(fac) {
+    var factor, i, total;
 
-    if (arguments.length == 0) {
-        factor = 1;
-    }
+    factor = fac || 1;
 
     total = this.integrate();
 
@@ -149,8 +145,8 @@ function normalize(factor) {
 
 // increment this histo by the corresponding weights in  < otherHisto > , multiplied by  < scale > ;
 //  < scale >  default = 1
-function add(otherHisto, scale1, scale2) {
-    var j, sumHisto;
+function add(otherHisto, sc1, sc2) {
+    var j, scale1, scale2, sumHisto;
 
     if (this.nBins !=  otherHisto.nBins || this.min !=  otherHisto.min || this.max !=  otherHisto.max) {
         alert('Can\'t add histrograms with different binning.    Aborting...');
@@ -159,10 +155,8 @@ function add(otherHisto, scale1, scale2) {
 
     sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
     
-    if (arguments.length == 1) {
-        scale1 = 1;
-        scale2 = 1;
-    }
+    scale1 = sc1 || 1;
+    scale2 = sc2 || 1;
 
     for (j = 0; j < this.bins.length; j++) {
         sumHisto.increment(this.bins[j].lo, scale1 * this.bins[j].weight);
@@ -180,7 +174,7 @@ function getMean() {
     totalWeight = this.integrate();
     weightedSum = 0;
     for (i = 0; i < this.bins.length - 1; i++) {
-        weightedSum +=  this.bins[i].lo * this.bins[i].weight;
+        weightedSum += this.bins[i].lo * this.bins[i].weight;
     }
 
     return weightedSum / totalWeight;
@@ -193,7 +187,7 @@ function getVariance() {
     totalWeight = this.integrate();
     weightedSquares = 0;
     for (i = 0; i < this.bins.length - 1; i++) {
-        weightedSquares +=  Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
+        weightedSquares += Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
     }
     meanSquare = weightedSquares / totalWeight;
 
@@ -210,7 +204,7 @@ function getCDF() {
     cloneHist.normalize();
 
     for (i = 1; i < cloneHist.bins.length - 1; i++) {
-            cloneHist.bins[i].weight +=  cloneHist.bins[i - 1].weight;
+            cloneHist.bins[i].weight += cloneHist.bins[i - 1].weight;
     }
 
     return cloneHist;
@@ -355,10 +349,7 @@ function setParameters(newParam) {
 function getExtremum(min, max, tol) {
     var concavity, ddx, extrema, funcString, results, tolerance;
 
-    tolerance = 0.000001;
-    if (arguments.length  ==  3) {
-        tolerance = tol;
-    }
+    tolerance = tol || 0.000001;
 
     funcString = this.name+'.derivative(x[0],0,0.000001,0)';
 
@@ -424,10 +415,7 @@ function randPull(min, max) {
 function brentSoln(lo, hi, tol) {
     var a, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
 
-    tolerance = 0.000001;
-    if (arguments.length  ==  3) {
-        tolerance = tol;
-    }
+    tolerance = tol || 0.000001;
 
     // (b)
     initHi = this.evaluate(hi);
@@ -537,16 +525,13 @@ function biSoln(min, max, tol) {
             lowestPoint = here;
             gridMin = Math.abs(this.evaluate(here));
         }
-        here +=  stepSize;
+        here += stepSize;
     }
 
     low = lowestPoint - stepSize;
     high = lowestPoint + stepSize;
 
-    tolerance = 0.000001;
-    if (arguments.length  ==  3) {
-        tolerance = tol;
-    }
+    tolerance = tol || 0.000001;
 
     a = low;
     b = high;
@@ -579,20 +564,11 @@ function biSoln(min, max, tol) {
 function derivative(x, dim, tol, roundoff) {
     var D, dimension, doRound, dtol1, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
 
-    dimension = 0;
-    if (arguments.length == 2) {
-        dimension = dim;
-    }
+    dimension = dim || 0;
 
-    tolerance = 0.000001;
-    if (arguments.length == 3) {
-        tolerance = tol;
-    }
+    tolerance = tol || 0.000001;
 
-    doRound = 1;
-    if (arguments.length == 4) {
-        doRound = roundoff;
-    }
+    doRound = roundoff || 1;
 
     if ( !(x instanceof Array) ) {
         dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2 * tolerance);
@@ -610,9 +586,9 @@ function derivative(x, dim, tol, roundoff) {
             Xhi2[vary] = x[vary];
             Xlo2[vary] = x[vary];
         }
-        Xhi[dimension] +=  tolerance;
+        Xhi[dimension] += tolerance;
         Xlo[dimension]  -=  tolerance;
-        Xhi2[dimension] +=  tolerance / 2;
+        Xhi2[dimension] += tolerance / 2;
         Xlo2[dimension]  -=  tolerance / 2;
 
         dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2 * tolerance);
@@ -701,7 +677,7 @@ function dot(vec, metric) {
 
     if (arguments.length == 1) {
         for (dim = 0; dim < this.dim; dim++) {
-            sum +=  this.elts[dim] * vec.elts[dim];
+            sum += this.elts[dim] * vec.elts[dim];
         }
         return sum;
     }
@@ -713,7 +689,7 @@ function dot(vec, metric) {
         }
         left = metric.mtxMulti(this,'left');
         for (dim = 0; dim < left.dim; dim++) {
-            sum +=  left.elts[dim] * vec.elts[dim];
+            sum += left.elts[dim] * vec.elts[dim];
         }
         return sum;
     }
@@ -860,7 +836,7 @@ function mtxMulti(object, side) {
         sum = 0;
         for (col = 0;col < this.cols;col++) {
             for (row = 0;row < this.rows;row++) {
-                sum +=  object.elts[row] * this.elements[row][col];
+                sum += object.elts[row] * this.elements[row][col];
             }
             result.setVal(sum,col);
             sum = 0;
@@ -877,7 +853,7 @@ function mtxMulti(object, side) {
         sum = 0;
         for (row = 0;row < this.rows;row++) {
             for (col = 0;col < this.cols;col++) {
-                sum +=  object.elts[col] * this.elements[row][col];
+                sum += object.elts[col] * this.elements[row][col];
             }
             result.setVal(sum,row);
             sum = 0;
@@ -901,7 +877,7 @@ function mtxMulti(object, side) {
         for (row = 0;row < object.rows;row++) {
             for (col = 0;col < this.cols;col++) {
                 for (elt = 0;elt < this.rows;elt++) {
-                    sum +=  object.elements[row][elt] * this.elements[elt][col];
+                    sum += object.elements[row][elt] * this.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
                 sum = 0;
@@ -927,7 +903,7 @@ function mtxMulti(object, side) {
         for (row = 0;row < object.rows;row++) {
             for (col = 0;col < this.cols;col++) {
                 for (elt = 0;elt < this.rows;elt++) {
-                    sum +=  this.elements[row][elt] * object.elements[elt][col];
+                    sum += this.elements[row][elt] * object.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
                 sum = 0;
