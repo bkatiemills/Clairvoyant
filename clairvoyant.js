@@ -11,7 +11,7 @@ function Histo(name, nBins, min, max) {
     this.binSize = (max - min) / nBins;
     this.bins = [];
     for (i = 0; i < nBins; i++) {
-        this.bins.push({lo: this.min + i*this.binSize, weight: 0});
+        this.bins.push({lo: this.min + i * this.binSize, weight: 0});
     }
     this.bins.push({lo: max, weight: 0});
 
@@ -116,11 +116,11 @@ function integrate(min, max) {
             total +=  this.bins[i].weight;
         }
         // treat weight as distributed evenly across a bin for fractionally included first bin
-        total +=  this.bins[minBin].weight*(this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
+        total +=  this.bins[minBin].weight * (this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
 
         // similarly for the last bin
         if(minBin!= maxBin) {
-            total +=  this.bins[maxBin].weight*(max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
+            total +=  this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
         }
     
         return total;
@@ -141,7 +141,7 @@ function normalize(factor) {
     total = this.integrate();
 
     for (i = 0; i < this.bins.length; i++) {
-        this.bins[i].weight = factor*this.bins[i].weight / total;
+        this.bins[i].weight = factor * this.bins[i].weight / total;
     }
     
     return 0;
@@ -165,8 +165,8 @@ function add(otherHisto, scale1, scale2) {
     }
 
     for (j = 0; j < this.bins.length; j++) {
-        sumHisto.increment(this.bins[j].lo, scale1*this.bins[j].weight);
-        sumHisto.increment(otherHisto.bins[j].lo, scale2*otherHisto.bins[j].weight);
+        sumHisto.increment(this.bins[j].lo, scale1 * this.bins[j].weight);
+        sumHisto.increment(otherHisto.bins[j].lo, scale2 * otherHisto.bins[j].weight);
     }
 
     return sumHisto;
@@ -199,7 +199,7 @@ function getVariance() {
 
     mean = this.getMean();
 
-    return meanSquare - mean*mean;
+    return meanSquare - mean * mean;
 }
 
 // returns the cumulative distribution function of this (normalized) histogram
@@ -242,7 +242,7 @@ function KStest(target) {
         }
     }
 
-    KSstat = Math.sqrt(weight1*weight2 / (weight1+weight2))*delta;
+    KSstat = Math.sqrt(weight1 * weight2 / (weight1+weight2)) * delta;
 
     return Kolmogorov(KSstat);
 }
@@ -256,7 +256,7 @@ function sample(nSamples,source) {
         p[nP] = source.params[nP];
     }
     for (pull = 0; pull < nSamples; pull++) {
-        x[0] = Math.random()*(this.max - this.min) + this.min;
+        x[0] = Math.random() * (this.max - this.min) + this.min;
         this.increment(x[0],source.evaluate(x,p));
     }
 
@@ -367,7 +367,7 @@ function getExtremum(min, max, tol) {
     concavity = ddx.derivative(extrema);
 
     results = [];
-    results[0] = Math.round(extrema / tolerance)*tolerance;
+    results[0] = Math.round(extrema / tolerance) * tolerance;
     if(concavity > 0) {
         results[1] = 0;
     }
@@ -400,7 +400,7 @@ function randPull(min, max) {
 
     while(done == 0) {
         // choose a point in range
-        x = min + (max - min)*Math.random();
+        x = min + (max - min) * Math.random();
 
         // find normalized height of the function at x
         thresh = this.evaluate(x) / extreme[0];
@@ -434,7 +434,7 @@ function brentSoln(lo, hi, tol) {
     // (c)
     initLo = this.evaluate(lo);
     // (d)
-    if( (initHi*initLo >= 0) ) {
+    if( (initHi * initLo >= 0) ) {
         alert('Range provided does not bracket a unique zero, attempting to recover...');
         return this.biSoln(lo, hi);
     }
@@ -454,7 +454,7 @@ function brentSoln(lo, hi, tol) {
     f_a = this.evaluate(a);
     f_b = this.evaluate(b);
     f_c = this.evaluate(c);
-    s = b - f_b*(b - a) / (f_b - f_a);
+    s = b - f_b * (b - a) / (f_b - f_a);
     f_s = this.evaluate(s);
     d = 0;
     buffer = 0;
@@ -468,16 +468,16 @@ function brentSoln(lo, hi, tol) {
         // (h_i)
         if(f_a!= f_c && f_b!= f_c) {
             // (h_i_1)
-            s = a*f_b*f_c / (f_a - f_b) / (f_a - f_c) + b*f_a*f_c / (f_b - f_a) / (f_b - f_c) + c*f_a*f_b / (f_c - f_a) / (f_c - f_b);
+            s = a * f_b * f_c / (f_a - f_b) / (f_a - f_c) + b * f_a * f_c / (f_b - f_a) / (f_b - f_c) + c * f_a * f_b / (f_c - f_a) / (f_c - f_b);
         }
         // (h_ii)
         else{
             // (h_ii_1)
-            s = b - f_b*(b - a) / (f_b - f_a);
+            s = b - f_b * (b - a) / (f_b - f_a);
         }
         // (h_iii)
         // (h_iv)
-        if( ((s > b && s > (3*a+b) / 4)||(s < b && s < (3*a+b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance) ) {
+        if( ((s > b && s > (3 * a+b) / 4)||(s < b && s < (3 * a+b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance) ) {
             // (h_iv_1)
             s = (a+b) / 2;
             // (h_iv_2)
@@ -496,7 +496,7 @@ function brentSoln(lo, hi, tol) {
         // (h_ix)
         c = b;
         // (h_x)
-        if(f_a*f_s < 0) {
+        if(f_a * f_s < 0) {
             b = s;
         }
         else{
@@ -513,10 +513,10 @@ function brentSoln(lo, hi, tol) {
 
     // (i)
     if(this.evaluate(b) == 0) {
-        return Math.round(b / tolerance)*tolerance;
+        return Math.round(b / tolerance) * tolerance;
     }
     else{
-        return Math.round(s / tolerance)*tolerance;
+        return Math.round(s / tolerance) * tolerance;
     }
 
 }
@@ -568,7 +568,7 @@ function biSoln(min, max, tol) {
         f_c = Math.abs(this.evaluate(c));
     }
 
-    return Math.round(c / tolerance)*tolerance;
+    return Math.round(c / tolerance) * tolerance;
 
 }
 
@@ -595,7 +595,7 @@ function derivative(x, dim, tol, roundoff) {
     }
 
     if( !(x instanceof Array) ) {
-        dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2*tolerance);
+        dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2 * tolerance);
         dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
     }
     else{
@@ -615,18 +615,18 @@ function derivative(x, dim, tol, roundoff) {
         Xhi2[dimension] +=  tolerance / 2;
         Xlo2[dimension]  -=  tolerance / 2;
 
-        dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2*tolerance);
+        dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2 * tolerance);
         dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
     }
 
 
-    D = (4*dtol2 - dtol) / 3;
+    D = (4 * dtol2 - dtol) / 3;
 
     if(doRound  ==  0) {
         return D;
     }
     if(doRound  ==  1) {
-        return Math.round(D / tolerance)*tolerance;
+        return Math.round(D / tolerance) * tolerance;
     }
 
 }
@@ -638,7 +638,7 @@ function gradient(x) {
     grad = [];
 
     for (dim = 0; dim < dimension; dim++) {
-        grad[dim] = this.derivative(x,dim); //* direction[dim]
+        grad[dim] = this.derivative(x,dim); // *  direction[dim]
     }
 
     return grad;
@@ -701,7 +701,7 @@ function dot(vec, metric) {
 
     if(arguments.length == 1) {
         for (dim = 0; dim < this.dim; dim++) {
-            sum +=  this.elts[dim]*vec.elts[dim];
+            sum +=  this.elts[dim] * vec.elts[dim];
         }
         return sum;
     }
@@ -713,7 +713,7 @@ function dot(vec, metric) {
         }
         left = metric.mtxMulti(this,'left');
         for (dim = 0; dim < left.dim; dim++) {
-            sum +=  left.elts[dim]*vec.elts[dim];
+            sum +=  left.elts[dim] * vec.elts[dim];
         }
         return sum;
     }
@@ -853,7 +853,7 @@ function mtxMulti(object, side) {
 
     if( (object instanceof Vector) && (side == 'left') ) {
         if(object.dim !=  this.rows) {
-            alert('Vector*Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
+            alert('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
             return -999;
         }
         result = new Vector('result');
@@ -870,7 +870,7 @@ function mtxMulti(object, side) {
 
     if( (object instanceof Vector) && (side == 'right') ) {
         if(this.cols !=  object.dim) {
-            alert('Matrix*Vector requires length of Vector = number of columns in Matrix.    Aborting...');
+            alert('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
             return -999;
         }
         result = new Vector('result');
@@ -888,7 +888,7 @@ function mtxMulti(object, side) {
     if( (object instanceof Matrix) && (side == 'left') ) {
 
         if(object.cols !=  this.rows) {
-            alert('Matrix1*Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
+            alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
             return -999;
         }
 
@@ -914,7 +914,7 @@ function mtxMulti(object, side) {
     if( (object instanceof Matrix) && (side == 'right') ) {
 
         if(object.rows !=  this.cols) {                                                                     
-            alert('Matrix1*Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
+            alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
             return -999;
         }
 
@@ -958,8 +958,8 @@ function getDeterminant() {
         // construct this iteration's lower triangular matrix:
         l = new Matrix('l',this.rows,this.cols,'identity');
         for (row = iter; row < this.rows; row++) {
-            l.elements[row][iter - 1] = -1*A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
-            L.elements[row][iter - 1] = -1*l.elements[row][iter - 1];
+            l.elements[row][iter - 1] = -1 * A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
+            L.elements[row][iter - 1] = -1 * l.elements[row][iter - 1];
         }
 
         // update A:
@@ -969,11 +969,11 @@ function getDeterminant() {
     detA = 1;
     detL = 1;
     for (iter = 0;iter < this.rows;iter++) {
-        detA = detA*A.elements[iter][iter];
-        detL = detL*L.elements[iter][iter];
+        detA = detA * A.elements[iter][iter];
+        detL = detL * L.elements[iter][iter];
     }
 
-    return detA*detL;
+    return detA * detL;
 
 }
 
@@ -1024,7 +1024,7 @@ function getCofactor() {
 
     for (row = 0;row < cofac.rows;row++) {
         for (col = 0;col < cofac.cols;col++) {
-            cofac.elements[row][col] = Math.pow( - 1,row+col)*minor.elements[row][col];
+            cofac.elements[row][col] = Math.pow( - 1,row+col) * minor.elements[row][col];
         }
     }
 
@@ -1064,7 +1064,7 @@ function mtxScale(scale) {
 
     for (row = 0;row < scaled.rows;row++) {
         for (col = 0;col < scaled.cols;col++) {
-            scaled.elements[row][col] = scale*this.elements[row][col];
+            scaled.elements[row][col] = scale * this.elements[row][col];
         }
     }
 
@@ -1092,12 +1092,12 @@ function getInverse() {
 function Kolmogorov(z) {
     var j;
 
-    Kprob = 2*Math.exp( - 2*z*z);    // start with first term (ie j = 1)
+    Kprob = 2 * Math.exp( - 2 * z * z);    // start with first term (ie j = 1)
 
     // keep addting terms on to fp precision
     j = 2;
-    while(2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z)+Kprob !=  Kprob && j < 1000000) {
-        Kprob += 2*Math.pow( - 1,j - 1)*Math.exp( - 2*j*j*z*z);
+    while(2 * Math.pow( - 1,j - 1) * Math.exp( - 2 * j * j * z * z)+Kprob !=  Kprob && j < 1000000) {
+        Kprob += 2 * Math.pow( - 1,j - 1) * Math.exp( - 2 * j * j * z * z);
         j++;
     }
 
@@ -1107,7 +1107,7 @@ function Kolmogorov(z) {
 }
 
 function Gaussian(mu, sigma, x) {
-    return 1 / sigma / Math.sqrt(2*3.14159265358979)*Math.exp( - 0.5*Math.pow((x - mu) / sigma,2));
+    return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp( - 0.5 * Math.pow((x - mu) / sigma,2));
 }
 
 
