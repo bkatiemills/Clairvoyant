@@ -120,7 +120,7 @@ function integrate(min, max) {
         if (minBin != maxBin) {
             total  += this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin + 1].lo - this.bins[maxBin].lo);
         }
-    
+
         return total;
 
     }
@@ -139,7 +139,7 @@ function normalize(fac) {
     for (i = 0; i < this.bins.length; i++) {
         this.bins[i].weight = factor * this.bins[i].weight / total;
     }
-    
+
     return 0;
 }
 
@@ -153,7 +153,7 @@ function add(otherHisto, sc1, sc2) {
         return -999;
     }
 
-    sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
+    sumHisto = new Histo('sumHisto', this.nBins, this.min, this.max);
     
     scale1 = sc1 || 1;
     scale2 = sc2 || 1;
@@ -187,7 +187,7 @@ function getVariance() {
     totalWeight = this.integrate();
     weightedSquares = 0;
     for (i = 0; i < this.bins.length - 1; i++) {
-        weightedSquares  += Math.pow(this.bins[i].lo,2) * this.bins[i].weight;
+        weightedSquares  += Math.pow(this.bins[i].lo, 2) * this.bins[i].weight;
     }
     meanSquare = weightedSquares / totalWeight;
 
@@ -221,9 +221,9 @@ function KStest(target) {
         return -999;
     }
 
-    CDF1 = new Histo('CDF1', 10,0,10);
+    CDF1 = new Histo('CDF1', 10, 0, 10);
     CDF1 = this.getCDF();
-    CDF2 = new Histo('CDF2', 10,0,10);
+    CDF2 = new Histo('CDF2', 10, 0, 10);
     CDF2 = target.getCDF();
 
     weight1 = this.integrate();
@@ -241,7 +241,7 @@ function KStest(target) {
     return Kolmogorov(KSstat);
 }
 
-function sample(nSamples,source) {
+function sample(nSamples, source) {
     var nP, p, pull, x;
 
     x = [];
@@ -251,7 +251,7 @@ function sample(nSamples,source) {
     }
     for (pull = 0; pull < nSamples; pull++) {
         x[0] = Math.random() * (this.max - this.min)  +  this.min;
-        this.increment(x[0],source.evaluate(x,p));
+        this.increment(x[0], source.evaluate(x, p));
     }
 
     return 0;
@@ -344,17 +344,17 @@ function setParameters(newParam) {
 }
 
 // function to find this function's extremum on  < min > .. < max >  by finding the derivative
-// zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies  < tol > .    Returns an array,
+// zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies  < tol > .    Returns an array, 
 // first element = coordinate of extrema, second element is 0 for minima and 1 for maxima. 
 function getExtremum(min, max, tol) {
     var concavity, ddx, extrema, funcString, results, tolerance;
 
     tolerance = tol || 0.000001;
 
-    funcString = this.name + '.derivative(x[0],0,0.000001,0)';
+    funcString = this.name + '.derivative(x[0], 0, 0.000001, 0)';
 
     ddx = new Func('ddx', funcString);
-    extrema = ddx.brentSoln(min,max,tolerance);
+    extrema = ddx.brentSoln(min, max, tolerance);
     concavity = ddx.derivative(extrema);
 
     results = [];
@@ -380,10 +380,10 @@ function randPull(min, max) {
  
     done = 0;
 
-    // find the highest point of the function in range: grid search to find global maximum,
+    // find the highest point of the function in range: grid search to find global maximum, 
     // then getExtremum to zero in on it.
     extreme = [];
-    extreme = this.getExtremum(min,max);
+    extreme = this.getExtremum(min, max);
 
     x = 0;
     thresh = 0;
@@ -614,7 +614,7 @@ function gradient(x) {
     grad = [];
 
     for (dim = 0; dim < dimension; dim++) {
-        grad[dim] = this.derivative(x,dim); // *  direction[dim]
+        grad[dim] = this.derivative(x, dim); // *  direction[dim]
     }
 
     return grad;
@@ -687,7 +687,7 @@ function dot(vec, metric) {
             alert('Incorrect metric dimension.    Aborting...');
             return -999;
         }
-        left = metric.mtxMulti(this,'left');
+        left = metric.mtxMulti(this, 'left');
         for (dim = 0; dim < left.dim; dim++) {
             sum  += left.elts[dim] * vec.elts[dim];
         }
@@ -838,7 +838,7 @@ function mtxMulti(object, side) {
             for (row = 0;row < this.rows;row++) {
                 sum  += object.elts[row] * this.elements[row][col];
             }
-            result.setVal(sum,col);
+            result.setVal(sum, col);
             sum = 0;
         }
         return result;
@@ -855,7 +855,7 @@ function mtxMulti(object, side) {
             for (col = 0;col < this.cols;col++) {
                 sum  += object.elts[col] * this.elements[row][col];
             }
-            result.setVal(sum,row);
+            result.setVal(sum, row);
             sum = 0;
         }
         return result;
@@ -927,12 +927,12 @@ function getDeterminant() {
     // zeroth iteration:
     A = this;
     L = new Matrix('L', this.rows, this.cols, 'identity');
-    l = new Matrix('l',this.rows,this.cols);
+    l = new Matrix('l', this.rows, this.cols);
 
     for (iter = 1;iter < this.rows;iter++) {
 
         // construct this iteration's lower triangular matrix:
-        l = new Matrix('l',this.rows,this.cols,'identity');
+        l = new Matrix('l', this.rows, this.cols, 'identity');
         for (row = iter; row < this.rows; row++) {
             l.elements[row][iter - 1] = -1 * A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
             L.elements[row][iter - 1] = -1 * l.elements[row][iter - 1];
@@ -957,7 +957,7 @@ function getDeterminant() {
 function getMinor() {
     var cMap, col, mtxMinor, rMap, row, subCol, subMtx, subRow;
 
-    subMtx = new Matrix('subMtx',this.rows - 1,this.cols - 1);
+    subMtx = new Matrix('subMtx', this.rows - 1, this.cols - 1);
     mtxMinor = new Matrix('mtxMinor', this.rows, this.cols);
 
     rMap = 0;
@@ -1000,7 +1000,7 @@ function getCofactor() {
 
     for (row = 0;row < cofac.rows;row++) {
         for (col = 0;col < cofac.cols;col++) {
-            cofac.elements[row][col] = Math.pow( - 1,row + col) * minor.elements[row][col];
+            cofac.elements[row][col] = Math.pow( - 1, row + col) * minor.elements[row][col];
         }
     }
 
@@ -1012,7 +1012,7 @@ function getCofactor() {
 function getTranspose() {
     var col, row, trans;
 
-    trans = new Matrix('trans',this.cols,this.rows);
+    trans = new Matrix('trans', this.cols, this.rows);
 
     for (row = 0;row < trans.rows;row++) {
         for (col = 0;col < trans.cols;col++) {
@@ -1036,7 +1036,7 @@ function getAdjugate() {
 function mtxScale(scale) {
     var col, row, scaled;
 
-    scaled = new Matrix('scaled',this.rows,this.cols);
+    scaled = new Matrix('scaled', this.rows, this.cols);
 
     for (row = 0;row < scaled.rows;row++) {
         for (col = 0;col < scaled.cols;col++) {
@@ -1072,8 +1072,8 @@ function Kolmogorov(z) {
 
     // keep addting terms on to fp precision
     j = 2;
-    while(2 * Math.pow( - 1,j - 1) * Math.exp( - 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
-        Kprob  += 2 * Math.pow( - 1,j - 1) * Math.exp( - 2 * j * j * z * z);
+    while(2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
+        Kprob  += 2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z);
         j++ ;
     }
 
@@ -1083,7 +1083,7 @@ function Kolmogorov(z) {
 }
 
 function Gaussian(mu, sigma, x) {
-    return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp( - 0.5 * Math.pow((x - mu) / sigma,2));
+    return 1 / sigma / Math.sqrt(2 * 3.14159265358979) * Math.exp( - 0.5 * Math.pow((x - mu) / sigma, 2));
 }
 
 
