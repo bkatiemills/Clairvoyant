@@ -297,9 +297,9 @@ function Func(name, userString, parameters) {
 //  < inputs >  may be either an Array or a single number
 function evaluate(inputs) {
     var ins, par, x;
-    
+
     x = [];
-    
+
     if (inputs instanceof Array) {
         for (ins = 0; ins < inputs.length; ins++) {
             x[ins] = inputs[ins];
@@ -310,7 +310,7 @@ function evaluate(inputs) {
 
     par = [];
     for (ins = 0; ins < this.params.length; ins++) {
-            par[ins] = this.params[ins];
+        par[ins] = this.params[ins];
     }
 
     return eval(this.userString);
@@ -372,8 +372,8 @@ function getExtremum(min, max, tol) {
 // Function must be non - negative and pole - free across the requested 
 // range for this to make sense. 
 function randPull(min, max) {
-    var decision, done, extreme, thresh, x; 
- 
+    var decision, done, extreme, thresh, x;
+
     done = 0;
 
     // find the highest point of the function in range: grid search to find global maximum, 
@@ -385,7 +385,7 @@ function randPull(min, max) {
     thresh = 0;
     decision = 0;
 
-    while(done == 0) {
+    while (done == 0) {
         // choose a point in range
         x = min  +  (max - min) * Math.random();
 
@@ -442,7 +442,7 @@ function brentSoln(lo, hi, tol) {
     d = 0;
     buffer = 0;
     loops = 0;
-    while(f_b != 0 && f_s != 0 && Math.abs(b - a) > tolerance) {
+    while (f_b != 0 && f_s != 0 && Math.abs(b - a) > tolerance) {
         loops++ ;
         f_a = this.evaluate(a);
         f_b = this.evaluate(b);
@@ -529,7 +529,7 @@ function biSoln(min, max, tol) {
     c = (a + b) / 2;
     f_c = Math.abs(this.evaluate(c));
 
-    while(Math.abs(a - b)  >  tolerance) {
+    while (Math.abs(a - b)  >  tolerance) {
         if (f_a  >  f_b && f_a  >  f_c) {
             a = c;
             f_a = Math.abs(this.evaluate(a));
@@ -1059,7 +1059,7 @@ function Kolmogorov(z) {
 
     // keep addting terms on to fp precision
     j = 2;
-    while(2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
+    while (2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z) + Kprob !=  Kprob && j < 1000000) {
         Kprob  += 2 * Math.pow( - 1, j - 1) * Math.exp( - 2 * j * j * z * z);
         j++ ;
     }
