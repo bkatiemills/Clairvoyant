@@ -406,7 +406,7 @@ function randPull(min, max) {
 // between  < hi >  and  < lo > .    Letters label the steps in the wikipedia
 // factoring of the algorithm; step (a) is the function call itself. 
 function brentSoln(lo, hi, tol) {
-    var a, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
+    var a, answer, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
 
     tolerance = tol || 0.000001;
 
@@ -489,10 +489,12 @@ function brentSoln(lo, hi, tol) {
 
     // (i)
     if (this.evaluate(b) == 0) {
-        return Math.round(b / tolerance) * tolerance;
+        answer = Math.round(b / tolerance) * tolerance;
     } else {
-        return Math.round(s / tolerance) * tolerance;
+        answer = Math.round(s / tolerance) * tolerance;
     }
+    
+    return answer;
 
 }
 
