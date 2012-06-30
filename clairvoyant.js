@@ -154,7 +154,7 @@ function add(otherHisto, sc1, sc2) {
     }
 
     sumHisto = new Histo('sumHisto', this.nBins, this.min, this.max);
-    
+
     scale1 = sc1 || 1;
     scale2 = sc2 || 1;
 
@@ -204,18 +204,18 @@ function getCDF() {
     cloneHist.normalize();
 
     for (i = 1; i < cloneHist.bins.length - 1; i++) {
-            cloneHist.bins[i].weight  += cloneHist.bins[i - 1].weight;
+        cloneHist.bins[i].weight  += cloneHist.bins[i - 1].weight;
     }
 
     return cloneHist;
-        
+
 }
 
 // perform a KS match between this histo and  < target >  histo
 function KStest(target) {
     var CDF1, CDF2, delta, i, KSstat, weight1, weight2;
 
-    if ( (this.nBins !=  target.nBins)    ||    (this.min !=  target.min)    || (this.max !=  target.max) ) {
+    if ((this.nBins !=  target.nBins)    ||    (this.min !=  target.min)    || (this.max !=  target.max)) {
         document.write(' </br> ');
         document.write('histos must have same min, max and divisions for KS test, abandoning test...');
         return -999;
@@ -228,7 +228,7 @@ function KStest(target) {
 
     weight1 = this.integrate();
     weight2 = target.integrate();
- 
+
     delta = 0;
     for (i = 0; i < this.bins.length; i++) {
         if (Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight) > delta) {
@@ -422,7 +422,7 @@ function brentSoln(lo, hi, tol) {
     // (c)
     initLo = this.evaluate(lo);
     // (d)
-    if ( (initHi * initLo >= 0) ) {
+    if ((initHi * initLo >= 0)) {
         alert('Range provided does not bracket a unique zero, attempting to recover...');
         return this.biSoln(lo, hi);
     }
@@ -465,7 +465,7 @@ function brentSoln(lo, hi, tol) {
         }
         // (h_iii)
         // (h_iv)
-        if ( ((s > b && s > (3 * a + b) / 4)||(s < b && s < (3 * a + b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance) ) {
+        if (((s > b && s > (3 * a + b) / 4)||(s < b && s < (3 * a + b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance)) {
             // (h_iv_1)
             s = (a + b) / 2;
             // (h_iv_2)
@@ -491,7 +491,7 @@ function brentSoln(lo, hi, tol) {
             a = s;
         }
         // (h_xi)
-        if ( Math.abs(this.evaluate(a))  <  Math.abs(this.evaluate(b)) ) {
+        if ( Math.abs(this.evaluate(a))  <  Math.abs(this.evaluate(b))) {
             buffer = a;
             a = b;
             b = buffer;
@@ -570,9 +570,9 @@ function derivative(x, dim, tol, roundoff) {
 
     doRound = roundoff || 1;
 
-    if ( !(x instanceof Array) ) {
-        dtol = ( this.evaluate(x + tolerance) - this.evaluate(x - tolerance) ) / (2 * tolerance);
-        dtol2 = ( this.evaluate(x + tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
+    if ( !(x instanceof Array)) {
+        dtol = ( this.evaluate(x + tolerance) - this.evaluate(x - tolerance)) / (2 * tolerance);
+        dtol2 = ( this.evaluate(x + tolerance / 2) - this.evaluate(x - tolerance / 2)) / tolerance;
     }
     else{
         Xhi = [];
@@ -591,8 +591,8 @@ function derivative(x, dim, tol, roundoff) {
         Xhi2[dimension]  += tolerance / 2;
         Xlo2[dimension]  -=  tolerance / 2;
 
-        dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo) ) / (2 * tolerance);
-        dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2) ) / tolerance;
+        dtol = ( this.evaluate(Xhi) - this.evaluate(Xlo)) / (2 * tolerance);
+        dtol2 = ( this.evaluate(Xhi2) - this.evaluate(Xlo2)) / tolerance;
     }
 
 
@@ -664,7 +664,7 @@ function setVal(value, position) {
 function dot(vec, metric) {
     var dim, left, sum;
 
-    if ( !(vec instanceof Vector) ) {
+    if ( !(vec instanceof Vector)) {
         alert('Must take dot product with another Vector.    Aborting...');
         return -999;
     }
@@ -683,7 +683,7 @@ function dot(vec, metric) {
     }
 
     if (arguments.length == 2) {
-        if ( (this.dim !=  metric.rows) || (vec.dim !=  metric.cols) ) {
+        if ((this.dim !=  metric.rows) || (vec.dim !=  metric.cols)) {
             alert('Incorrect metric dimension.    Aborting...');
             return -999;
         }
@@ -793,7 +793,7 @@ function dump() {
 function mtxAdd(matrix) {
     var col, name, name1, name2, result, row;
 
-    if ( !(matrix instanceof Matrix) ) {
+    if ( !(matrix instanceof Matrix)) {
         alert('Argument is not a matrix.    Aborting...');
         return -999;
     }
@@ -827,7 +827,7 @@ function mtxMulti(object, side) {
         return -999;
     }
 
-    if ( (object instanceof Vector) && (side == 'left') ) {
+    if ((object instanceof Vector) && (side == 'left')) {
         if (object.dim !=  this.rows) {
             alert('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
             return -999;
@@ -844,7 +844,7 @@ function mtxMulti(object, side) {
         return result;
     }
 
-    if ( (object instanceof Vector) && (side == 'right') ) {
+    if ((object instanceof Vector) && (side == 'right')) {
         if (this.cols !=  object.dim) {
             alert('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
             return -999;
@@ -861,7 +861,7 @@ function mtxMulti(object, side) {
         return result;
     }
 
-    if ( (object instanceof Matrix) && (side == 'left') ) {
+    if ((object instanceof Matrix) && (side == 'left')) {
 
         if (object.cols !=  this.rows) {
             alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
@@ -887,7 +887,7 @@ function mtxMulti(object, side) {
 
     }
 
-    if ( (object instanceof Matrix) && (side == 'right') ) {
+    if ((object instanceof Matrix) && (side == 'right')) {
 
         if (object.rows !=  this.cols) {                                                                     
             alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
