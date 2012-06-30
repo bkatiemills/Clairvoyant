@@ -55,16 +55,16 @@ function increment(value, amount) {
     var i, index;
     index = 0;
 
-    if(arguments.length  ==  1) {
+    if (arguments.length  ==  1) {
         amount = 1;
     }
 
-    if(value  <  this.min || value  >=  this.max) {
+    if (value  <  this.min || value  >=  this.max) {
         return -999;
     }
-    
+
     for (i = 0; i < this.bins.length; i++) {
-        if(this.bins[i].lo  <=  value) {
+        if (this.bins[i].lo  <=  value) {
             index = i;
         }
     }
@@ -86,7 +86,7 @@ function integrate(min, max) {
     total = 0;
 
     // return integral of whole histo if no arguments provided
-    if(arguments.length == 0) {
+    if (arguments.length == 0) {
         for (i = 0; i < this.bins.length; i++) {
             total+=  this.bins[i].weight;
         }
@@ -94,18 +94,18 @@ function integrate(min, max) {
     }
 
     // otherwise integrate from min to max:
-    if(arguments.length == 2) {
+    if (arguments.length == 2) {
 
-        if(min  <  this.min || max  >  this.max) {
+        if (min  <  this.min || max  >  this.max) {
             document.write('bounds OOR');
             return -999;
         }
 
         for (i = 0; i < this.bins.length; i++) {
-            if(this.bins[i].lo  <=  min) {
+            if (this.bins[i].lo  <=  min) {
                 minBin = i;
             }
-            if(this.bins[i].lo  <  max) {
+            if (this.bins[i].lo  <  max) {
                 maxBin = i;
             }
         }
@@ -119,7 +119,7 @@ function integrate(min, max) {
         total +=  this.bins[minBin].weight * (this.bins[minBin+1].lo - min) / (this.bins[minBin+1].lo - this.bins[minBin].lo);
 
         // similarly for the last bin
-        if(minBin!= maxBin) {
+        if (minBin!= maxBin) {
             total +=  this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin+1].lo - this.bins[maxBin].lo);
         }
     
@@ -134,7 +134,7 @@ function integrate(min, max) {
 function normalize(factor) {
     var i, total;
 
-    if(arguments.length == 0) {
+    if (arguments.length == 0) {
         factor = 1;
     }
 
@@ -152,14 +152,14 @@ function normalize(factor) {
 function add(otherHisto, scale1, scale2) {
     var j, sumHisto;
 
-    if(this.nBins !=  otherHisto.nBins || this.min !=  otherHisto.min || this.max !=  otherHisto.max) {
+    if (this.nBins !=  otherHisto.nBins || this.min !=  otherHisto.min || this.max !=  otherHisto.max) {
         alert('Can\'t add histrograms with different binning.    Aborting...');
         return -999;
     }
 
     sumHisto = new Histo('sumHisto',this.nBins, this.min, this.max);
     
-    if(arguments.length == 1) {
+    if (arguments.length == 1) {
         scale1 = 1;
         scale2 = 1;
     }
@@ -221,7 +221,7 @@ function getCDF() {
 function KStest(target) {
     var CDF1, CDF2, delta, i, KSstat, weight1, weight2;
 
-    if( (this.nBins !=  target.nBins)    ||    (this.min !=  target.min)    || (this.max !=  target.max) ) {
+    if ( (this.nBins !=  target.nBins)    ||    (this.min !=  target.min)    || (this.max !=  target.max) ) {
         document.write(' </br> ');
         document.write('histos must have same min, max and divisions for KS test, abandoning test...');
         return -999;
@@ -237,7 +237,7 @@ function KStest(target) {
  
     delta = 0;
     for (i = 0; i < this.bins.length; i++) {
-        if(Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight) > delta) {
+        if (Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight) > delta) {
             delta = Math.abs(CDF1.bins[i].weight - CDF2.bins[i].weight);
         }
     }
@@ -276,8 +276,8 @@ function Func(name, userString, parameters) {
     this.userString = userString;
     this.params = [];
 
-    if(arguments.length  ==  3) {
-        if(parameters instanceof Array) {
+    if (arguments.length  ==  3) {
+        if (parameters instanceof Array) {
             this.params = parameters;
         }
         else{
@@ -309,7 +309,7 @@ function evaluate(inputs) {
     
     x = [];
     
-    if(inputs instanceof Array) {
+    if (inputs instanceof Array) {
         for (ins = 0; ins < inputs.length; ins++) {
             x[ins] = inputs[ins];
         }
@@ -356,7 +356,7 @@ function getExtremum(min, max, tol) {
     var concavity, ddx, extrema, funcString, results, tolerance;
 
     tolerance = 0.000001;
-    if(arguments.length  ==  3) {
+    if (arguments.length  ==  3) {
         tolerance = tol;
     }
 
@@ -368,10 +368,10 @@ function getExtremum(min, max, tol) {
 
     results = [];
     results[0] = Math.round(extrema / tolerance) * tolerance;
-    if(concavity > 0) {
+    if (concavity > 0) {
         results[1] = 0;
     }
-    if(concavity < 0) {
+    if (concavity < 0) {
         results[1] = 1;
     }
 
@@ -407,7 +407,7 @@ function randPull(min, max) {
 
         // decide if we should keep the pull
         decision = Math.random();
-        if(decision  <  thresh) {
+        if (decision  <  thresh) {
             // alert(x)
             return x;
         }
@@ -425,7 +425,7 @@ function brentSoln(lo, hi, tol) {
     var a, b, buffer, c, d, f_a, f_b, f_c, f_s, initHI, initLo, loops, mflag, s, tolerance;
 
     tolerance = 0.000001;
-    if(arguments.length  ==  3) {
+    if (arguments.length  ==  3) {
         tolerance = tol;
     }
 
@@ -434,14 +434,14 @@ function brentSoln(lo, hi, tol) {
     // (c)
     initLo = this.evaluate(lo);
     // (d)
-    if( (initHi * initLo >= 0) ) {
+    if ( (initHi * initLo >= 0) ) {
         alert('Range provided does not bracket a unique zero, attempting to recover...');
         return this.biSoln(lo, hi);
     }
     // (e)
     a = lo;
     b = hi;
-    if(Math.abs(initLo)  <  Math.abs(initHi)) {
+    if (Math.abs(initLo)  <  Math.abs(initHi)) {
         a = hi;
         b = lo;
     }
@@ -466,7 +466,7 @@ function brentSoln(lo, hi, tol) {
         f_c = this.evaluate(c);
 
         // (h_i)
-        if(f_a!= f_c && f_b!= f_c) {
+        if (f_a!= f_c && f_b!= f_c) {
             // (h_i_1)
             s = a * f_b * f_c / (f_a - f_b) / (f_a - f_c) + b * f_a * f_c / (f_b - f_a) / (f_b - f_c) + c * f_a * f_b / (f_c - f_a) / (f_c - f_b);
         }
@@ -477,7 +477,7 @@ function brentSoln(lo, hi, tol) {
         }
         // (h_iii)
         // (h_iv)
-        if( ((s > b && s > (3 * a+b) / 4)||(s < b && s < (3 * a+b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance) ) {
+        if ( ((s > b && s > (3 * a+b) / 4)||(s < b && s < (3 * a+b) / 4)) || (mflag == 1 && Math.abs(s - b)  >=  Math.abs(b - c) / 2) || (mflag == 0 && Math.abs(s - b)  >=  Math.abs(c - d) / 2) || (mflag == 1 && Math.abs(b - c) < tolerance) || (mflag == 0 && Math.abs(c - d) < tolerance) ) {
             // (h_iv_1)
             s = (a+b) / 2;
             // (h_iv_2)
@@ -496,14 +496,14 @@ function brentSoln(lo, hi, tol) {
         // (h_ix)
         c = b;
         // (h_x)
-        if(f_a * f_s < 0) {
+        if (f_a * f_s < 0) {
             b = s;
         }
         else{
             a = s;
         }
         // (h_xi)
-        if( Math.abs(this.evaluate(a))  <  Math.abs(this.evaluate(b)) ) {
+        if ( Math.abs(this.evaluate(a))  <  Math.abs(this.evaluate(b)) ) {
             buffer = a;
             a = b;
             b = buffer;
@@ -512,7 +512,7 @@ function brentSoln(lo, hi, tol) {
 
 
     // (i)
-    if(this.evaluate(b) == 0) {
+    if (this.evaluate(b) == 0) {
         return Math.round(b / tolerance) * tolerance;
     }
     else{
@@ -533,7 +533,7 @@ function biSoln(min, max, tol) {
     gridMin = Math.abs(this.evaluate(min));
     lowestPoint = here;
     for (gridS = 0; gridS < gridSteps; gridS++) {
-        if( Math.abs(this.evaluate(here))  <  gridMin ) {
+        if ( Math.abs(this.evaluate(here))  <  gridMin ) {
             lowestPoint = here;
             gridMin = Math.abs(this.evaluate(here));
         }
@@ -544,7 +544,7 @@ function biSoln(min, max, tol) {
     high = lowestPoint + stepSize;
 
     tolerance = 0.000001;
-    if(arguments.length  ==  3) {
+    if (arguments.length  ==  3) {
         tolerance = tol;
     }
 
@@ -556,11 +556,11 @@ function biSoln(min, max, tol) {
     f_c = Math.abs(this.evaluate(c));
 
     while(Math.abs(a - b)  >  tolerance) {
-        if(f_a  >  f_b && f_a  >  f_c) {
+        if (f_a  >  f_b && f_a  >  f_c) {
             a = c;
             f_a = Math.abs(this.evaluate(a));
         }
-        else if(f_b  >  f_a && f_b  >  f_c) {
+        else if (f_b  >  f_a && f_b  >  f_c) {
             b = c;
             f_b = Math.abs(this.evaluate(b));
         }
@@ -580,21 +580,21 @@ function derivative(x, dim, tol, roundoff) {
     var D, dimension, doRound, dtol1, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
 
     dimension = 0;
-    if(arguments.length == 2) {
+    if (arguments.length == 2) {
         dimension = dim;
     }
 
     tolerance = 0.000001;
-    if(arguments.length == 3) {
+    if (arguments.length == 3) {
         tolerance = tol;
     }
 
     doRound = 1;
-    if(arguments.length == 4) {
+    if (arguments.length == 4) {
         doRound = roundoff;
     }
 
-    if( !(x instanceof Array) ) {
+    if ( !(x instanceof Array) ) {
         dtol = ( this.evaluate(x+tolerance) - this.evaluate(x - tolerance) ) / (2 * tolerance);
         dtol2 = ( this.evaluate(x+tolerance / 2) - this.evaluate(x - tolerance / 2) ) / tolerance;
     }
@@ -622,10 +622,10 @@ function derivative(x, dim, tol, roundoff) {
 
     D = (4 * dtol2 - dtol) / 3;
 
-    if(doRound  ==  0) {
+    if (doRound  ==  0) {
         return D;
     }
-    if(doRound  ==  1) {
+    if (doRound  ==  1) {
         return Math.round(D / tolerance) * tolerance;
     }
 
@@ -654,12 +654,12 @@ function gradient(x) {
 
 function Vector(name, elements) {
     this.name = name;
-    if(arguments.length == 1) {
+    if (arguments.length == 1) {
         this.elts = [];
         this.elts[0] = 0;
         this.dim = 1;
     }
-    if(arguments.length == 2) {
+    if (arguments.length == 2) {
         this.elts = elements;
         this.dim = elements.length;
     }
@@ -671,14 +671,14 @@ function Vector(name, elements) {
 }
 
 function setVal(value, position) {
-    if(arguments.length == 1) {
+    if (arguments.length == 1) {
         this.elts = value;
         this.dim = value.length;
         return;
     }
-    if(arguments.length == 2) {
+    if (arguments.length == 2) {
         this.elts[position] = value;
-        if(this.dim < (position+1)) {
+        if (this.dim < (position+1)) {
             this.dim = position+1;
         }
         return 0;
@@ -688,26 +688,26 @@ function setVal(value, position) {
 function dot(vec, metric) {
     var dim, left, sum;
 
-    if( !(vec instanceof Vector) ) {
+    if ( !(vec instanceof Vector) ) {
         alert('Must take dot product with another Vector.    Aborting...');
         return -999;
     }
-    if(this.dim !=  vec.dim) {
+    if (this.dim !=  vec.dim) {
         alert('Vectors must be the same length to take dot product.    Aborting...');        
         return -999;
     }
 
     sum = 0;
 
-    if(arguments.length == 1) {
+    if (arguments.length == 1) {
         for (dim = 0; dim < this.dim; dim++) {
             sum +=  this.elts[dim] * vec.elts[dim];
         }
         return sum;
     }
 
-    if(arguments.length == 2) {
-        if( (this.dim !=  metric.rows) || (vec.dim !=  metric.cols) ) {
+    if (arguments.length == 2) {
+        if ( (this.dim !=  metric.rows) || (vec.dim !=  metric.cols) ) {
             alert('Incorrect metric dimension.    Aborting...');
             return -999;
         }
@@ -725,11 +725,11 @@ function getLength(metric) {
 
     length = 0;
 
-    if(arguments.length == 0) {
+    if (arguments.length == 0) {
         length = Math.pow(this.dot(this), 0.5);
     }
 
-    if(arguments.length == 1) {
+    if (arguments.length == 1) {
         length = Math.pow((metric.mtxMulti(this, 'left')).dot(this), 0.5);
     }
     
@@ -758,10 +758,10 @@ function Matrix(name, rows, columns, preDef) {
     }
 
 
-    if(arguments.length == 4) {
+    if (arguments.length == 4) {
 
-        if(preDef  ==  'identity') {
-            if(this.rows!= this.cols) {
+        if (preDef  ==  'identity') {
+            if (this.rows!= this.cols) {
                 alert('Identity matrix must be square.    Aborting...');
                 return -999;
             }
@@ -771,8 +771,8 @@ function Matrix(name, rows, columns, preDef) {
 
         }
 
-        if(preDef  ==  'Minkowski') {
-            if(this.rows !=  4 || this.cols !=  4) {
+        if (preDef  ==  'Minkowski') {
+            if (this.rows !=  4 || this.cols !=  4) {
                 alert('Minkowski space has a 4 by 4 metric, please adjust rows & columns accordingly.    Aborting...');
                 return -999;
             }
@@ -817,12 +817,12 @@ function dump() {
 function mtxAdd(matrix) {
     var col, name, name1, name2, result, row;
 
-    if( !(matrix instanceof Matrix) ) {
+    if ( !(matrix instanceof Matrix) ) {
         alert('Argument is not a matrix.    Aborting...');
         return -999;
     }
 
-    if(this.rows!= matrix.rows || this.cols!= matrix.cols) {
+    if (this.rows!= matrix.rows || this.cols!= matrix.cols) {
         alert('Matrices must be the same dimension to add them.    Aborting...');
         return -999;
     }
@@ -846,13 +846,13 @@ function mtxAdd(matrix) {
 function mtxMulti(object, side) {
     var col, elt, name, name1, name2, result, row, sum;
 
-    if(side !=  'left' && side !=  'right') {
+    if (side !=  'left' && side !=  'right') {
         alert('Second argument must be either left or right, indicating which side of the matrix you want to place the first argument on before multiplying.    Aborting...');
         return -999;
     }
 
-    if( (object instanceof Vector) && (side == 'left') ) {
-        if(object.dim !=  this.rows) {
+    if ( (object instanceof Vector) && (side == 'left') ) {
+        if (object.dim !=  this.rows) {
             alert('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
             return -999;
         }
@@ -868,8 +868,8 @@ function mtxMulti(object, side) {
         return result;
     }
 
-    if( (object instanceof Vector) && (side == 'right') ) {
-        if(this.cols !=  object.dim) {
+    if ( (object instanceof Vector) && (side == 'right') ) {
+        if (this.cols !=  object.dim) {
             alert('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
             return -999;
         }
@@ -885,9 +885,9 @@ function mtxMulti(object, side) {
         return result;
     }
 
-    if( (object instanceof Matrix) && (side == 'left') ) {
+    if ( (object instanceof Matrix) && (side == 'left') ) {
 
-        if(object.cols !=  this.rows) {
+        if (object.cols !=  this.rows) {
             alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
             return -999;
         }
@@ -911,9 +911,9 @@ function mtxMulti(object, side) {
 
     }
 
-    if( (object instanceof Matrix) && (side == 'right') ) {
+    if ( (object instanceof Matrix) && (side == 'right') ) {
 
-        if(object.rows !=  this.cols) {                                                                     
+        if (object.rows !=  this.cols) {                                                                     
             alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
             return -999;
         }
@@ -943,7 +943,7 @@ function mtxMulti(object, side) {
 function getDeterminant() {
     var A, detA, detL, iter, L, l, row;
 
-    if(this.rows !=  this.cols) {
+    if (this.rows !=  this.cols) {
         alert('Matrix must be square.    Aborting...');
         return -999;
     }    
@@ -992,12 +992,12 @@ function getMinor() {
 
             rMap = 0;
             for (subRow = 0;subRow < subMtx.rows;subRow++) {
-                if(rMap == row) {
+                if (rMap == row) {
                     rMap++;
                 }
                 cMap = 0;
                 for (subCol = 0;subCol < subMtx.cols;subCol++) {
-                    if(cMap == col) {
+                    if (cMap == col) {
                         cMap++;
                     }
                     subMtx.elements[subRow][subCol] = this.elements[rMap][cMap];
