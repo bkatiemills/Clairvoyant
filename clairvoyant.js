@@ -117,7 +117,7 @@ function integrate(min, max) {
         total  += this.bins[minBin].weight * (this.bins[minBin + 1].lo - min) / (this.bins[minBin + 1].lo - this.bins[minBin].lo);
 
         // similarly for the last bin
-        if (minBin!= maxBin) {
+        if (minBin != maxBin) {
             total  += this.bins[maxBin].weight * (max - this.bins[maxBin].lo) / (this.bins[maxBin + 1].lo - this.bins[maxBin].lo);
         }
     
@@ -447,14 +447,14 @@ function brentSoln(lo, hi, tol) {
     d = 0;
     buffer = 0;
     loops = 0;
-    while(f_b!= 0 && f_s!= 0 && Math.abs(b - a) > tolerance) {
+    while(f_b != 0 && f_s != 0 && Math.abs(b - a) > tolerance) {
         loops++ ;
         f_a = this.evaluate(a);
         f_b = this.evaluate(b);
         f_c = this.evaluate(c);
 
         // (h_i)
-        if (f_a!= f_c && f_b!= f_c) {
+        if (f_a != f_c && f_b != f_c) {
             // (h_i_1)
             s = a * f_b * f_c / (f_a - f_b) / (f_a - f_c)  +  b * f_a * f_c / (f_b - f_a) / (f_b - f_c)  +  c * f_a * f_b / (f_c - f_a) / (f_c - f_b);
         }
@@ -737,7 +737,7 @@ function Matrix(name, rows, columns, preDef) {
     if (arguments.length == 4) {
 
         if (preDef  ==  'identity') {
-            if (this.rows!= this.cols) {
+            if (this.rows != this.cols) {
                 alert('Identity matrix must be square.    Aborting...');
                 return -999;
             }
@@ -798,7 +798,7 @@ function mtxAdd(matrix) {
         return -999;
     }
 
-    if (this.rows!= matrix.rows || this.cols!= matrix.cols) {
+    if (this.rows != matrix.rows || this.cols != matrix.cols) {
         alert('Matrices must be the same dimension to add them.    Aborting...');
         return -999;
     }
