@@ -863,7 +863,7 @@ function mtxMulti(object, side) {
         sum = 0;
         for (row = 0; row < object.rows; row++) {
             for (col = 0; col < this.cols; col++) {
-                for (elt = 0;elt < this.rows;elt++) {
+                for (elt = 0; elt < this.rows; elt++) {
                     sum  += object.elements[row][elt] * this.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -876,7 +876,7 @@ function mtxMulti(object, side) {
 
     if ((object instanceof Matrix) && (side == 'right')) {
 
-        if (object.rows !=  this.cols) {                                                                     
+        if (object.rows !=  this.cols) {
             alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
             return -999;
         }
@@ -889,7 +889,7 @@ function mtxMulti(object, side) {
         sum = 0;
         for (row = 0; row < object.rows; row++) {
             for (col = 0; col < this.cols; col++) {
-                for (elt = 0;elt < this.rows;elt++) {
+                for (elt = 0; elt < this.rows; elt++) {
                     sum  += this.elements[row][elt] * object.elements[elt][col];
                 }
                 result.elements[row][col] = sum;
@@ -909,14 +909,14 @@ function getDeterminant() {
     if (this.rows !=  this.cols) {
         alert('Matrix must be square.    Aborting...');
         return -999;
-    }    
+    }
 
     // zeroth iteration:
     A = this;
     L = new Matrix('L', this.rows, this.cols, 'identity');
     l = new Matrix('l', this.rows, this.cols);
 
-    for (iter = 1;iter < this.rows;iter++) {
+    for (iter = 1; iter < this.rows; iter++) {
 
         // construct this iteration's lower triangular matrix:
         l = new Matrix('l', this.rows, this.cols, 'identity');
@@ -931,7 +931,7 @@ function getDeterminant() {
 
     detA = 1;
     detL = 1;
-    for (iter = 0;iter < this.rows;iter++) {
+    for (iter = 0; iter < this.rows; iter++) {
         detA = detA * A.elements[iter][iter];
         detL = detL * L.elements[iter][iter];
     }
