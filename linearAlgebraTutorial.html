@@ -69,6 +69,51 @@
   document.write('</br>Length of vector (3,-1) = '+arrow2.getLength());
 
 
+  //-----dump Method---------------------------------------------
+  //dump()  -no arguments
+  //Return type: 0 on successful exit.
+
+  document.write('</br></br>/////////////////// .dump examples (Vector) //////////////////////////////////</br>');
+
+  //writes out this Vector to the window.
+
+  document.write('</br>Vector arrow = ');
+  arrow.dump();
+
+
+  //-----scale Method---------------------------------------------
+  //scale(<sc>)
+  //  <sc>      (optional) number to scale this Vector by, default 1.
+  //Return type: Vector on successful exit.
+
+  document.write('</br></br>/////////////////// .scale examples //////////////////////////////////</br>');
+
+  //scale scales this Vector by the function's argument.
+
+  document.write('</br>Vector arrow multiplied by 3 = ');
+  arrow.scale(3).dump();
+
+
+  //-----project Method---------------------------------------------
+  //project(<vec>)               
+  //  <vec>     Vector along which to project this Vector.
+  //Return type: Vector              
+  
+  document.write('</br></br>/////////////////// .project examples //////////////////////////////////</br>');
+  
+  //Returns the component of this Vector along the argument Vector <vec>.
+  
+  var component = arrow.project(arrow2);
+  
+  arrow.dump();
+  document.write(' projected along ');
+  arrow2.dump();
+  document.write(' = ');
+  component.dump();
+
+
+
+
   //-----Matrix Constructor---------------------------------------------
   //Matrix(<name>,<rows>,<columns>,<predef>)
   //  <name>	a string naming this Matrix.
@@ -108,7 +153,7 @@
   //dump() - no arguments
   //Return type: 0 on successful exit
 
-  document.write('</br></br>/////////////////// .dump examples //////////////////////////////////</br>');
+  document.write('</br></br>/////////////////// .dump examples (Matrix) //////////////////////////////////</br>');
 
   //The dump method just writes out this Matrix to the window:
 

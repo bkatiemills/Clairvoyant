@@ -79,7 +79,7 @@ function Func(name, userString, parameters) {
     this.getExtremum = function (min, max, tol) {
         var concavity, ddx, extrema, funcString, results, tolerance;
 
-        tolerance = tol || 0.000001;
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
 
         funcString = this.name + '.derivative(x[0], 0, 0.000001, 0)';
 
@@ -140,7 +140,7 @@ function Func(name, userString, parameters) {
     this.brentSoln = function (lo, hi, tol) {
         var a, answer, b, buffer, c, d, f_a, f_b, f_c, f_s, initHi, initLo, loops, mflag, s, tolerance;
 
-        tolerance = tol || 0.000001;
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
 
         // (b)
         initHi = this.evaluate(hi);
@@ -250,7 +250,7 @@ function Func(name, userString, parameters) {
         low = lowestPoint - stepSize;
         high = lowestPoint  +  stepSize;
 
-        tolerance = tol || 0.000001;
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
 
         a = low;
         b = high;
@@ -282,9 +282,9 @@ function Func(name, userString, parameters) {
     this.derivative = function (x, dim, tol, roundoff) {
         var D, dimension, doRound, dtol, dtol2, tolerance, vary, Xhi, Xhi2, Xlo, Xlo2;
 
-        dimension = dim || 0;
-        tolerance = tol || 0.000001;
-        doRound = roundoff || 1;
+        dimension = typeof dim !== 'undefined' ? dim : 0;
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
+        doRound = typeof roundoff !== 'undefined' ? roundoff : 1;
 
         if (!(x instanceof Array)) {
             dtol = (this.evaluate(x + tolerance) - this.evaluate(x - tolerance)) / (2 * tolerance);

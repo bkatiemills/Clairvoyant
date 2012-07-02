@@ -22,9 +22,9 @@ function Histo(name, nBins, min, max) {
     this.dumpContents = function () {
         var i;
 
-        document.write('</br>'+this.name+'</br>');
+        document.write('</br>' + this.name + '</br>');
         for (i = 0; i < this.bins.length; i++) {
-            document.write(this.bins[i].lo+' : '+this.bins[i].weight+'</br>');
+            document.write(this.bins[i].lo + ' : ' + this.bins[i].weight + '</br>');
         }
 
         return 0;
@@ -37,7 +37,7 @@ function Histo(name, nBins, min, max) {
         var amount, i, index;
         index = 0;
 
-        amount = amnt || 1;
+        amount = typeof amnt !== 'undefined' ? amnt : 1;
 
         if (value  <  this.min || value  >=  this.max) {
             return -999;
@@ -114,7 +114,7 @@ function Histo(name, nBins, min, max) {
     this.normalize = function (fac) {
         var factor, i, total;
 
-        factor = fac || 1;
+        factor = typeof fac !== 'undefined' ? fac : 1;
 
         total = this.integrate();
 
@@ -138,8 +138,8 @@ function Histo(name, nBins, min, max) {
 
         sumHisto = new Histo('sumHisto', this.nBins, this.min, this.max);
 
-        scale1 = sc1 || 1;
-        scale2 = sc2 || 1;
+        scale1 = typeof sc1 !== 'undefined' ? sc1 : 1;
+        scale2 = typeof sc2 !== 'undefined' ? sc2 : 1;
 
         for (j = 0; j < this.bins.length; j++) {
             sumHisto.increment(this.bins[j].lo, scale1 * this.bins[j].weight);

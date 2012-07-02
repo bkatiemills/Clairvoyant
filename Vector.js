@@ -86,4 +86,47 @@ function Vector(name, elements) {
         return length;
     };
 
+    //return this Vector scaled by <scale>
+    this.scale = function (sc) {
+        var i, scale, scaledVec;
+
+        scale = typeof sc !== 'undefined' ? sc : 1;
+
+        scaledVec = new Vector(this.name);
+        for (i = 0; i < this.dim; i++) {
+            scaledVec.setVal(this.elts[i] * scale, i);
+        }
+
+        return scaledVec;
+    };
+
+    //write out this Vector to the window:
+    this.dump = function () {
+        var i;
+
+        document.write('(');
+        for (i = 0; i < this.dim; i++) {
+            if (i !== this.dim - 1) {
+                document.write(this.elts[i] + ', ');
+            } else {
+                document.write(this.elts[i] + ')');
+            }
+        }
+
+        return 0;
+
+    };
+
+    //return the Vector projection of this Vector along Vector <vec>:
+    this.project = function (vec) {
+        var component, lengthSquared, norm;
+
+        component = this.dot(vec);
+        lengthSquared = vec.dot(vec);
+        norm = component / lengthSquared;
+
+        return vec.scale(norm);
+
+    };
+
 }

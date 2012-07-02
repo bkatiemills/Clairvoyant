@@ -328,5 +328,25 @@ function Matrix(name, rows, columns, preDef) {
 
     };
 
-
+/*
+    // function to calculate eigenvalues of this Matrix
+    this.getEigenvalues = function () {
+        var col, rawColumns, row;
+        
+        if (this.rows != this.cols) {
+            alert('Matrix must be square to calculate eigenvalues.  Aborting...');
+            return;
+        }
+        
+        //extract the columns of this Matrix as an Array of Vectors.
+        rawColumns = [];
+        for (col = 0; col < this.cols; col++){
+            rawColumns[col] = new Vector('column');
+            for (row = 0; row < this.rows; row++){
+                rawColumns[col].setVal(this.elements[row][col], row);
+            }
+        }
+        
+    };
+*/
 }
