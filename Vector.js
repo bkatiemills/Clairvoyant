@@ -1,71 +1,81 @@
 //-----Clairvoyant.js Vector Class------------------------------------------------------ 
 
-function Vector(name, elements) {
+function Vector(elements) {
     'use strict';
 
-    this.name = name;
-    if (arguments.length === 1) {
-        this.elts = [];
-        this.elts[0] = 0;
-        this.dim = 1;
-    }
-    if (arguments.length === 2) {
-        this.elts = elements;
-        this.dim = elements.length;
+    if (elements && !(elements instanceof Array)) {
+        throw ('ERROR: Must pass either an array of values OR nothing to Vector constructor.');
     }
 
-    //pass an Array or a single number as <value> to the Vector; single numbers get 
-    //assigned at <position> in the vector.
+    if (elements) {
+        this.elements = elements;
+        this.dimension = elements.length;
+    } else {
+        this.elements = [];
+        this.elements[0] = 0;
+        this.dimension = 1;
+    }
+
+    // Pass an Array or a single number as <value> to the Vector; single numbers get 
+    // assigned at <position> in the vector.
+
     this.setVal = function (value, position) {
-        if (arguments.length === 1) {
-            this.elts = value;
-            this.dim = value.length;
-            return;
+
+        if (!(value instanceof Array) && (typeof position === 'undefined')) {
+            throw ('ERROR: Must pass either an array of values OR a single number and position.');
         }
-        if (arguments.length === 2) {
-            this.elts[position] = value;
-            if (this.dim < (position + 1)) {
-                this.dim = position + 1;
+
+        if (typeof position !== 'undefined') {
+            this.elements[position] = value;
+            if (this.dimension < (position + 1)) {
+                this.dimension = position + 1;
+                return;
             }
-            return 0;
+        } else {
+            this.elements = value;
+            this.dimension = value.length;
+            return;
         }
     };
 
 
-    //take the dot product of this Vector with Vector <vec>.  Optional Matrix <metric>
-    //will be used as a meric (default rectangular Cartesian)
-    this.dot = function (vec, metric) {
-        var dim, left, sum;
+    // Take the dot product of this Vector with Vector <vector>.  Optional Matrix <metric>
+    // Will be used as a metric (default rectangular Cartesian)
 
-        if (!(vec instanceof Vector)) {
-            alert('Must take dot product with another Vector.    Aborting...');
-            return -999;
+    this.dot = function (vector, metric) {
+
+        var dimension, sum, left;
+
+        if (!(vector instanceof Vector)) {
+            throw ('ERROR: Not a vector. Must take dot product with another Vector.');
         }
-        if (this.dim !==  vec.dim) {
-            alert('Vectors must be the same length to take dot product.    Aborting...');
-            return -999;
+        if (this.dimension !==  vector.dimension) {
+            throw ('ERROR: Vectors must be the same length to take dot product.');
         }
 
         sum = 0;
 
-        if (arguments.length === 1) {
-            for (dim = 0; dim < this.dim; dim++) {
-                sum  += this.elts[dim] * vec.elts[dim];
-            }
-            return sum;
-        }
+        if (metric) {
 
-        if (arguments.length === 2) {
-            if ((this.dim !==  metric.rows) || (vec.dim !==  metric.cols)) {
-                alert('Incorrect metric dimension.    Aborting...');
-                return -999;
+            // if (!(metric instanceof Matrix)) {
+            //     throw('ERROR: Not a matrix. Second argument, when provided, must always be a matrix.')
+            //     return;
+            // }
+
+            if ((this.dimension !==  metric.rows) || (vector.dimension !==  metric.cols)) {
+                throw ('ERROR: Incorrect metric dimension.');
             }
+
             left = metric.mtxMulti(this, 'left');
-            for (dim = 0; dim < left.dim; dim++) {
-                sum  += left.elts[dim] * vec.elts[dim];
+            for (dimension = 0; dimension < left.dimension; dimension++) {
+                sum  += left.elements[dimension] * vector.elements[dimension];
             }
-            return sum;
+        } else {
+            for (dimension = 0; dimension < this.dimension; dimension++) {
+                sum  += this.elements[dimension] * vector.elements[dimension];
+            }
         }
+        return sum;
     };
 
 
@@ -75,46 +85,44 @@ function Vector(name, elements) {
 
         length = 0;
 
-        if (arguments.length === 0) {
+        if (metric) {
+            length = Math.pow((metric.mtxMulti(this, 'left')).dot(this), 0.5);
+        } else {
             length = Math.pow(this.dot(this), 0.5);
         }
-
-        if (arguments.length === 1) {
-            length = Math.pow((metric.mtxMulti(this, 'left')).dot(this), 0.5);
-        }
-
         return length;
     };
 
-    //return this Vector scaled by <scale>; default normalizes vector to length = 1
+    // Return this Vector scaled by <scale>
     this.scale = function (sc) {
         var i, scale, scaledVec;
 
-        scale = typeof sc !== 'undefined' ? sc : 1 / this.getLength();
+        if (typeof sc !== 'undefined') {
+            scale = sc;
+        } else {
+            scale = 1 / this.getLength();
+        }
 
-        scaledVec = new Vector(this.name);
-        for (i = 0; i < this.dim; i++) {
-            scaledVec.setVal(this.elts[i] * scale, i);
+        scaledVec = new Vector();
+        for (i = 0; i < this.dimension; i++) {
+            scaledVec.setVal(this.elements[i] * scale, i);
         }
 
         return scaledVec;
     };
 
-    //write out this Vector to the window:
+    // Log this Vector to the window:
     this.dump = function () {
         var i;
 
         document.write('(');
-        for (i = 0; i < this.dim; i++) {
-            if (i !== this.dim - 1) {
-                document.write(this.elts[i] + ', ');
+        for (i = 0; i < this.dimension; i++) {
+            if (i !== this.dimension - 1) {
+                document.write(this.elements[i] + ', ');
             } else {
-                document.write(this.elts[i] + ')');
+                document.write(this.elements[i] + ')');
             }
         }
-
-        return 0;
-
     };
 
     //return the Vector projection of this Vector along Vector <vec>:
@@ -133,14 +141,14 @@ function Vector(name, elements) {
     this.add = function (vec) {
         var i, sum;
 
-        if (this.dim !== vec.dim) {
+        if (this.dimension !== vec.dimension) {
             alert('Vectors must be the same length to add them.  Aborting...');
             return;
         }
 
-        sum = new Vector('sum');
-        for (i = 0; i < this.dim; i++) {
-            sum.setVal(this.elts[i] + vec.elts[i], i);
+        sum = new Vector();
+        for (i = 0; i < this.dimension; i++) {
+            sum.setVal(this.elements[i] + vec.elements[i], i);
         }
 
         return sum;

@@ -26,7 +26,7 @@
   var elements = new Array();
   elements[0]=1;
   elements[1]=2;
-  var arrow = new Vector('arrow',elements);
+  var arrow = new Vector(elements);
 
   //Vector objects also carry around an internal element .dim, which is
   //the vector's dimension.  It's initialized to the length of the Array
@@ -49,7 +49,7 @@
   var elements2 = new Array();
   elements2[0] = 3;
   elements2[1] = -1;
-  var arrow2 = new Vector('arrow2',elements2);
+  var arrow2 = new Vector(elements2);
 
   document.write('</br>Dot product of (1,2) and (3,-1) = '+arrow.dot(arrow2));
 
@@ -225,10 +225,10 @@
   coords[0] = 5;
   coords[1] = 3;
   coords[2] = -2
-  var spaceVec = new Vector('spaceVec',coords);
+  var spaceVec = new Vector(coords);
 
   var transVec = exampleMtx.mtxMulti(spaceVec,'right');
-  document.write('</br>exampleMtx*(5,3,-2) = ('+transVec.elts[0]+', '+transVec.elts[1]+', '+transVec.elts[2]+')');
+  document.write('</br>exampleMtx*(5,3,-2) = ('+transVec.elements[0]+', '+transVec.elements[1]+', '+transVec.elements[2]+')');
 
 
   //-----getDeterminant Method---------------------------------------------

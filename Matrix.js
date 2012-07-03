@@ -76,10 +76,7 @@ function Matrix(name, rows, columns, preDef) {
             return -999;
         }
 
-        name1 = this.name;
-        name2 = matrix.name;
-        name = name1  +  'plus'  +  name2;
-        result = new Matrix(name, this.rows, this.cols);
+        result = new Matrix('name', this.rows, this.cols);
 
         for (row = 0; row < this.rows; row++) {
             for (col = 0; col < this.cols; col++) {
@@ -101,15 +98,15 @@ function Matrix(name, rows, columns, preDef) {
         }
 
         if ((object instanceof Vector) && (side === 'left')) {
-            if (object.dim !==  this.rows) {
+            if (object.dimension !==  this.rows) {
                 alert('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
                 return -999;
             }
-            result = new Vector('result');
+            result = new Vector();
             sum = 0;
             for (col = 0; col < this.cols; col++) {
                 for (row = 0; row < this.rows; row++) {
-                    sum  += object.elts[row] * this.elements[row][col];
+                    sum  += object.elements[row] * this.elements[row][col];
                 }
                 result.setVal(sum, col);
                 sum = 0;
@@ -118,15 +115,15 @@ function Matrix(name, rows, columns, preDef) {
         }
 
         if ((object instanceof Vector) && (side === 'right')) {
-            if (this.cols !==  object.dim) {
+            if (this.cols !==  object.dimension) {
                 alert('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
                 return -999;
             }
-            result = new Vector('result');
+            result = new Vector();
             sum = 0;
             for (row = 0; row < this.rows; row++) {
                 for (col = 0; col < this.cols; col++) {
-                    sum  += object.elts[col] * this.elements[row][col];
+                    sum  += object.elements[col] * this.elements[row][col];
                 }
                 result.setVal(sum, row);
                 sum = 0;
@@ -141,10 +138,7 @@ function Matrix(name, rows, columns, preDef) {
                 return -999;
             }
 
-            name1 = object.name;
-            name2 = this.name;
-            name = name1  +  'times'  +  name2;
-            result = new Matrix(name, object.rows, this.cols);
+            result = new Matrix('name', object.rows, this.cols);
 
             sum = 0;
             for (row = 0; row < object.rows; row++) {
@@ -166,10 +160,7 @@ function Matrix(name, rows, columns, preDef) {
                 return -999;
             }
 
-            name1 = this.name;
-            name2 = object.name;
-            name = name1  +  'times'  +  name2;
-            result = new Matrix(name, object.rows, this.cols);
+            result = new Matrix('name', object.rows, this.cols);
 
             sum = 0;
             for (row = 0; row < object.rows; row++) {
@@ -344,7 +335,7 @@ function Matrix(name, rows, columns, preDef) {
         rawColumns = [];
 
         for (col = 0; col < this.cols; col++) {
-            emptyVec = new Vector('column');
+            emptyVec = new Vector();
             rawColumns.push(emptyVec);
             for (row = 0; row < this.rows; row++) {
                 rawColumns[col].setVal(this.elements[row][col], row);
@@ -367,7 +358,7 @@ function Matrix(name, rows, columns, preDef) {
             orthonormalSet[col] = rawColumns[col];
 
             //declare empty vector for non-orthogonal piece:
-            notOrthogonal = new Vector('notortho');
+            notOrthogonal = new Vector();
             for (i = 0; i < this.rows; i++) {
                 notOrthogonal.setVal(0,i);
             }
