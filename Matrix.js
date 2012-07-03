@@ -328,10 +328,12 @@ function Matrix(name, rows, columns, preDef) {
 
     };
 
-/*
-    // function to calculate eigenvalues of this Matrix
-    this.getEigenvalues = function () {
-        var col, rawColumns, row;
+
+    // Gram-Schmidt process to construct an orthonormal set of vectors spanning the
+    //same space as the columns of this Matrix.  Columns must be linearly 
+    //independent (currently unchecked!) 
+    this.orthonormalGS = function () {
+        var col, emptyVec, i, notOrthogonal, orthonormalSet, rawColumns, row;
         
         if (this.rows != this.cols) {
             alert('Matrix must be square to calculate eigenvalues.  Aborting...');
@@ -340,13 +342,60 @@ function Matrix(name, rows, columns, preDef) {
         
         //extract the columns of this Matrix as an Array of Vectors.
         rawColumns = [];
-        for (col = 0; col < this.cols; col++){
-            rawColumns[col] = new Vector('column');
-            for (row = 0; row < this.rows; row++){
+
+        for (col = 0; col < this.cols; col++) {
+            emptyVec = new Vector('column');
+            rawColumns.push(emptyVec);
+            for (row = 0; row < this.rows; row++) {
                 rawColumns[col].setVal(this.elements[row][col], row);
             }
+            //rawColumns[col].dump()
+            //document.write('</br>');
         }
         
+
+        //construct orthogonal set
+        orthonormalSet = [];
+        
+        //first element is simple:
+        orthonormalSet[0] = rawColumns[0];
+        //orthonormalSet[0].dump();
+        //document.write('</br>');
+
+        for (col = 1; col < this.cols; col++) {
+        
+            orthonormalSet[col] = rawColumns[col];
+
+            //declare empty vector for non-orthogonal piece:
+            notOrthogonal = new Vector('notortho');
+            for (i = 0; i < this.rows; i++) {
+                notOrthogonal.setVal(0,i);
+            }
+
+            //construct the component of this column that is non-orthogonal to all the previous elements:
+            for (i = 0; i < col; i++) {
+                notOrthogonal = notOrthogonal.add(rawColumns[col].project(orthonormalSet[i]));
+            }
+            
+            //notOrthogonal.dump();
+            //document.write('; ');
+            
+            notOrthogonal = notOrthogonal.scale(-1);
+
+            //remove nonorthogonal component:
+            orthonormalSet[col] = orthonormalSet[col].add(notOrthogonal);
+            
+            //orthonormalSet[col].dump();
+            //document.write('</br>');
+        }
+        
+        //normalize
+        for (col = 0; col < this.cols; col++) {
+            orthonormalSet[col] = orthonormalSet[col].scale();
+            
+        }
+        
+        return orthonormalSet;
     };
-*/
+
 }

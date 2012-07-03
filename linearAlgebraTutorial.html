@@ -83,7 +83,7 @@
 
   //-----scale Method---------------------------------------------
   //scale(<sc>)
-  //  <sc>      (optional) number to scale this Vector by, default 1.
+  //  <sc>      (optional) number to scale this Vector by, default 1 / this.getLength().
   //Return type: Vector on successful exit.
 
   document.write('</br></br>/////////////////// .scale examples //////////////////////////////////</br>');
@@ -111,6 +111,19 @@
   document.write(' = ');
   component.dump();
 
+
+  //-----add Method---------------------------------------------
+  //add(<vec>)
+  //  <vec> 	Vector to add to this Vector.
+  //Return type: Vector
+
+  document.write('</br></br>/////////////////// .sum examples //////////////////////////////////</br>');
+
+  //add returns the vector sum of this vector with <vec>.
+
+  document.write('Sum of arrow and arrow2 = ')
+  var sumArrow = arrow.add(arrow2);
+  sumArrow.dump();
 
 
 
@@ -315,9 +328,29 @@
   (exampleMtx.mtxMulti(exampleInv, 'right')).dump();
 
 
+  //-----orthonormalGS Method---------------------------------------------
+  //orthonormalGS()  -no arguments
+  //Return type: Array of Vectors
 
+  document.write('</br></br>/////////////////// .orthonormalGS examples //////////////////////////////////</br>');
 
+  //orthonormalGS uses the Gram-Schmidt algorithm to construct an orthonormal set of
+  //vectors which span the same space as the columns of this Matrix.  Matrix columns need
+  //to be linearly independent; checking this is still TODO!
 
+  document.write('Orthonormal span of columns of exampleMatrix:</br>');
+  var ortho = [];
+  ortho = exampleMtx.orthonormalGS();
+
+  for(i=0; i<3; i++){
+    (ortho[i]).dump();
+    document.write(' Length = '+(ortho[i].getLength()));
+    document.write('</br>');
+  };
+
+  document.write('First dot second = ' + ortho[0].dot(ortho[1]) + '</br>');
+  document.write('First dot third = ' + ortho[0].dot(ortho[2]) + '</br>');
+  document.write('Second dot third = ' + ortho[1].dot(ortho[2]) + '</br>');
 
   </script>
   

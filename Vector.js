@@ -86,11 +86,11 @@ function Vector(name, elements) {
         return length;
     };
 
-    //return this Vector scaled by <scale>
+    //return this Vector scaled by <scale>; default normalizes vector to length = 1
     this.scale = function (sc) {
         var i, scale, scaledVec;
 
-        scale = typeof sc !== 'undefined' ? sc : 1;
+        scale = typeof sc !== 'undefined' ? sc : 1 / this.getLength();
 
         scaledVec = new Vector(this.name);
         for (i = 0; i < this.dim; i++) {
@@ -127,6 +127,23 @@ function Vector(name, elements) {
 
         return vec.scale(norm);
 
+    };
+    
+    //return the sum of this Vector with Vector <vec>
+    this.add = function (vec) {
+        var i, sum;
+
+        if (this.dim !== vec.dim) {
+            alert('Vectors must be the same length to add them.  Aborting...');
+            return;
+        }
+
+        sum = new Vector('sum');
+        for (i = 0; i < this.dim; i++) {
+            sum.setVal(this.elts[i] + vec.elts[i], i);
+        }
+
+        return sum;
     };
 
 }
