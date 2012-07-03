@@ -1,11 +1,10 @@
 //-----Clairvoyant.js Matrix Class------------------------------------------------------ 
 
-function Matrix(name, rows, columns, preDef) {
+function Matrix(rows, columns, preDef) {
     'use strict';
 
     var col, dim, row;
 
-    this.name = name;
     this.rows = rows;
     this.cols = columns;
     this.elements = [];
@@ -19,12 +18,15 @@ function Matrix(name, rows, columns, preDef) {
     }
 
 
-    if (arguments.length === 4) {
+    if (arguments.length === 3) {
 
         if (preDef  ===  'identity') {
-            if (this.rows !== this.cols) {
-                alert('Identity matrix must be square.    Aborting...');
-                return -999;
+            try {
+                if (this.rows !== this.cols) {
+                    throw ('Identity matrix must be square.    Aborting...');
+                }
+            } catch (err0) {
+                return;
             }
             for (dim = 0; dim < this.rows; dim++) {
                 this.elements[dim][dim] = 1;
@@ -33,9 +35,12 @@ function Matrix(name, rows, columns, preDef) {
         }
 
         if (preDef  ===  'Minkowski') {
-            if (this.rows !==  4 || this.cols !==  4) {
-                alert('Minkowski space has a 4 by 4 metric, please adjust rows & columns accordingly.    Aborting...');
-                return -999;
+            try {
+                if (this.rows !==  4 || this.cols !==  4) {
+                    throw ('Minkowski space has a 4 by 4 metric, please adjust rows & columns accordingly.    Aborting...');
+                }
+            } catch (err1) {
+                return;
             }
             for (dim = 1; dim < this.rows; dim++) {
                 this.elements[dim][dim] = 1;
@@ -64,19 +69,25 @@ function Matrix(name, rows, columns, preDef) {
 
     // return sum of  < matrix >  with this matrix.
     this.mtxAdd = function (matrix) {
-        var col, name, name1, name2, result, row;
+        var col, result, row;
 
-        if (!(matrix instanceof Matrix)) {
-            alert('Argument is not a matrix.    Aborting...');
-            return -999;
+        try {
+            if (!(matrix instanceof Matrix)) {
+                throw ('Argument is not a matrix.    Aborting...');
+            }
+        } catch (err3) {
+            return;
         }
 
-        if (this.rows !== matrix.rows || this.cols !== matrix.cols) {
-            alert('Matrices must be the same dimension to add them.    Aborting...');
-            return -999;
+        try {
+            if (this.rows !== matrix.rows || this.cols !== matrix.cols) {
+                throw ('Matrices must be the same dimension to add them.    Aborting...');
+            }
+        } catch (err4) {
+            return;
         }
 
-        result = new Matrix('name', this.rows, this.cols);
+        result = new Matrix(this.rows, this.cols);
 
         for (row = 0; row < this.rows; row++) {
             for (col = 0; col < this.cols; col++) {
@@ -90,17 +101,23 @@ function Matrix(name, rows, columns, preDef) {
 
     // places  < object >  on side  < side >  of this matrix, and multiplies
     this.mtxMulti = function (object, side) {
-        var col, elt, name, name1, name2, result, row, sum;
+        var col, elt, result, row, sum;
 
-        if (side !==  'left' && side !==  'right') {
-            alert('Second argument must be either left or right, indicating which side of the matrix you want to place the first argument on before multiplying.    Aborting...');
-            return -999;
+        try {
+            if (side !==  'left' && side !==  'right') {
+                throw ('Second argument must be either left or right, indicating which side of the matrix you want to place the first argument on before multiplying.    Aborting...');
+            }
+        } catch (err5) {
+            return;
         }
 
         if ((object instanceof Vector) && (side === 'left')) {
-            if (object.dimension !==  this.rows) {
-                alert('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
-                return -999;
+            try {
+                if (object.dimension !==  this.rows) {
+                    throw ('Vector * Matrix requires length of Vector = number of rows in Matrix.    Aborting...');
+                }
+            } catch (err6) {
+                return;
             }
             result = new Vector();
             sum = 0;
@@ -115,9 +132,12 @@ function Matrix(name, rows, columns, preDef) {
         }
 
         if ((object instanceof Vector) && (side === 'right')) {
-            if (this.cols !==  object.dimension) {
-                alert('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
-                return -999;
+            try {
+                if (this.cols !==  object.dimension) {
+                    throw ('Matrix * Vector requires length of Vector = number of columns in Matrix.    Aborting...');
+                }
+            } catch (err7) {
+                return;
             }
             result = new Vector();
             sum = 0;
@@ -132,13 +152,15 @@ function Matrix(name, rows, columns, preDef) {
         }
 
         if ((object instanceof Matrix) && (side === 'left')) {
-
-            if (object.cols !==  this.rows) {
-                alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
-                return -999;
+            try {
+                if (object.cols !==  this.rows) {
+                    throw ('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
+                }
+            } catch (err8) {
+                return;
             }
 
-            result = new Matrix('name', object.rows, this.cols);
+            result = new Matrix(object.rows, this.cols);
 
             sum = 0;
             for (row = 0; row < object.rows; row++) {
@@ -155,12 +177,15 @@ function Matrix(name, rows, columns, preDef) {
 
         if ((object instanceof Matrix) && (side === 'right')) {
 
-            if (object.rows !==  this.cols) {
-                alert('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
-                return -999;
+            try {
+                if (object.rows !==  this.cols) {
+                    throw ('Matrix1 * Matrix2 requires Matrix1 to have # cols = # rows in Matrix2.    Aborting...');
+                }
+            } catch (err9) {
+                return;
             }
 
-            result = new Matrix('name', object.rows, this.cols);
+            result = new Matrix(object.rows, this.cols);
 
             sum = 0;
             for (row = 0; row < object.rows; row++) {
@@ -181,20 +206,23 @@ function Matrix(name, rows, columns, preDef) {
     this.getDeterminant = function () {
         var A, detA, detL, iter, L, l, row;
 
-        if (this.rows !==  this.cols) {
-            alert('Matrix must be square.    Aborting...');
-            return -999;
+        try {
+            if (this.rows !==  this.cols) {
+                throw ('Matrix must be square.    Aborting...');
+            }
+        } catch (err9) {
+            return;
         }
 
         // zeroth iteration:
         A = this;
-        L = new Matrix('L', this.rows, this.cols, 'identity');
-        l = new Matrix('l', this.rows, this.cols);
+        L = new Matrix(this.rows, this.cols, 'identity');
+        l = new Matrix(this.rows, this.cols);
 
         for (iter = 1; iter < this.rows; iter++) {
 
             // construct this iteration's lower triangular matrix:
-            l = new Matrix('l', this.rows, this.cols, 'identity');
+            l = new Matrix(this.rows, this.cols, 'identity');
             for (row = iter; row < this.rows; row++) {
                 l.elements[row][iter - 1] = -1 * A.elements[row][iter - 1] / A.elements[iter - 1][iter - 1];
                 L.elements[row][iter - 1] = -1 * l.elements[row][iter - 1];
@@ -219,8 +247,8 @@ function Matrix(name, rows, columns, preDef) {
     this.getMinor = function () {
         var cMap, col, mtxMinor, rMap, row, subCol, subMtx, subRow;
 
-        subMtx = new Matrix('subMtx', this.rows - 1, this.cols - 1);
-        mtxMinor = new Matrix('mtxMinor', this.rows, this.cols);
+        subMtx = new Matrix(this.rows - 1, this.cols - 1);
+        mtxMinor = new Matrix(this.rows, this.cols);
 
         rMap = 0;
         cMap = 0;
@@ -255,7 +283,7 @@ function Matrix(name, rows, columns, preDef) {
         var cofac, col, minor, row;
 
         minor = this.getMinor();
-        cofac = new Matrix('cofac', this.rows, this.cols);
+        cofac = new Matrix(this.rows, this.cols);
 
         for (row = 0; row < cofac.rows; row++) {
             for (col = 0; col < cofac.cols; col++) {
@@ -271,7 +299,7 @@ function Matrix(name, rows, columns, preDef) {
     this.getTranspose = function () {
         var col, row, trans;
 
-        trans = new Matrix('trans', this.cols, this.rows);
+        trans = new Matrix(this.cols, this.rows);
 
         for (row = 0; row < trans.rows; row++) {
             for (col = 0; col < trans.cols; col++) {
@@ -296,7 +324,7 @@ function Matrix(name, rows, columns, preDef) {
     this.mtxScale = function (scale) {
         var col, row, scaled;
 
-        scaled = new Matrix('scaled', this.rows, this.cols);
+        scaled = new Matrix(this.rows, this.cols);
 
         for (row = 0; row < scaled.rows; row++) {
             for (col = 0; col < scaled.cols; col++) {
@@ -325,12 +353,7 @@ function Matrix(name, rows, columns, preDef) {
     //independent (currently unchecked!) 
     this.orthonormalGS = function () {
         var col, emptyVec, i, notOrthogonal, orthonormalSet, rawColumns, row;
-        
-        if (this.rows != this.cols) {
-            alert('Matrix must be square to calculate eigenvalues.  Aborting...');
-            return;
-        }
-        
+
         //extract the columns of this Matrix as an Array of Vectors.
         rawColumns = [];
 
@@ -343,49 +366,49 @@ function Matrix(name, rows, columns, preDef) {
             //rawColumns[col].dump()
             //document.write('</br>');
         }
-        
+
 
         //construct orthogonal set
         orthonormalSet = [];
-        
+
         //first element is simple:
         orthonormalSet[0] = rawColumns[0];
         //orthonormalSet[0].dump();
         //document.write('</br>');
 
         for (col = 1; col < this.cols; col++) {
-        
+
             orthonormalSet[col] = rawColumns[col];
 
             //declare empty vector for non-orthogonal piece:
             notOrthogonal = new Vector();
             for (i = 0; i < this.rows; i++) {
-                notOrthogonal.setVal(0,i);
+                notOrthogonal.setVal(0, i);
             }
 
             //construct the component of this column that is non-orthogonal to all the previous elements:
             for (i = 0; i < col; i++) {
                 notOrthogonal = notOrthogonal.add(rawColumns[col].project(orthonormalSet[i]));
             }
-            
+
             //notOrthogonal.dump();
             //document.write('; ');
-            
+
             notOrthogonal = notOrthogonal.scale(-1);
 
             //remove nonorthogonal component:
             orthonormalSet[col] = orthonormalSet[col].add(notOrthogonal);
-            
+
             //orthonormalSet[col].dump();
             //document.write('</br>');
         }
-        
+
         //normalize
         for (col = 0; col < this.cols; col++) {
             orthonormalSet[col] = orthonormalSet[col].scale();
-            
+
         }
-        
+
         return orthonormalSet;
     };
 

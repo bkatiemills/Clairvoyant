@@ -38,7 +38,7 @@
   //  <vector>	the vector to take the dot product of this vector with.
   //  <metric>  (optional) a Matrix object containing the metric of the 
   //            space the vectors live in(default rectangular Cartesian).
-  //Return type: float on successful exit, -999 if <vector> isn't a valid vector.
+  //Return type: float on successful exit.
 
   document.write('/////////////////// .dot examples //////////////////////////////////</br>'); 
 
@@ -137,11 +137,11 @@
 
 
   //Initialize a 3 by 4 matrix as per:
-  var mtx = new Matrix('mtx',3,4);
+  var mtx = new Matrix(3,4);
   //All elements are initialized to 0.
 
   //individual elements can be initialized as follows:
-  var exampleMtx = new Matrix('exampleMtx',3,3);
+  var exampleMtx = new Matrix(3,3);
   exampleMtx.elements[0][0] = 1
   exampleMtx.elements[0][1] = 3
   exampleMtx.elements[0][2] = 1
@@ -154,11 +154,11 @@
 
   //Matrices can be optionally initialized as one of a few different types:
   //get an identity matrix by using 'identity' predef:
-  var id = new Matrix('id',4,4,'identity');
+  var id = new Matrix(4,4,'identity');
   //identity may be any dimension, but must be square.
 
   //'Minkowski' predef:
-  var Mink = new Matrix('Mink',4,4,'Minkowski');
+  var Mink = new Matrix(4,4,'Minkowski');
   //Minkowski preddef must be declared as 4 by 4.
  
 
@@ -180,7 +180,7 @@
   //-----mtxAdd Method---------------------------------------------
   //mtxAdd(<matrix>)
   //  <matrix>  Matrix object to be added to this Matrix.  
-  //Return type: Matrix on successful exit, -999 if problems arise.
+  //Return type: Matrix on successful exit.
 
   document.write('</br></br>/////////////////// .mtxAdd examples //////////////////////////////////</br>');
 
@@ -196,13 +196,13 @@
   //mtxMulti(<object>,<side>)       
   //  <object>	Either a Matrix or a Vector object to be multiplied by this Matrix.
   //  <side>    The side of this Matrix to place <object> on before multiplying.
-  //Return type: Matrix or Vector on successful exit, -999 if problems arise.
+  //Return type: Matrix or Vector on successful exit.
 
   document.write('</br></br>/////////////////// .mtxMulti examples //////////////////////////////////</br>');
 
   //mtxMulti handles the multiplication of Matrix and Vector objects, as follows:
 
-  var anotherMtx = new Matrix('anotherMtx',3,3,'identity');
+  var anotherMtx = new Matrix(3,3,'identity');
   anotherMtx.elements[0][2] = 4;
   anotherMtx.elements[2][0] = -1;
 
@@ -233,7 +233,7 @@
 
   //-----getDeterminant Method---------------------------------------------
   //getDeterminant()  no arguments
-  //Return type: float on successful exit, -999 if problems arise.
+  //Return type: float on successful exit.
 
   document.write('</br></br>/////////////////// .getDeterminant examples //////////////////////////////////</br>');
 
@@ -242,7 +242,7 @@
   //of the diagonal elements become 0 at any step in the algo, so alternatives will be implemented
   //for these cases.
 
-  var smallMtx = new Matrix('smallMtx',2,2);
+  var smallMtx = new Matrix(2,2);
   smallMtx.elements[0][0] = 3;
   smallMtx.elements[0][1] = 6;
   smallMtx.elements[1][0] = -2;

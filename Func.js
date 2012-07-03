@@ -127,7 +127,6 @@ function Func(name, userString, parameters) {
             // decide if we should keep the pull
             decision = Math.random();
             if (decision  <  thresh) {
-                // alert(x)
                 return x;
             }
         }
@@ -147,8 +146,11 @@ function Func(name, userString, parameters) {
         // (c)
         initLo = this.evaluate(lo);
         // (d)
-        if ((initHi * initLo >= 0)) {
-            alert('Range provided does not bracket a unique zero, attempting to recover...');
+        try {
+            if ((initHi * initLo >= 0)) {
+                throw ('Range provided does not bracket a unique zero, attempting to recover...');
+            }
+        } catch (err) {
             return this.biSoln(lo, hi);
         }
         // (e)

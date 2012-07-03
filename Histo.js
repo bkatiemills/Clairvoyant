@@ -1,9 +1,8 @@
 // Clairvoyant.js 1 - D histogram class ---------------------------------------------------------------- 
-function Histo(name, nBins, min, max) {
+function Histo(nBins, min, max) {
     'use strict';
     var i;
 
-    this.name = name;
     this.nBins = nBins;
     this.min = min;
     this.max = max;
@@ -16,13 +15,12 @@ function Histo(name, nBins, min, max) {
     }
     this.bins.push({lo: max, weight: 0});
 
-    // function definitions: --------------------------------------------------------------------  - 
+    // function definitions: --------------------------------------------------------------------- 
 
     // write all contents of histogram as  < lo edge >  :  < weight > 
-    this.dumpContents = function () {
+    this.dump = function () {
         var i;
 
-        document.write('</br>' + this.name + '</br>');
         for (i = 0; i < this.bins.length; i++) {
             document.write(this.bins[i].lo + ' : ' + this.bins[i].weight + '</br>');
         }
@@ -39,8 +37,12 @@ function Histo(name, nBins, min, max) {
 
         amount = typeof amnt !== 'undefined' ? amnt : 1;
 
-        if (value  <  this.min || value  >=  this.max) {
-            return -999;
+        try {
+            if (value  <  this.min || value  >=  this.max) {
+                throw ('Value falls outside of histogram range.');
+            }
+        } catch (err) {
+            return;
         }
 
         for (i = 0; i < this.bins.length; i++) {
@@ -75,10 +77,14 @@ function Histo(name, nBins, min, max) {
         // otherwise integrate from min to max:
         if (arguments.length === 2) {
 
-            if (min  <  this.min || max  >  this.max) {
-                document.write('bounds OOR');
-                return -999;
+            try {
+                if (min  <  this.min || max  >  this.max) {
+                    throw ('Integration bounds OOR');
+                }
+            } catch (err) {
+                return;
             }
+
 
             for (i = 0; i < this.bins.length; i++) {
                 if (this.bins[i].lo  <=  min) {
@@ -132,11 +138,10 @@ function Histo(name, nBins, min, max) {
         var j, scale1, scale2, sumHisto;
 
         if (this.nBins !==  otherHisto.nBins || this.min !==  otherHisto.min || this.max !==  otherHisto.max) {
-            alert('Can\'t add histrograms with different binning.    Aborting...');
-            return -999;
+            throw ('Can\'t add histrograms with different binning.');
         }
 
-        sumHisto = new Histo('sumHisto', this.nBins, this.min, this.max);
+        sumHisto = new Histo(this.nBins, this.min, this.max);
 
         scale1 = typeof sc1 !== 'undefined' ? sc1 : 1;
         scale2 = typeof sc2 !== 'undefined' ? sc2 : 1;
@@ -201,15 +206,18 @@ function Histo(name, nBins, min, max) {
     this.ksTest = function (target) {
         var CDF1, CDF2, delta, i, KSstat, weight1, weight2;
 
-        if ((this.nBins !==  target.nBins)    ||    (this.min !==  target.min)    || (this.max !==  target.max)) {
-            document.write('</br>');
-            document.write('histos must have same min, max and divisions for KS test, abandoning test...');
-            return -999;
+
+        try {
+            if ((this.nBins !==  target.nBins)    ||    (this.min !==  target.min)    || (this.max !==  target.max)) {
+                throw ('histos must have same min, max and divisions for KS test, abandoning test...');
+            }
+        } catch (err) {
+            return;
         }
 
-        CDF1 = new Histo('CDF1', 10, 0, 10);
+        CDF1 = new Histo(10, 0, 10);
         CDF1 = this.getCDF();
-        CDF2 = new Histo('CDF2', 10, 0, 10);
+        CDF2 = new Histo(10, 0, 10);
         CDF2 = target.getCDF();
 
         weight1 = this.integrate();

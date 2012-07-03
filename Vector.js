@@ -136,13 +136,16 @@ function Vector(elements) {
         return vec.scale(norm);
 
     };
-    
+
     //return the sum of this Vector with Vector <vec>
     this.add = function (vec) {
         var i, sum;
 
-        if (this.dimension !== vec.dimension) {
-            alert('Vectors must be the same length to add them.  Aborting...');
+        try {
+            if (this.dimension !== vec.dimension) {
+                throw ('Vectors must be the same length to add them.  Aborting...');
+            }
+        } catch (err) {
             return;
         }
 
