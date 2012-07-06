@@ -412,4 +412,91 @@ function Matrix(rows, columns, preDef) {
         return orthonormalSet;
     };
 
+    //QR process to find Schur form of this Matrix.
+    this.qr = function (tol, iter) {
+        var A, column, done, invQ, iterations, iterLimit, orthonormalSet, Q, row, tolerance;
+
+        try {
+            if (this.rows !== this.cols) {
+                throw ('Matrix not square, abandoning QR process.');
+            }
+        } catch (err) {
+            return;
+        }
+
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
+        iterLimit = typeof iter !== 'undefined' ? iter : 1000;
+
+        A = this;
+        Q = new Matrix(this.rows, this.cols);
+
+        done = 0;
+        while (done === 0) {
+
+            orthonormalSet = A.orthonormalGS();
+
+            for (row = 0; row < this.rows; row++) {
+                for (column = 0; column < this.cols; column++) {
+                    Q.elements[row][column] = orthonormalSet[column].elements[row];
+                }
+            }
+
+            invQ = Q.getInverse();
+            A = invQ.mtxMulti(A, 'right');
+            A = A.mtxMulti(Q, 'right');
+
+            done = 1;
+
+            for (column = 0; column < this.cols; column++) {
+                for (row = column + 1; row < this.rows; row++) {
+                    if (Math.abs(A.elements[row][column]) > tolerance) {
+                        done = 0;
+                    }
+                }
+            }
+
+            iterations++;
+            if (iterations > iterLimit) {
+                done = 1;
+            }
+
+        }
+
+        try {
+            if (iterations > iterLimit) {
+                throw ('qr algo did not converge to Schur form fast enough, abandoning...');
+            }
+        } catch (convergeErr) {
+            return A;
+        }
+
+        return A;
+    };
+
+    //returns an Array() containing the eigenvalues of this Matrix as determined by the qr() method.
+    //note if qr() does not converge, these values will not be reliable!
+    this.getEigenvalues = function (tol, iter) {
+        var eigenvalues, i, iterLimit, schur, tolerance;
+
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
+        iterLimit = typeof iter !== 'undefined' ? iter : 1000;
+
+        try {
+            if (this.rows !== this.cols) {
+                throw ('Matrix not square, abandoning eigenvalue calculation.');
+            }
+        } catch (err) {
+            return;
+        }
+
+        schur = this.qr(tolerance, iterLimit);
+        eigenvalues = [];
+
+        for (i = 0; i < this.rows; i++) {
+            eigenvalues[i] = schur.elements[i][i];
+        }
+
+        return eigenvalues;
+    };
+
 }

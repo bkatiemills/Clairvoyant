@@ -142,6 +142,7 @@
 
   //individual elements can be initialized as follows:
   var exampleMtx = new Matrix(3,3);
+/*
   exampleMtx.elements[0][0] = 1
   exampleMtx.elements[0][1] = 3
   exampleMtx.elements[0][2] = 1
@@ -151,6 +152,17 @@
   exampleMtx.elements[2][0] = 2
   exampleMtx.elements[2][1] = 3
   exampleMtx.elements[2][2] = 4 
+*/
+
+  exampleMtx.elements[0][0] = 1
+  exampleMtx.elements[0][1] = 3
+  exampleMtx.elements[0][2] = -3
+  exampleMtx.elements[1][0] = -3
+  exampleMtx.elements[1][1] = 7
+  exampleMtx.elements[1][2] = -3
+  exampleMtx.elements[2][0] = -6
+  exampleMtx.elements[2][1] = 6
+  exampleMtx.elements[2][2] = 2
 
   //Matrices can be optionally initialized as one of a few different types:
   //get an identity matrix by using 'identity' predef:
@@ -338,7 +350,7 @@
   //vectors which span the same space as the columns of this Matrix.  Matrix columns need
   //to be linearly independent; checking this is still TODO!
 
-  document.write('Orthonormal span of columns of exampleMatrix:</br>');
+  document.write('Orthonormal span of columns of exampleMtx:</br>');
   var ortho = [];
   ortho = exampleMtx.orthonormalGS();
 
@@ -351,6 +363,39 @@
   document.write('First dot second = ' + ortho[0].dot(ortho[1]) + '</br>');
   document.write('First dot third = ' + ortho[0].dot(ortho[2]) + '</br>');
   document.write('Second dot third = ' + ortho[1].dot(ortho[2]) + '</br>');
+
+  //-----qr Method---------------------------------------------
+  //qr(tol, iter) 
+  //  tol	tolerance when converging Matrix elements to 0 (default 0.000001)
+  //  iter	number of iterations to allow before giving up (default 1000)
+  //Return type: Matrix - Schur form of this Matrix.
+
+  document.write('</br></br>/////////////////// .qr examples //////////////////////////////////</br>');
+
+  //qr() returns the Schur form of this Matrix, if it can be converged upon within <iter> (default 1000) iterations,
+  //where convergence requires all elements below the diagonal to be within <tol> (default 0.000001)
+  //of 0.  Recall that the Schur form of a matrix lists that matrix's eigenvalues on its diagonal.
+
+  document.write('Schur form of exampleMtx:');
+  (exampleMtx.qr()).dump();
+
+
+  //-----getEigenvalues Method---------------------------------------------
+  //getEigenvalues(tol, iter)               
+  //  tol       tolerance passed to qr() when converging Matrix elements to 0 (default 0.000001)
+  //  iter      number of qr() iterations to allow before giving up (default 1000)
+  //Return type: Array of eigenvalues (diagonal elements of Schur form of this Matrix as found by qr())
+  
+  document.write('</br></br>/////////////////// .getEigenvalues examples //////////////////////////////////</br>');
+
+  //getEigenvalues() evaluates qr() for this Matrix and returns an Array containing 
+  //the diagonal elements of the Schur form of this Matrix.  Note that as it stands, 
+  //the eigenvalues returned in this way are very approximate; improvements forthcoming.
+
+  var exampleEigenvalues = exampleMtx.getEigenvalues();
+  document.write('Eigenvalues of exampleMtx: ');
+  document.write(exampleEigenvalues[0]+', '+exampleEigenvalues[1]+', '+exampleEigenvalues[2]);
+  document.write('</br>Note that getEigenvalues() is providing a rough estimate; convergence to better accuracy and / or error estimates coming soon');
 
   </script>
   
