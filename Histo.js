@@ -17,7 +17,7 @@ function Histo(nBins, min, max) {
 
     // function definitions: --------------------------------------------------------------------- 
 
-    // write all contents of histogram as  < lo edge >  :  < weight > 
+    // write all contents of histogram as  <lo edge>  :  <weight> 
     this.dump = function () {
         var i;
 
@@ -29,8 +29,8 @@ function Histo(nBins, min, max) {
     };
 
 
-    // increment the bin in which  < value >  falls by  < amount > ;
-    // increments this bin by 1 if no value provided for  < amount > .
+    // increment the bin in which  <value>  falls by  <amount> ;
+    // increments this bin by 1 if no value provided for  <amount> .
     this.increment = function (value, amnt) {
         var amount, i, index;
         index = 0;
@@ -38,26 +38,28 @@ function Histo(nBins, min, max) {
         amount = typeof amnt !== 'undefined' ? amnt : 1;
 
         try {
-            if (value  <  this.min || value  >=  this.max) {
+            if (value  <  this.min || value >= this.max) {
                 throw ('Value falls outside of histogram range.');
             }
         } catch (err) {
             return;
         }
 
+
         for (i = 0; i < this.bins.length; i++) {
-            if (this.bins[i].lo  <=  value) {
+            if (this.bins[i].lo <= value) {
                 index = i;
             }
         }
 
-        this.bins[index].weight  += amount;
+        
+        this.bins[index].weight += amount;
 
         return 0;
     };
 
 
-    // integrate from  < min >  to  < max > ;
+    // integrate from  <min>  to  <max> ;
     // returns integral of whole histo if no args provided;
     // if bound is in the middle of a bin, treats weight as distributed flat across the bin
     this.integrate = function (min, max) {
@@ -132,8 +134,8 @@ function Histo(nBins, min, max) {
     };
 
 
-    // increment this histo by the corresponding weights in  < otherHisto > , multiplied by  < scale > ;
-    //  < scale >  default = 1
+    // returns a new Histo formed by adding this Histo * <sc1> + <otherHisto> * <sc2>
+    //  <scale>  default = 1
     this.add = function (otherHisto, sc1, sc2) {
         var j, scale1, scale2, sumHisto;
 
@@ -194,7 +196,7 @@ function Histo(nBins, min, max) {
         cloneHist.normalize();
 
         for (i = 1; i < cloneHist.bins.length - 1; i++) {
-            cloneHist.bins[i].weight  += cloneHist.bins[i - 1].weight;
+            cloneHist.bins[i].weight += cloneHist.bins[i - 1].weight;
         }
 
         return cloneHist;
@@ -250,4 +252,42 @@ function Histo(nBins, min, max) {
 
         return 0;
     };
+    
+    //draw this histo
+    this.draw = function (canvas, ybins, ymin, ymax, title, xtitle, ytitle) {
+    
+        var i, plot, binHeight, binWidth;
+        
+        plot = new Plot(canvas, this.nBins, this.min, this.max, ybins, ymin, ymax, title, xtitle, ytitle);
+        plot.draw();
+       
+        binWidth = (plot.canvas.width - 2*plot.marginSize) / this.nBins;
+        for (i = 0; i < this.nBins; i++) {
+            if (this.bins[i].weight < ymin) {
+                binHeight = 0;
+            }
+            else if (this.bins[i].weight > ymax) {
+                binHeight = plot.canvas.height - 2*plot.marginSize;
+            }
+            else {
+                binHeight = (plot.canvas.height - 2*plot.marginSize) * (this.bins[i].weight - ymin) / (ymax - ymin);
+            }
+            
+            plot.context.strokeRect(plot.marginSize + i*binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
+        }
+    
+    
+    
+    
+    };
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

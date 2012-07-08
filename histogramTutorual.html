@@ -4,7 +4,10 @@
   <script src="Vector.js"></script>
   <script src="Matrix.js"></script>
   <script src="distributions.js"></script>
+  <script src="Plot.js"></script>
   </head> <body>
+
+  <canvas id="myCanvas" width="600" height="450"></canvas>
 
   <script type="text/JavaScript">
 
@@ -39,7 +42,7 @@
   //dump() - no arguments
   //Return type: 0 on successful exit
 
-  document.write('/////////////////// .dump examples //////////////////////////////////</br>');
+  document.write('</br>/////////////////// .dump examples //////////////////////////////////</br>');
 
   //dump writes out the name of the histo, and the index and value 
   //of each bin in this histo, from first to last, as index:value
@@ -66,6 +69,8 @@
   }
   document.write('firstHist:</br>');
   firstHist.dump();
+
+  firstHist.draw('myCanvas', 12,0,120,'firstHist','derps','counts / derp');
 
   document.write('</br>And if we increment the histo at 0 by 3 and at 10 by 7:</br>');
   firstHist.increment(0,3);
@@ -195,7 +200,7 @@
   //getCDF returns the cumulative distribution function for this histogram:
 
   var CDF = meanHist.getCDF();
-  document.write('CDF:</br>');
+  document.write('CDF of meanHist:</br>');
   CDF.dump();
   document.write('Notice the nth bin of the CDF includes all the weight of the nth bin of the original histogram.')
 
