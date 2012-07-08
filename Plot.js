@@ -1,12 +1,10 @@
 //-----Clairvoyant.js Plot Class------------------------------------------------------ 
 
-function Plot(canvas, xbins, xmin, xmax, ybins, ymin, ymax, title, xtitle, ytitle) {
+function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle) {
     'use strict';
 
-    this.xbins = xbins;
     this.xmin  = xmin;
     this.xmax  = xmax;
-    this.ybins = ybins;
     this.ymin  = ymin;
     this.ymax  = ymax;
     this.xtitle = xtitle;
@@ -38,9 +36,6 @@ function Plot(canvas, xbins, xmin, xmax, ybins, ymin, ymax, title, xtitle, ytitl
     this.draw = function () {
 
         var i, j, majorTickSpacingX, minorTickSpacingX, majorTickSpacingY, minorTickSpacingY;
-
-        //frame
-        //this.context.rect(0, 0, this.canvas.width, this.canvas.height);
     
         //axes
         this.context.moveTo(this.marginSize, this.canvas.height - this.marginSize);
@@ -56,7 +51,7 @@ function Plot(canvas, xbins, xmin, xmax, ybins, ymin, ymax, title, xtitle, ytitl
             this.context.lineTo(this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick);
    
             this.context.font = "15px sans-serif";        
-            this.context.fillText(((this.xmax - this.xmin) / (this.majorX - 1) * i + this.xmin)+'', this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick + 12);            
+            this.context.fillText(((this.xmax - this.xmin) / (this.majorX - 1) * i + this.xmin).toFixed(), this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick + 12);            
              
             if(i < this.majorX - 1){
                 for (j = 0; j < this.minorX; j++) {
@@ -74,8 +69,9 @@ function Plot(canvas, xbins, xmin, xmax, ybins, ymin, ymax, title, xtitle, ytitl
             this.context.lineTo(this.marginSize - this.bigTick, this.canvas.height - this.marginSize - i * majorTickSpacingY);
             
             this.context.font = "15px sans-serif";
-            this.context.textBaseline = "middle";        
-            this.context.fillText(((this.ymax - this.ymin) / (this.majorY - 1) * i + this.ymin)+'', this.marginSize - this.bigTick - 12, this.canvas.height - this.marginSize - i * majorTickSpacingY);
+            this.context.textBaseline = "middle";
+            this.context.textAlign = "right";        
+            this.context.fillText( ((this.ymax - this.ymin) / (this.majorY - 1) * i + this.ymin).toFixed(), this.marginSize - this.bigTick - 12, this.canvas.height - this.marginSize - i * majorTickSpacingY);
             
             if(i < this.majorY - 1){
                 for (j = 0; j < this.minorY; j++) {
@@ -100,7 +96,7 @@ function Plot(canvas, xbins, xmin, xmax, ybins, ymin, ymax, title, xtitle, ytitl
         this.context.fillText(this.ytitle,0,0);
         this.context.restore();
         
-        this.context.textBaseline = "top";
+        this.context.textBaseline = "bottom";
         this.context.fillText(this.title, this.canvas.width - this.marginSize - minorTickSpacingX, this.marginSize);
   
   

@@ -7,8 +7,6 @@
   <script src="Plot.js"></script>
   </head> <body>
 
-  <canvas id="myCanvas" width="600" height="450"></canvas>
-
   <script type="text/JavaScript">
 
   /*-----Intro to Clairvoyant Histo class-----------------------------
@@ -70,8 +68,6 @@
   document.write('firstHist:</br>');
   firstHist.dump();
 
-  firstHist.draw('myCanvas', 12,0,120,'firstHist','derps','counts / derp');
-
   document.write('</br>And if we increment the histo at 0 by 3 and at 10 by 7:</br>');
   firstHist.increment(0,3);
   firstHist.increment(10,7);
@@ -79,6 +75,32 @@
   firstHist.dump();
   document.write('</br>Notice the 0 bin got incremented by 3 since 0 is included, but incrementing 10 by 7 did nothing since 10 (the upper bound of the histo) is excluded.');
 
+
+  //-----draw Method---------------------------------------------
+  //draw(<canvas>,<ymin>, <ymax>, <title>, <xtitle>, <ytitle>)
+  //  <canvas>  An HTML5 canvas to draw this Histo in.
+  //  <ymin> 	Minimum of the vertical scale
+  //  <ymax>    Max of the vertical scale
+  //  <title>	Plot title
+  //  <xtitle>  x-axis title
+  //  <ytitle>  y-axis title
+  //Return type: 0 on successful exit.
+
+  document.write('</br></br>/////////////////// .draw examples //////////////////////////////////</br>');
+
+  //draw creates a Plot() object for this Histogram, and draws it in the indicated HTML5 canvas.
+  //note that if <ymax> = <ymin>, the function will set ymin to 0 and y max to 110% of the highest
+  //weight currently stored in the Histo.
+ 
+  </script>
+
+  <canvas id="canvas1" width="600" height="450"></canvas>
+  <canvas id="canvas2" width="600" height="450"></canvas>
+  
+  <script type="text/JavaScript">
+
+  firstHist.draw('canvas1', 80,120,'firstHist - controlled vertical range','derps','counts / derp');
+  firstHist.draw('canvas2', 0,0,'firstHist - auto vertical range','derps','counts / derp');
 
   //-----integrate Method---------------------------------------------
   //integrate(<min>,<max>)
@@ -264,10 +286,13 @@
   
   parabolaSample.sample(10000,parabola);
 
-  document.write('</br>10000 samples from x^2:</br>');
-  document.write('parabolaSample:</br>');
-  parabolaSample.dump();
+  </script>
 
+  <canvas id="canvas3" width="600" height="450"></canvas>
+  
+  <script type="text/JavaScript">
+
+  parabolaSample.draw('canvas3', 0,0,'random sample from x^2','x','pulls / bin');
 
   </script>   
   
