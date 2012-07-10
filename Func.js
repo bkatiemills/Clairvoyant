@@ -336,4 +336,68 @@ function Func(name, userString, parameters) {
         return grad;
     };
 
+    //draw this function in the window from <xmin> to <xmax> and <ymin> to <ymax>
+    this.draw = function (canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) {
+        var canvX, canvY, color, i, inWindow, nSamples, plot, xStep, x, y, yMin, yMax;
+
+        //auto-find a y window if ymin === ymax:
+        yMin = ymin;
+        yMax = ymax;
+        x = xmin;
+        xStep = (xmax - xmin) / 100;
+        if (ymin === ymax) {
+            for (i = 0; i < 100; i++) {
+                y = this.evaluate(x);
+                if (y > yMax) {
+                    yMax = y;
+                }
+                if (y < yMin) {
+                    yMin = y;
+                }
+                x += xStep;
+            }
+            yMax += (yMax - yMin) * 0.1;
+            yMin -= (yMax - yMin) * 0.1;
+        }
+
+        //make a new Plot, fetch style info
+        if (typeof plotstyle !== 'undefined') {
+            plot = new Plot(canvas, xmin, xmax, yMin, yMax, title, xtitle, ytitle, plotstyle);
+            color = plotstyle.color;
+        } else {
+            plot = new Plot(canvas, xmin, xmax, yMin, yMax, title, xtitle, ytitle);
+            color = 'black';
+        }
+        plot.draw();
+
+        //draw function as nSamples line segements joining f(x) at each step of x in range.  
+        //nSamples = #pixels in width of canvas ensures smooth-looking line (ie each line segment is at most 1px long).
+        nSamples = plot.canvas.width;
+        xStep = (xmax - xmin) / nSamples;
+        x = xmin;
+        inWindow = 0;
+        plot.context.beginPath();
+        plot.context.strokeStyle = color;
+        for (i = 0; i < nSamples + 1; i++) {
+            y = this.evaluate(x);
+            canvX = plot.marginScaleY * plot.marginSize + (x - xmin)  / (xmax - xmin) * (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize);
+            canvY = plot.canvas.height - (plot.marginSize + (y - yMin) / (yMax - yMin) * (plot.canvas.height - 2 * plot.marginSize));
+            if (y > yMin && y < yMax) {
+                if (inWindow === 0) {
+                    plot.context.moveTo(canvX, canvY);
+                    plot.context.beginPath();
+                    inWindow = 1;
+                } else {
+                    plot.context.lineTo(canvX, canvY);
+                }
+            } else {
+                inWindow = 0;
+            }
+            plot.context.stroke();
+            x += xStep;
+        }
+
+
+    };
+
 }

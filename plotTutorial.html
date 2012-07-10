@@ -1,0 +1,76 @@
+<html> <head>
+  <script src="Histo.js"></script>
+  <script src="Func.js"></script>
+  <script src="Vector.js"></script>
+  <script src="Matrix.js"></script>
+  <script src="distributions.js"></script>
+  <script src="Plot.js"></script>
+  </head> <body>
+  
+  <script type="text/JavaScript">
+
+
+  //-----The PlotStyle() object-----------------------------
+/*
+  PlotStyle()  -no arguments
+  
+
+  Clairvoyant streamlines the plot styling process by wrapping all 
+  style parameters in a PlotStyle() object.  PlotStyle() does nothing
+  on its own, but an instance can be created and filled with plot
+  styling options, and then passed as an optional argument to the
+  draw() functions of most of Clairvoyant's other libraries.  In this way,
+  the user may create a set of PlotStyle() templates in a project and
+  re-use them to quickly and easily re-create the desired visual character
+  in many figures without having to re-define the relevant parameters
+  for each one.
+
+  PlotStyle() currently provides control for the following 
+  style elements (many more to come!):
+
+  marginSize		size in pixels of the top, bottom and right margins (default 70)
+  marginScaleY		left margin = marginSize * marginScaleY (to accommodate axis labels better, default 1.5)
+  bigTick		length in pixels of large axis tickmarks (default 10)
+  smallTick 		length in pixels of small axis tickmarks (default 5)
+  majorX		number of large axis tickmarks to place on the x-axis (default 3)
+  minorX		number of small axis tickmarks to place between each large axis tickmark on the x-axis (default 9)
+  majorY                number of large axis tickmarks to place on the y-axis (default 3)
+  minorY                number of small axis tickmarks to place between each large axis tickmark on the y-axis (default 9)
+  color			line color (default black)
+  suppress		1 implies suppress drawing axes and labels (used for drawing multiple things on same canvas, default 0).
+*/
+
+  //-----Plot() objects----------------------------------------------
+/*
+  Plot(<canvas>, <xmin>, <xmax>, <ymin>, <ymax>, <title>, <xtitle>, <ytitle>, <plotstyle>)  
+    <canvas>     the HTML5 canvas to draw this Func in
+    <xmin>       minimum x value to draw from
+    <xmax>       maximum x value to draw to
+    <ymin>       minimum y value to draw from
+    <ymax>       maximum y value to draw to
+    <title>      plot title
+    <xtitle>     x axis label
+    <ytitle>     y axis label
+    <plotstyle>  (optional) PlotStyle() object to style this plot with
+  
+  Clairvoyant creates a Plot() object every time one of the draw()
+  methods in its other libraries is called.  The Plot() object is 
+  responsible for drawing this axes, tickmarks and labels of a plot,
+  but not the actual content in the plotting window.  It will typically
+  not be called by the user, but we illustrate it here nonetheless:
+
+*/
+
+  </script>
+
+  <canvas id="canvas1" width="600" height="450"></canvas>
+  
+  <script type="text/JavaScript">
+
+  var emptyPlot = new Plot('canvas1', 0, 100, 0, 10, 'Martian Owl Population', 'years since 2012', 'owls (millions)');
+  emptyPlot.draw();
+
+
+  </script>   
+  
+</body> </html>

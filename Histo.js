@@ -45,14 +45,12 @@ function Histo(nBins, min, max) {
             return;
         }
 
-
         for (i = 0; i < this.bins.length; i++) {
             if (this.bins[i].lo <= value) {
                 index = i;
             }
         }
 
-        
         this.bins[index].weight += amount;
 
         return 0;
@@ -252,13 +250,13 @@ function Histo(nBins, min, max) {
 
         return 0;
     };
-    
+
     //draw this histo
     //if ymin = ymax, tries to cover complete range of bin heights.
-    this.draw = function (canvas, ymin, ymax, title, xtitle, ytitle) {
-    
-        var i, plot, binHeight, binWidth, yMin, yMax;
-        
+    this.draw = function (canvas, ymin, ymax, title, xtitle, ytitle, plotstyle) {
+
+        var color, i, plot, binHeight, binWidth, yMin, yMax;
+
         if (ymin === ymax) {
             yMin = 0;
             yMax = 0;
@@ -272,37 +270,33 @@ function Histo(nBins, min, max) {
             yMin = ymin;
             yMax = ymax;
         }
-        
-        plot = new Plot(canvas, this.min, this.max, yMin, yMax, title, xtitle, ytitle);
-        plot.draw();
-       
-        binWidth = (plot.canvas.width - 2*plot.marginSize) / this.nBins;
+
+        if (typeof plotstyle !== 'undefined') {
+            plot = new Plot(canvas, this.min, this.max, yMin, yMax, title, xtitle, ytitle, plotstyle);
+            color = plotstyle.color;
+        } else {
+            plot = new Plot(canvas, this.min, this.max, yMin, yMax, title, xtitle, ytitle);
+            color = 'black';
+        }
+
+        //allow axis suppression for overlaying multiple drawings
+        if ((typeof plotstyle !== 'undefined' && !plotstyle.suppress) || typeof plotstyle === 'undefined') {
+            plot.draw();
+        }
+
+        plot.context.strokeStyle = color;
+        binWidth = (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize) / this.nBins;
         for (i = 0; i < this.nBins; i++) {
             if (this.bins[i].weight < ymin) {
                 binHeight = 0;
+            } else if (this.bins[i].weight > yMax) {
+                binHeight = plot.canvas.height - 2 * plot.marginSize;
+            } else {
+                binHeight = (plot.canvas.height - 2 * plot.marginSize) * (this.bins[i].weight - yMin) / (yMax - yMin);
             }
-            else if (this.bins[i].weight > yMax) {
-                binHeight = plot.canvas.height - 2*plot.marginSize;
-            }
-            else {
-                binHeight = (plot.canvas.height - 2*plot.marginSize) * (this.bins[i].weight - yMin) / (yMax - yMin);
-            }
-            
-            plot.context.strokeRect(plot.marginSize + i*binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
+
+            plot.context.strokeRect(plot.marginScaleY * plot.marginSize + i * binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
         }
-    
-    
-    
-    
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 }

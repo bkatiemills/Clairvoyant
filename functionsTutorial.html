@@ -4,6 +4,7 @@
   <script src="Vector.js"></script>
   <script src="Matrix.js"></script>
   <script src="distributions.js"></script>
+  <script src="Plot.js"></script>
   </head> <body>
 
   <script type="text/JavaScript">
@@ -62,6 +63,34 @@
 
   //-----------------------------------------------------------------
 
+  //-----draw Method---------------------------------------------
+  //draw(<canvas>, <xmin>, <xmax>, <ymin>, <ymax>, <title>, <xtitle>, <ytitle>, <plotstyle>)
+  //  <canvas>	   the HTML5 canvas to draw this Func in
+  //  <xmin>	   minimum x value to draw from
+  //  <xmax>  	   maximum x value to draw to
+  //  <ymin>	   minimum y value to draw from
+  //  <ymax>	   maximum y value to draw to
+  //  <title>	   plot title
+  //  <xtitle>	   x axis label
+  //  <ytitle>     y axis label
+  //  <plotstyle>  (optional) PlotStyle() object to style this plot with
+  //Return type: 0 on success
+
+  //draws this Func in the window specified.  Note that if <ymin> === <ymax>,
+  //draw() will try to automatically seek an appropriate y-window.
+
+  document.write('/////////////////// .draw examples //////////////////////////////////</br>');
+  </script>
+
+  <canvas id="canvas1" width="600" height="450"></canvas>  
+
+  <script type="text/JavaScript">
+
+  var style = new PlotStyle();
+  style.color = "red";
+
+  parabola.draw('canvas1', -12,12, 20,20,'A Lovely Parabola', 'x', 'y=x*x', style);
+
   //-----Evaluate Method---------------------------------------------
   //evaluate(<inputs>)
   // <inputs>	A number (for 1D functions) or an n-element array (for n-dimensional functions
@@ -72,7 +101,7 @@
   //constructor as its second argument.  You can pass a single variable function
   //a single value:
 
-  document.write('/////////////////// .evaluate examples //////////////////////////////////</br>');
+  document.write('</br>/////////////////// .evaluate examples //////////////////////////////////</br>');
   document.write('</br>x^2 evaluated at x = 2 returns: ');
   document.write(parabola.evaluate(2));  
 
