@@ -28,16 +28,31 @@
   PlotStyle() currently provides control for the following 
   style elements (many more to come!):
 
+  -----Margins-----
+  marginScaleY          left margin = marginSize * marginScaleY (to accommodate axis labels better, default 1.5)
   marginSize		size in pixels of the top, bottom and right margins (default 70)
-  marginScaleY		left margin = marginSize * marginScaleY (to accommodate axis labels better, default 1.5)
+
+  -----Tick Marks-----
   bigTick		length in pixels of large axis tickmarks (default 10)
   smallTick 		length in pixels of small axis tickmarks (default 5)
   majorX		number of large axis tickmarks to place on the x-axis (default 3)
   minorX		number of small axis tickmarks to place between each large axis tickmark on the x-axis (default 9)
   majorY                number of large axis tickmarks to place on the y-axis (default 3)
   minorY                number of small axis tickmarks to place between each large axis tickmark on the y-axis (default 9)
+
+  -----colors-----
   color			line color (default black)
+
+  -----fonts-----
+  ---> note fonts include size and modifiers like italic, bold etc.  Pass 
+  ---> a string conforming to the syntax for context.font objects, such as 
+  ---> '24px sans-serif' or 'italic 12px times new roman'
+  titleFont		font of title and axis labels
+  scaleFont		font of scale gradations
+
+  -----misc-----
   suppress		1 implies suppress drawing axes and labels (used for drawing multiple things on same canvas, default 0).
+  gridLines		if > 0, underlays gridlines every <gridLines> pixels, for ease of styling development (default 0).
 */
 
   //-----Plot() objects----------------------------------------------
@@ -60,6 +75,19 @@
   not be called by the user, but we illustrate it here nonetheless:
 
 */
+/*
+  //-----.plot() method-----------------------------------------------------
+  plot(<plotstyle>)
+    <plotstyle>		(optional) a PlotStyle() object to style this plot with.  If 
+                        none provided, uses the PlotStyle() object passed to the constructor
+                        upon declaration; if none passed there either, all defaults are used.
+
+  The plot() method draws the grid lines, labels and titles for this plot, using the PlotStyle()
+  object passed to it, or to the constructor, or uses default parameter values if not PlotStyle()
+  available, in that order of precidence.
+*/
+  document.write('///////////////////.plot() examples///////////////////////</br></br>');
+  document.write('An empty plot:</br>');
 
   </script>
 
@@ -69,6 +97,37 @@
 
   var emptyPlot = new Plot('canvas1', 0, 100, 0, 10, 'Martian Owl Population', 'years since 2012', 'owls (millions)');
   emptyPlot.draw();
+
+  document.write('</br>We can underlay gridlines while styling this plot to make it easy to tweak:</br></br>');
+
+  </script>
+
+  <canvas id="canvas2" width="600" height="450"></canvas>
+
+  <script type="text/JavaScript">
+
+  var style = new PlotStyle();
+  style.gridLines = 10;    //this will put grid lines every 10 px
+  emptyPlot.canvas = document.getElementById('canvas2');  //do this to change the canvas to 'canvas2'...
+  emptyPlot.context = emptyPlot.canvas.getContext("2d");  //...and this to point the context there as well!
+  emptyPlot.draw(style);
+
+  document.write('</br></br>That y-axis label is kind of far away.  We can use the Nudge options to fine tune things:</br></br>');
+
+  //nudge the y axis label 20 pixels forward in x:
+  style.yLabelNudgeX = 20;
+
+  //make a new canvas so we can compare before and after:
+  </script>
+
+  <canvas id="canvas3" width="600" height="450"></canvas>
+
+  <script type="text/JavaScript">
+
+  //point at the new canvas like the last example:
+  emptyPlot.canvas = document.getElementById('canvas3');  //do this to change the canvas to 'canvas3'...
+  emptyPlot.context = emptyPlot.canvas.getContext("2d");  //...and this to point the context there as well!
+  emptyPlot.draw(style);
 
 
   </script>   

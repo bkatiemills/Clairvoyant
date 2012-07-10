@@ -28,19 +28,70 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     //number of major divisions on the y axis:
     this.majorY = typeof plotstyle !== 'undefined' ? plotstyle.majorY : 3;
     //number of minor divisions between major divisions on the y axis:
-    this.minorY = 9;
     this.minorY = typeof plotstyle !== 'undefined' ? plotstyle.minorY : 9;
+    
+    //fonts:
+    this.scaleFont = typeof plotstyle !== 'undefined' ? plotstyle.scaleFont : '15px sans-serif';
+    this.titleFont = typeof plotstyle !== 'undefined' ? plotstyle.titleFont : 'italic 24px times new roman';
+    
+    //nudges:
+    this.titleNudgeX = typeof plotstyle !== 'undefined' ? plotstyle.titleNudgeX : 0;
+    this.titleNudgeY = typeof plotstyle !== 'undefined' ? plotstyle.titleNudgeY : 0;
+    this.xLabelNudgeX = typeof plotstyle !== 'undefined' ? plotstyle.xLabelNudgeX : 0;
+    this.xLabelNudgeY = typeof plotstyle !== 'undefined' ? plotstyle.xLabelNudgeY : 0;
+    this.yLabelNudgeX = typeof plotstyle !== 'undefined' ? plotstyle.yLabelNudgeX : 0;
+    this.yLabelNudgeY = typeof plotstyle !== 'undefined' ? plotstyle.yLabelNudgeY : 0;
 
     this.canvas = document.getElementById(canvas);
     this.context = this.canvas.getContext("2d");
     this.context.textAlign = "center";
 
     //draw this Plot in its canvas.
-    this.draw = function () {
+    this.draw = function (plotstyle) {
+
+        if (typeof plotstyle !== 'undefined') {
+            this.marginSize = plotstyle.marginSize;
+            this.marginScaleY = plotstyle.marginScaleY;
+            this.bigTick = plotstyle.bigTick;
+            this.smallTick = plotstyle.smallTick;
+            this.majorX = plotstyle.majorX;
+            this.minorX = plotstyle.minorX;
+            this.majorY = plotstyle.majorY;
+            this.minorY = plotstyle.minorY;
+            this.scaleFont = plotstyle.scaleFont;
+            this.titleFont = plotstyle.titleFont;        
+            this.titleNudgeX = plotstyle.titleNudgeX;
+            this.titleNudgeY = plotstyle.titleNudgeY;
+            this.xLabelNudgeX = plotstyle.xLabelNudgeX;
+            this.xLabelNudgeY = plotstyle.xLabelNudgeY;
+            this.yLabelNudgeX = plotstyle.yLabelNudgeX;
+            this.yLabelNudgeY = plotstyle.yLabelNudgeY;
+        }
 
         var i, j, majorTickSpacingX, minorTickSpacingX, majorTickSpacingY, minorTickSpacingY;
 
+        //gridlines if requested
+        if (typeof plotstyle !== 'undefined' && plotstyle.gridLines !== 0) {
+            i = 0;
+            this.context.beginPath();
+            this.context.strokeStyle = 'grey';
+            while (i < this.canvas.width) {
+                this.context.moveTo(i, 0);
+                this.context.lineTo(i, this.canvas.height);
+                i += plotstyle.gridLines;
+            }
+            i = 0;
+            while (i < this.canvas.height) {
+                this.context.moveTo(0, i);
+                this.context.lineTo(this.canvas.width, i);
+                i += plotstyle.gridLines;
+            }
+            this.context.stroke();
+        }
+        
+
         this.context.beginPath();
+        this.context.strokeStyle = 'black';
         //axes
         this.context.moveTo(this.marginScaleY * this.marginSize, this.canvas.height - this.marginSize);
         this.context.lineTo(this.canvas.width - this.marginSize, this.canvas.height - this.marginSize);
@@ -54,7 +105,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.context.moveTo(this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize);
             this.context.lineTo(this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick);
 
-            this.context.font = "15px sans-serif";
+            this.context.font = this.scaleFont;
             this.context.fillText(((this.xmax - this.xmin) / (this.majorX - 1) * i + this.xmin).toFixed(), this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick + 12);
 
             if (i < this.majorX - 1) {
@@ -72,7 +123,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.context.moveTo(this.marginScaleY * this.marginSize, this.canvas.height - this.marginSize - i * majorTickSpacingY);
             this.context.lineTo(this.marginScaleY * this.marginSize - this.bigTick, this.canvas.height - this.marginSize - i * majorTickSpacingY);
 
-            this.context.font = "15px sans-serif";
+            this.context.font = this.scaleFont;
             this.context.textBaseline = "middle";
             this.context.textAlign = "right";
             this.context.fillText(((this.ymax - this.ymin) / (this.majorY - 1) * i + this.ymin).toFixed(), this.marginScaleY * this.marginSize - this.bigTick - 12, this.canvas.height - this.marginSize - i * majorTickSpacingY);
@@ -90,19 +141,19 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
 
         this.context.textBaseline = "middle";
         this.context.textAlign = "right";
-        this.context.font = "italic 18pt times new roman";
-        this.context.fillText(this.xtitle, this.canvas.width - this.marginSize - minorTickSpacingX, this.canvas.height - this.marginSize / 2);
+        this.context.font = this.titleFont;
+        this.context.fillText(this.xtitle, this.canvas.width - this.marginSize - minorTickSpacingX + this.xLabelNudgeX, this.canvas.height - this.marginSize / 2 + this.xLabelNudgeY);
 
         this.context.save();
-        this.context.translate(this.marginSize / 2, this.marginSize + minorTickSpacingY);
+        this.context.translate(this.marginSize / 2 + this.yLabelNudgeX, this.marginSize + minorTickSpacingY + this.yLabelNudgeY);
         this.context.rotate(-1 * Math.PI / 2);
         this.context.textBaseline = "bottom";
         this.context.fillText(this.ytitle, 0, 0);
         this.context.restore();
 
         this.context.textBaseline = "bottom";
-        this.context.fillText(this.title, this.canvas.width - this.marginSize - minorTickSpacingX, this.marginSize);
-
+        this.context.fillText(this.title, this.canvas.width - this.marginSize - minorTickSpacingX + this.titleNudgeX, this.marginSize + this.titleNudgeY);
+        
         this.context.stroke();
     };
 }
@@ -133,7 +184,22 @@ function PlotStyle() {
 
     //colors
     this.color = 'black';
+    
+    //fonts
+    this.scaleFont = '15px sans-serif';
+    this.titleFont = 'italic 24px times new roman';
 
     //suppress axes and labels (for drawing multiple things on the same canvas)
     this.suppress = 0;
+    
+    //draw grid lines over the entire canvas with this spacing in pixels; set to 0 to turn off:
+    this.gridLines = 0;
+    
+    //nudge title and label elements around this many pixels:
+    this.titleNudgeX = 0;
+    this.titleNudgeY = 0;
+    this.xLabelNudgeX = 0;
+    this.xLabelNudgeY = 0;
+    this.yLabelNudgeX = 0;
+    this.yLabelNudgeY = 0;
 }
