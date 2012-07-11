@@ -293,30 +293,12 @@ function Histo(nBins, min, max) {
         plot.context.strokeStyle = color;
         plot.context.globalAlpha = opacity;
         plot.context.fillStyle = fill;
-        
-        //-----define fill textures; REFACTOR.-----------------------------------------
         if (fill === 'rightCrosshatch') {
-
-            var rch = document.createElement('canvas');
-            rch.width = 50;
-            rch.height = 50;
-            var rchContext = rch.getContext('2d');
-            //rchContext.fillStyle = 'rgb(0,0,0)';
-            //rchContext.fillRect(0,0,64,64);
-            rchContext.lineWidth = lineWidth;
-            for (i = 0; i < 10; i++) {
-                rchContext.moveTo(0, i*5);
-                rchContext.lineTo(i*5, 0);
-                
-                rchContext.moveTo(i*5, 50);
-                rchContext.lineTo(50, i*5);
-            }
-            rchContext.stroke();
-            var rightCrosshatch = rchContext.createPattern(rch, "repeat");
-            
-            plot.context.fillStyle = rightCrosshatch;
+            plot.context.fillStyle = rightCrosshatch(lineWidth, color);
         }
-        //------end fill textures------------------------------------------------------
+        if (fill === 'leftCrosshatch') {
+            plot.context.fillStyle = leftCrosshatch(lineWidth, color);
+        }
         
         plot.context.lineWidth = lineWidth;
         binWidth = (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize) / this.nBins;

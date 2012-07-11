@@ -5,6 +5,7 @@
   <script src="Matrix.js"></script>
   <script src="distributions.js"></script>
   <script src="Plot.js"></script>
+  <script src="FillTextures.js"></script>
   </head> <body>
 
   <script type="text/JavaScript">
@@ -107,7 +108,8 @@
 
   //use PlotStyle objects to style your histos:
   var histoStyle1 = new PlotStyle();
-  histoStyle1.fill = 'rightCrosshatch';
+  histoStyle1.fill = 'leftCrosshatch';
+  histoStyle1.color = 'blue'
   histoStyle1.opacity = 0.5;
 
   var histoStyle2 = new PlotStyle();
