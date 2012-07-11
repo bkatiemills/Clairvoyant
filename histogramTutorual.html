@@ -105,13 +105,19 @@
   firstHist.draw('canvas1', 80,120,'firstHist - controlled vertical range','derps','counts / derp');
   firstHist.draw('canvas2', 0,0,'firstHist - auto vertical range','derps','counts / derp');
 
-  //use a PlotStyle object to style your histos:
-  var histoStyle = new PlotStyle();
-  histoStyle.color = "red";
-  histoStyle.suppress = 1;
+  //use PlotStyle objects to style your histos:
+  var histoStyle1 = new PlotStyle();
+  histoStyle1.fill = 'rightCrosshatch';
+  histoStyle1.opacity = 0.5;
 
-  firstHist.draw('canvas3', 80,120,'firstHist & anotherHist, styled','derps','counts / derp');
-  anotherHist.draw('canvas3', 80,120,'theseLabels','turnedOffBy','PlotStyle', histoStyle);
+  var histoStyle2 = new PlotStyle();
+  histoStyle2.color = "black";
+  histoStyle2.fill = "green";
+  histoStyle2.opacity = 0.5;
+  histoStyle2.suppress = 1;
+
+  firstHist.draw('canvas3', 80,120,'firstHist & anotherHist, styled','derps','counts / derp', histoStyle1);
+  anotherHist.draw('canvas3', 80,120,'theseLabels','turnedOffBy','PlotStyle', histoStyle2);
 
   //-----integrate Method---------------------------------------------
   //integrate(<min>,<max>)

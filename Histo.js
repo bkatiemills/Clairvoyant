@@ -255,7 +255,7 @@ function Histo(nBins, min, max) {
     //if ymin = ymax, tries to cover complete range of bin heights.
     this.draw = function (canvas, ymin, ymax, title, xtitle, ytitle, plotstyle) {
 
-        var color, i, plot, binHeight, binWidth, yMin, yMax;
+        var color, fill, i, lineWidth, plot, binHeight, binWidth, opacity, yMin, yMax;
 
         if (ymin === ymax) {
             yMin = 0;
@@ -274,9 +274,15 @@ function Histo(nBins, min, max) {
         if (typeof plotstyle !== 'undefined') {
             plot = new Plot(canvas, this.min, this.max, yMin, yMax, title, xtitle, ytitle, plotstyle);
             color = plotstyle.color;
+            fill = plotstyle.fill;
+            opacity = plotstyle.opacity;
+            lineWidth = plotstyle.lineWidth;
         } else {
             plot = new Plot(canvas, this.min, this.max, yMin, yMax, title, xtitle, ytitle);
             color = 'black';
+            fill = 'white';
+            opacity = 1;
+            lineWidth = 2;
         }
 
         //allow axis suppression for overlaying multiple drawings
@@ -285,6 +291,34 @@ function Histo(nBins, min, max) {
         }
 
         plot.context.strokeStyle = color;
+        plot.context.globalAlpha = opacity;
+        plot.context.fillStyle = fill;
+        
+        //-----define fill textures; REFACTOR.-----------------------------------------
+        if (fill === 'rightCrosshatch') {
+
+            var rch = document.createElement('canvas');
+            rch.width = 50;
+            rch.height = 50;
+            var rchContext = rch.getContext('2d');
+            //rchContext.fillStyle = 'rgb(0,0,0)';
+            //rchContext.fillRect(0,0,64,64);
+            rchContext.lineWidth = lineWidth;
+            for (i = 0; i < 10; i++) {
+                rchContext.moveTo(0, i*5);
+                rchContext.lineTo(i*5, 0);
+                
+                rchContext.moveTo(i*5, 50);
+                rchContext.lineTo(50, i*5);
+            }
+            rchContext.stroke();
+            var rightCrosshatch = rchContext.createPattern(rch, "repeat");
+            
+            plot.context.fillStyle = rightCrosshatch;
+        }
+        //------end fill textures------------------------------------------------------
+        
+        plot.context.lineWidth = lineWidth;
         binWidth = (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize) / this.nBins;
         for (i = 0; i < this.nBins; i++) {
             if (this.bins[i].weight < ymin) {
@@ -294,7 +328,7 @@ function Histo(nBins, min, max) {
             } else {
                 binHeight = (plot.canvas.height - 2 * plot.marginSize) * (this.bins[i].weight - yMin) / (yMax - yMin);
             }
-
+            plot.context.fillRect(plot.marginScaleY * plot.marginSize + i * binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
             plot.context.strokeRect(plot.marginScaleY * plot.marginSize + i * binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
         }
     };

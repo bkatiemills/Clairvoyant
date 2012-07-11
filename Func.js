@@ -338,7 +338,7 @@ function Func(name, userString, parameters) {
 
     //draw this function in the window from <xmin> to <xmax> and <ymin> to <ymax>
     this.draw = function (canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) {
-        var canvX, canvY, color, i, inWindow, nSamples, plot, xStep, x, y, yMin, yMax;
+        var canvX, canvY, color, i, inWindow, lineWidth, nSamples, plot, xStep, x, y, yMin, yMax;
 
         //auto-find a y window if ymin === ymax:
         yMin = ymin;
@@ -364,11 +364,18 @@ function Func(name, userString, parameters) {
         if (typeof plotstyle !== 'undefined') {
             plot = new Plot(canvas, xmin, xmax, yMin, yMax, title, xtitle, ytitle, plotstyle);
             color = plotstyle.color;
+            lineWidth = plotstyle.lineWidth;
         } else {
             plot = new Plot(canvas, xmin, xmax, yMin, yMax, title, xtitle, ytitle);
             color = 'black';
+            lineWidth = 2;
         }
-        plot.draw();
+
+        //allow axis suppression for overlaying multiple drawings.
+        if ((typeof plotstyle !== 'undefined' && !plotstyle.suppress) || typeof plotstyle === 'undefined') {
+            plot.draw();
+        }
+
 
         //draw function as nSamples line segements joining f(x) at each step of x in range.  
         //nSamples = #pixels in width of canvas ensures smooth-looking line (ie each line segment is at most 1px long).
@@ -378,6 +385,7 @@ function Func(name, userString, parameters) {
         inWindow = 0;
         plot.context.beginPath();
         plot.context.strokeStyle = color;
+        plot.context.lineWidth = lineWidth;
         for (i = 0; i < nSamples + 1; i++) {
             y = this.evaluate(x);
             canvX = plot.marginScaleY * plot.marginSize + (x - xmin)  / (xmax - xmin) * (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize);
@@ -397,6 +405,7 @@ function Func(name, userString, parameters) {
             x += xStep;
         }
 
+        return 0;
 
     };
 

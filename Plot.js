@@ -163,6 +163,8 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
 function PlotStyle() {
     'use strict';
 
+    var i;
+
     //base margin size, in pixels:
     this.marginSize = 70;
     //scale y-margin to accomodate tick mark labels & axis title
@@ -182,9 +184,15 @@ function PlotStyle() {
     //number of minor divisions between major divisions on the y axis:
     this.minorY = 9;
 
-    //colors
+    //line colors
     this.color = 'black';
     
+    //line weight
+    this.lineWidth = 2;
+    
+    //fill colors
+    this.fill = 'white';
+
     //fonts
     this.scaleFont = '15px sans-serif';
     this.titleFont = 'italic 24px times new roman';
@@ -202,4 +210,8 @@ function PlotStyle() {
     this.xLabelNudgeY = 0;
     this.yLabelNudgeX = 0;
     this.yLabelNudgeY = 0;
+    
+    //opacity
+    this.opacity = 1;
+    
 }
