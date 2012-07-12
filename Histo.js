@@ -310,7 +310,11 @@ function Histo(nBins, min, max) {
             } else {
                 binHeight = (plot.canvas.height - 2 * plot.marginSize) * (this.bins[i].weight - yMin) / (yMax - yMin);
             }
+            //set opacity for fill:
+            plot.context.globalAlpha = opacity;
             plot.context.fillRect(plot.marginScaleY * plot.marginSize + i * binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
+            //opacity for bin borders is always 1 (for now?)
+            plot.context.globalAlpha = 1;
             plot.context.strokeRect(plot.marginScaleY * plot.marginSize + i * binWidth, plot.canvas.height - plot.marginSize - binHeight, binWidth, binHeight);
         }
     };

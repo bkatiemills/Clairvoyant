@@ -16,6 +16,9 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     //scale y-margin to accomodate tick mark labels & axis title
     this.marginScaleY = typeof plotstyle !== 'undefined' ? plotstyle.marginScaleY : 1.5;
 
+    //axis line weights:
+    this.axisLineWidth = typeof plotstyle !== 'undefined' ? plotstyle.axisLineWidth : 2;
+
     //tick mark size, in pixels:
     this.bigTick = typeof plotstyle !== 'undefined' ? plotstyle.bigTick : 10;
     this.smallTick = typeof plotstyle !== 'undefined' ? plotstyle.smallTick : 5;
@@ -66,6 +69,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.xLabelNudgeY = plotstyle.xLabelNudgeY;
             this.yLabelNudgeX = plotstyle.yLabelNudgeX;
             this.yLabelNudgeY = plotstyle.yLabelNudgeY;
+            this.axisLineWidth = plotstyle.axisLineWidth;
         }
 
         var i, j, majorTickSpacingX, minorTickSpacingX, majorTickSpacingY, minorTickSpacingY;
@@ -75,6 +79,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             i = 0;
             this.context.beginPath();
             this.context.strokeStyle = 'grey';
+            this.context.lineWidth = 1;
             while (i < this.canvas.width) {
                 this.context.moveTo(i, 0);
                 this.context.lineTo(i, this.canvas.height);
@@ -92,6 +97,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
 
         this.context.beginPath();
         this.context.strokeStyle = 'black';
+        this.context.lineWidth = this.axisLineWidth;
         //axes
         this.context.moveTo(this.marginScaleY * this.marginSize, this.canvas.height - this.marginSize);
         this.context.lineTo(this.canvas.width - this.marginSize, this.canvas.height - this.marginSize);
@@ -189,6 +195,7 @@ function PlotStyle() {
     
     //line weight
     this.lineWidth = 2;
+    this.axisLineWidth = 2;
     
     //fill colors
     this.fill = 'white';
@@ -214,4 +221,83 @@ function PlotStyle() {
     //opacity
     this.opacity = 1;
     
+}
+
+
+
+//-----Legend Class------------------------------------------
+function Legend(canvas, x, y) {
+
+    this.canvas = document.getElementById(canvas);
+    this.context = this.canvas.getContext("2d");
+
+    //upper left hand corner of Legend in canvas coordinates
+    this.x = x;
+    this.y = y;
+    
+    this.entries = [];
+    this.entryStyle = [];
+    
+    this.defaultStyle = new PlotStyle();
+    
+    this.add = function(label, plotstyle) {
+        this.entries.push(label);
+        if (typeof plotstyle !== 'undefined') {
+            this.entryStyle.push(plotstyle);
+        } else {
+            this.entryStyle.push(this.defaultStyle);
+        }
+    };
+    
+    this.draw = function(style) {
+        var border, textColor, font, i, opacity, thumbHeight, thumbWidth;
+        
+        font = typeof style !== 'undefined' ? style.font : '12px sans-serif';
+        border = typeof style !== 'undefined' ? style.border : 5;
+        opacity = typeof style !== 'undefined' ? style.opacity : 1;
+        thumbWidth = typeof style !== 'undefined' ? style.thumbWidth : 20;
+        thumbHeight = typeof style !== 'undefined' ? style.thumbHeight : 20;        
+        textColor = typeof style !== 'undefined' ? style.textColor : 'black';
+
+        this.context.textAlign = 'left';
+        this.context.textBaseline = 'middle';
+        
+        for (i = 0; i < this.entries.length; i++) {
+            //Duplicate the fill style for each element in the legend thumbnail:
+            this.context.globalAlpha = this.entryStyle[i].opacity;
+            this.context.fillStyle = this.entryStyle[i].fill;
+            if (this.entryStyle[i].fill === 'rightCrosshatch') {
+                this.context.fillStyle = rightCrosshatch(this.entryStyle[i].lineWidth, this.entryStyle[i].color);
+            }
+            if (this.entryStyle[i].fill === 'leftCrosshatch') {
+                this.context.fillStyle = leftCrosshatch(this.entryStyle[i].lineWidth, this.entryStyle[i].color);
+            }
+            this.context.fillRect(this.x + border, this.y + border + i*(thumbHeight+5), thumbWidth, thumbHeight);
+            
+            //duplicate the border style for each element in the thumbnail:
+            this.context.strokeStyle = this.entryStyle[i].color;
+            this.context.lineWidth = this.entryStyle[i].lineWidth;
+            this.context.globalAlpha = 1;
+            this.context.strokeRect(this.x + border, this.y + border + i*(thumbHeight+5), thumbWidth, thumbHeight);
+            
+            //label the thumbnail:
+            this.context.font = font;
+            this.context.globalAlpha = opacity;
+            this.context.fillStyle = textColor;            
+            this.context.fillText(this.entries[i], this.x + border + thumbWidth + border, this.y + border + thumbHeight / 2 + i*(thumbHeight+5));
+        }
+        
+    };
+}
+
+//-----LegendStyle Class------------------------------------
+function LegendStyle() {
+
+    this.font = '12px sans-serif';
+    this.opacity = 1;
+    this.border = 5;
+    this.thumbWidth = 20;
+    this.thumbHeight = 20;
+    this.textColor = 'black';
+
 }

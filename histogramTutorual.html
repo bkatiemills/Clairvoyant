@@ -110,16 +110,23 @@
   var histoStyle1 = new PlotStyle();
   histoStyle1.fill = 'leftCrosshatch';
   histoStyle1.color = 'blue'
-  histoStyle1.opacity = 0.5;
+  histoStyle1.titleNudgeX = -40;
 
   var histoStyle2 = new PlotStyle();
   histoStyle2.color = "black";
   histoStyle2.fill = "green";
   histoStyle2.opacity = 0.5;
   histoStyle2.suppress = 1;
+  histoStyle2.lineWidth = 3;
 
-  firstHist.draw('canvas3', 80,120,'firstHist & anotherHist, styled','derps','counts / derp', histoStyle1);
-  anotherHist.draw('canvas3', 80,120,'theseLabels','turnedOffBy','PlotStyle', histoStyle2);
+  firstHist.draw('canvas3', 80,150,'Styled Histos','derps','counts / derp', histoStyle1);
+  anotherHist.draw('canvas3', 80,130,'theseLabels','turnedOffBy','PlotStyle', histoStyle2);
+
+  //add a legend:
+  var legend = new Legend('canvas3', 500,50,100);
+  legend.add('firstHist', histoStyle1);
+  legend.add('anotherHist', histoStyle2);
+  legend.draw();
 
   //-----integrate Method---------------------------------------------
   //integrate(<min>,<max>)

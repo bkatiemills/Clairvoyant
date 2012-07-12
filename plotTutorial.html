@@ -49,6 +49,7 @@
 
   -----lines-----
   lineWidth		line width in pixels, exactly as the HTML5 canvas property lineWidth (default 2)
+  axisLineWidth		as lineWidth, but for the axes and tickmarks.
 
   -----fonts-----
   ---> note fonts include size and modifiers like italic, bold etc.  Pass 
@@ -136,6 +137,32 @@
   emptyPlot.context = emptyPlot.canvas.getContext("2d");  //...and this to point the context there as well!
   emptyPlot.draw(style);
 
+
+
+/*
+-----LegendStyle() objects------------------------------------
+
+  Legends can be styled in Clairvoyant by a LegendStyle() object, much like
+  plots and their PlotStyle() object.  See the histograms tutorial for an 
+  example of Legend() and LegendStyle() in action.  The currently implemented
+  options for LegendStyle() are: 
+
+  -----fonts-----
+  font			font for legend text.  default = '12px sans-serif'
+
+  -----colors-----
+  textColor		font color, syntx as per an HTML5 canvas context.  default = 'black'
+  opacity		globalAlpha in HTML5 (0 = invisible, 1 = solid).  default 1.
+
+  -----borders-----
+  border		legend border width in pixels.  default 5.
+  
+  -----thumbnails-----
+  thumbWidth		width  in pixels of thumbnail showing element fill / color / border.  default 20
+  thumbHeight		height "				    			   "  default 20
+
+*/
+  
 
   </script>   
   
