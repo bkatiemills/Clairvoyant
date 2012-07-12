@@ -1,0 +1,49 @@
+<html> <head>
+  <script src="Histo.js"></script>
+  <script src="Func.js"></script>
+  <script src="Vector.js"></script>
+  <script src="Matrix.js"></script>
+  <script src="distributions.js"></script>
+  <script src="Plot.js"></script>
+  <script src="Graph.js"></script>
+  </head> <body>
+
+  <canvas id="canvas1" width="600" height="450"></canvas>
+  
+  <script type="text/JavaScript">
+
+  var x = [];
+  x[0] = 1;
+  x[1] = 2;
+  x[2] = 3;
+  x[3] = 4;
+  x[4] = 5;
+
+  var y = [];
+  y[0] = 72.4;
+  y[1] = 89.1;
+  y[2] = 74.9;
+  y[3] = 60.6;
+  y[4] = 68.8;
+
+  var dx = [];
+  dx[0] = 0.1;
+  dx[1] = 0.1;
+  dx[2] = 0;
+  dx[3] = 0.1;
+  dx[4] = 0.2;
+
+  var dy = [];
+  dy[0] = 5;
+  dy[1] = 10;
+  dy[2] = 1;
+  dy[3] = 7;
+  dy[4] = 2;
+
+  var firstGraph = new Graph(x,y,dx,dy);
+
+  firstGraph.draw('canvas1', 0, 6, 50, 100, 'pointz', 'x-axis', 'y-axis');
+
+  </script>   
+  
+</body> </html>
