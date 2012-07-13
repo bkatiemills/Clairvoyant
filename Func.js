@@ -4,14 +4,13 @@
 // represented similarly as par[0], par[1], ..., par[m - 1].
 // Currently  < name >  needs to be the same as the var name of the object itself in order for getExtremum
 // to work, might fix this in future.
-function Func(name, userString, parameters) {
+function Func(func, parameters) {
     'use strict';
 
-    this.name = name;
-    this.userString = userString;
+    this.func = func;
     this.params = [];
 
-    if (arguments.length  ===  3) {
+    if (typeof parameters !== 'undefined') {
         if (parameters instanceof Array) {
             this.params = parameters;
         } else {
@@ -23,29 +22,8 @@ function Func(name, userString, parameters) {
 
     //-----methods for user defined function class-------------------------- 
 
-    // evaluates the function at the coordinate  < inputs >  in phase space, using the
-    // parameters set on creation of the function or on a call to this.setParameters
-    //  < inputs >  may be either an Array or a single number
     this.evaluate = function (inputs) {
-        var ins, par, x;
-
-        x = [];
-
-        if (inputs instanceof Array) {
-            for (ins = 0; ins < inputs.length; ins++) {
-                x[ins] = inputs[ins];
-            }
-        } else {
-            x[0] = inputs;
-        }
-
-        par = [];
-        for (ins = 0; ins < this.params.length; ins++) {
-            par[ins] = this.params[ins];
-        }
-
-        return eval(this.userString);
-
+        return this.func(inputs, this.params);
     };
 
 
@@ -77,17 +55,22 @@ function Func(name, userString, parameters) {
     // zeroes.    Tolerance defaults to 1 / 10^6 unless user specifies  < tol > .    Returns an array, 
     // first element = coordinate of extrema, second element is 0 for minima and 1 for maxima. 
     this.getExtremum = function (min, max, tol) {
-        var concavity, ddx, extrema, funcString, results, tolerance;
+        var concavity, copyFunc, ddx, extrema, ddxFunc, results, tolerance;
 
         tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
 
-        funcString = this.name + '.derivative(x[0], 0, 0.000001, 0)';
-
-        ddx = new Func('ddx', funcString);
+        results = [];
+        
+        //ddxFunc can see copyFunc, allowing us to pass the 'this' down a level
+        copyFunc = this;
+        ddxFunc = function (x, par) {
+            return copyFunc.derivative(x, 0, 0.000001,0);
+        }
+        ddx = new Func(ddxFunc)
+        
         extrema = ddx.brentSoln(min, max, tolerance);
         concavity = ddx.derivative(extrema);
 
-        results = [];
         results[0] = Math.round(extrema / tolerance) * tolerance;
         if (concavity > 0) {
             results[1] = 0;
@@ -97,8 +80,9 @@ function Func(name, userString, parameters) {
         }
 
         return results;
-    };
 
+    };
+    
 
     // return a random pull from a 1D function, between  < min >  and  < max > .    
     // Function must be non - negative and pole - free across the requested 

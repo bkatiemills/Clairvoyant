@@ -307,7 +307,11 @@
   //The sample method populates this histogram with random pulls
   //from a Func object, within the histogram range:
 
-  var parabola = new Func('parabola','x[0]*x[0]');
+  var pbla = function (x, par) {
+      return x*x
+  }
+
+  var parabola = new Func(pbla);
   var parabolaSample = new Histo(20,-10,10);
   
   parabolaSample.sample(10000,parabola);

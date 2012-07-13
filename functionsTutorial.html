@@ -20,29 +20,38 @@
   //-----The Constructor---------------------------------------------
   //Func(<name>,<function>,<parameters>)
   //  <name>		A string name for the function.
-  //  <function>	A string describing the function to be evaluated, notation below.
+  //  <function>	a JavaScript function instance
   //  <parameters>	(optional) A number or an array initializing any parameters.
 
-  //Declare a new Func like so:
 
-  var parabola = new Func('parabola', 'x[0]*x[0]');
+
+  //Declare a new JavaScript function as per the usual:
+  //NOTE the function must accept exactly the arguments <coordinates>, <parameters>.
+  var pbla = function (x, par) {
+      return x*x
+  }
+
+  //declare the Func object:
+  var parabola = new Func(pbla)
 
   //parabola has been declared with the name 'parabola', and the 
-  //functional form 'x[0]*x[0]' - a 1D parabola with no parameters.
-  //The notation for the string describing the functional form is 
-  //as follows:
-  //  n coordinate space dimensions are denoted as: 
-  //  x[0], x[1], ..., x[n]
-  //  m parameters are denoted as:
-  //  par[0], par[1], ..., par[m]/
-  //So we could also declare things like:
+  //functional form x*x - a 1D parabola with no parameters.
+  //We could also declare things like:
 
-  var quadCube = new Func('quadCube', 'x[0]*x[0]*Math.pow(x[1],3)');
+  var poly2D = function (x, par) {
+      return x[0]*x[0]*Math.pow(x[1], 3);
+  }
+
+  var quadCube = new Func(poly2D);
 
   //which is a quadratic times a cubic, perhaps more readable as the
   //familiar z = x^2*y^3.  If we want parameters, we can do:
 
-  var quad = new Func('quad', 'Math.pow(x[0]-par[0],2) + par[1]');
+  var quadratic = function (x, par) {
+      return Math.pow(x - par[0], 2) + par[1];
+  }
+
+  var quad = new Func(quadratic);
 
   //which is the same parabola as above, but with its center shifted
   //left by par[0] and up by par[1].  As declared, quad's par[0] will
@@ -59,7 +68,7 @@
   var parameters = new Array();
   parameters[0] = 4;
   parameters[1] = -3;
-  quad = new Func('quad', 'Math.pow(x[0]-par[0],2) + par[1]', parameters);
+  quad = new Func(quadratic, parameters);
 
   //-----------------------------------------------------------------
 
@@ -99,9 +108,7 @@
   //            specifying the point in space the function is to be evaluated at.
   //Return type: float
 
-  //Funcs rely on JavaScript's eval() method to parse the string you passed the
-  //constructor as its second argument.  You can pass a single variable function
-  //a single value:
+  //You can pass a single variable function a single value:
 
   document.write('</br>/////////////////// .evaluate examples //////////////////////////////////</br>');
   document.write('</br>x^2 evaluated at x = 2 returns: ');
@@ -115,7 +122,6 @@
   document.write('</br>x^2y^3 evaluated at x = 3 and y = 5 returns: ');
   document.write(quadCube.evaluate(point))
 
-  //-----------------------------------------------------------------
 
   //-----getParameters Method----------------------------------------
   //getParameters(<array>)
@@ -128,7 +134,7 @@
   document.write('</br></br>/////////////////// .getParameters examples //////////////////////////////////</br>');
   var whatParams = new Array();
   quad.getParameters(whatParams);
-  document.write('</br>func quad had the parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
+  document.write('</br>Func quad had the parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
 
   //-----setParameters Method----------------------------------------
   //setParameters(<array>)
@@ -144,7 +150,7 @@
   newParams[1] = 2;
   quad.setParameters(newParams);
   quad.getParameters(whatParams);
-  document.write('</br>func quad has the new parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
+  document.write('</br>Func quad has the new parameters quad.param[0] = '+whatParams[0]+', quad.param[1] = '+whatParams[1]);
   
   //-----getExtremum Method------------------------------------------
   //getExtremum(<min>,<max>,<tol>)
@@ -164,6 +170,7 @@
   document.write('</br></br>/////////////////// .getExtremum examples //////////////////////////////////</br>');
   document.write('</br>If I guess the bottom of the parabola defined by quad is somewhere between -10 and 10, Clairvoyant finds it at x[0] = ');
   document.write((quad.getExtremum(-10,10))[0]); 
+
   if((quad.getExtremum(-10,10))[1]==0){
     document.write(', and this is a minima.')
   }    
@@ -206,7 +213,12 @@
   //x[0]:
 
   document.write('</br></br>/////////////////// .brentSoln examples //////////////////////////////////</br>');
-  var cubic = new Func('cubic', '(x[0]-1)*(x[0]-2)*(x[0]-3)');
+
+  var cube = function (x, par) {
+      return (x-1)*(x-2)*(x-3);
+  }
+
+  var cubic = new Func(cube);
   document.write('</br>The cubic (x-1)*(x-2)*(x-3) has a zero between x=1.5 and x=2.7 at x = ');
   document.write(cubic.brentSoln(1.5,2.7));
 
