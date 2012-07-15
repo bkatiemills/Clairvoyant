@@ -95,8 +95,11 @@ function Graph(x, y, sigX, sigY) {
         }
     };
     
-    this.remove = function() {
-    
+    this.remove = function(i) {
+        this.x.splice(i, 1);
+        this.y.splice(i, 1);
+        this.sigX.splice(i, 1);
+        this.sigY.splice(i, 1);
     };
     
     this.draw = function (canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) {
@@ -169,15 +172,38 @@ function Graph(x, y, sigX, sigY) {
                 errorBarY = this.sigY[i] / (yMax - yMin) * (plot.canvas.height - 2 * plot.marginSize);
                 
                 plot.context.beginPath();
+                //draw point:
                 plot.context.arc(canvX, canvY, 2, 0, 2*Math.PI);
+
+                //x error bar left:
                 plot.context.moveTo(canvX, canvY);
-                plot.context.lineTo(canvX - errorBarX, canvY);
+                if (canvX - errorBarX > plot.marginScaleY * plot.marginSize) {
+                    plot.context.lineTo(canvX - errorBarX, canvY);
+                } else {
+                    plot.context.lineTo(plot.marginScaleY*plot.marginSize, canvY);
+                }
+                //x error bar right:
                 plot.context.moveTo(canvX, canvY);
-                plot.context.lineTo(canvX + errorBarX, canvY);
+                if (canvX + errorBarX < plot.canvas.width - plot.marginSize) {
+                    plot.context.lineTo(canvX + errorBarX, canvY);
+                } else {
+                    plot.context.lineTo(plot.canvas.width - plot.marginSize, canvY);
+                }
+                //y error bar up
                 plot.context.moveTo(canvX, canvY);
-                plot.context.lineTo(canvX, canvY - errorBarY);
+                if (canvY - errorBarY > plot.marginSize) {
+                    plot.context.lineTo(canvX, canvY - errorBarY);
+                } else {
+                    plot.context.lineTo(canvX, plot.marginSize);
+                }
+                //y error bar down
                 plot.context.moveTo(canvX, canvY);
-                plot.context.lineTo(canvX, canvY + errorBarY);
+                if (canvY + errorBarY < plot.canvas.height - plot.marginSize ) {
+                    plot.context.lineTo(canvX, canvY + errorBarY);
+                } else {
+                    plot.context.lineTo(canvX, plot.canvas.height - plot.marginSize);
+                }
+                
                 plot.context.stroke();
             }
         }

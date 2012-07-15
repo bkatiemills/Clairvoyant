@@ -7,10 +7,23 @@
   <script src="Plot.js"></script>
   <script src="Graph.js"></script>
   </head> <body>
-
-  <canvas id="canvas1" width="600" height="450"></canvas>
   
   <script type="text/JavaScript">
+
+//-----The Graph() Object---------------------------------------
+
+/*Clairvoyant can represent a set of two-dimensional data with
+uncertainties as a graph with error bars.  A simple example
+graph can be created and drawn as follows.*/
+
+  //-----The Constructor---------------------------------------------
+  //Graph(<x>,<y>,<sigma x> <sigma y>)
+  //  <x>            Array() containing the values to be plotted horizontally (x-axis)
+  //  <y>     	     Array() containing the corresponding values to be plotted vertically (y-axis)
+  //  <sigma x>      (optional) Array() containing one-sided uncertainties for x coordinate (one sided ie enter 1 to represent the uncertainty on  5 +- 1)
+  //  <sigma y>      (optional) Array() containing one-sided uncertainties in y.
+
+  //A simple Graph():
 
   var x = [];
   x[0] = 1;
@@ -42,7 +55,73 @@
 
   var firstGraph = new Graph(x,y,dx,dy);
 
-  firstGraph.draw('canvas1', 0, 6, 50, 100, 'pointz', 'x-axis', 'y-axis');
+  //-----draw() method--------------------------------------------------------------------
+  //draw(<canvas>, <xmin>, <xmax>, <ymin>, <ymax>, <title>, <x-axis label>, <y-axis label>)
+  //  <canvas>		String naming the HTML5 canvas object to draw on
+  //  <xmin>		minimum value of x in plot window
+  //  <xmax>		maximum value of x ''
+  //  <ymin>		minimum value of y ''
+  //  <ymax>		maximum value of y ''
+  //  <title>		String containing plot title
+  //  <x-axis label>	Sting containing x-axis label
+  //  <y-axis label>	Sting containing y-axis label
+
+  document.write('</br>/////////////////// .draw examples //////////////////////////////////</br>');
+  </script>
+  <canvas id="canvas1" width="600" height="450"></canvas>
+  <script type="text/JavaScript">
+  firstGraph.draw('canvas1', 0, 6, 50, 100, 'data points', 'x-axis', 'y-axis');
+
+  //-----add() mehtod------------------------------------------------------------------
+  //add(<x>, <y>, <sigma x>, <sigma y>)
+  //  <x>		number or array containing x-axis values of points to be added
+  //  <y>		''                         y-axis ''
+  //  <sigma x>		(optional)''	           x-axis uncertainties of points to be added
+  //  <sigma y>         (optional)''		   y-axis ''
+
+  //add appends more data points onto this Graph:
+
+  document.write('</br>/////////////////// .add examples //////////////////////////////////</br>');
+
+  firstGraph.add(6, 71, 0.1, 8);
+
+  var x2 = []
+  var y2 = []
+  var sigx2 = []
+  var sigy2 = []
+
+  x2[0] = 7; x2[1] = 8;
+  y2[0] = 53; y2[1] = 99;
+  sigx2[0] = 0.1; sigx2[1] = 0.1;
+  sigy2[0] = 4; sigy2[1] = 5;
+
+  firstGraph.add(x2, y2, sigx2, sigy2);
+
+
+  document.write('</br></br>Notice that uncertainties get clipped if they leave the plot range!</br></br>');
+  </script>
+  <canvas id="canvas2" width="600" height="450"></canvas>
+  <script type="text/JavaScript">
+
+  firstGraph.draw('canvas2', 0, 9, 50, 100, 'data points', 'x-axis', 'y-axis');
+
+  //-----remove() mehtod------------------------------------------------------------------
+  //remove(<i>)   
+  //  <i>               position of element to be removed from this object's member arrays
+  
+  //remove removes the <i>th data point in the Graph, where i refers to the Array() address 
+  //of that data point in this.x, this.y etc. 
+
+  document.write('</br>/////////////////// .remove examples //////////////////////////////////</br>');
+
+  document.write('</br></br>The point at x=4 is gone:</br>');
+  firstGraph.remove(3);
+  </script>
+  <canvas id="canvas3" width="600" height="450"></canvas>
+  <script type="text/JavaScript">
+
+  firstGraph.draw('canvas3', 0, 9, 50, 100, 'data points', 'x-axis', 'y-axis');
+
 
   </script>   
   
