@@ -104,8 +104,9 @@ function Graph(x, y, sigX, sigY) {
     
     this.draw = function (canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) {
 
-        var canvX, canvY, color, errorBarX, errorBarY, i, lineWidth, plot, binHeight, opacity, xMin, xMax, yMin, yMax;
+        var canvX, canvY, color, errorBarX, errorBarY, i, lineWidth, plot, binHeight, marker, opacity, xMin, xMax, yMin, yMax;
 
+        //find appropriate x window if none given
         if (xmin >= xmax) {
             xMin = 'null';
             xMax = 'null';
@@ -123,7 +124,7 @@ function Graph(x, y, sigX, sigY) {
             xMin = xmin;
             xMax = xmax;
         }
-
+        //find appropriate y window if none given
         if (ymin >= ymax) {
             yMin = 'null';
             yMax = 'null';
@@ -148,11 +149,13 @@ function Graph(x, y, sigX, sigY) {
             color = plotstyle.color;
             opacity = plotstyle.opacity;
             lineWidth = plotstyle.lineWidth;
+            marker = plotstyle.marker;
         } else {
             plot = new Plot(canvas, xMin, xMax, yMin, yMax, title, xtitle, ytitle);
             color = 'black';
             opacity = 1;
             lineWidth = 2;
+            marker = 'circle';
         }
 
         //allow axis suppression for overlaying multiple drawings
@@ -173,7 +176,18 @@ function Graph(x, y, sigX, sigY) {
                 
                 plot.context.beginPath();
                 //draw point:
-                plot.context.arc(canvX, canvY, 2, 0, 2*Math.PI);
+                if (marker === 'circle') {
+                    plot.context.arc(canvX, canvY, 5, 0, 2*Math.PI);
+                }
+                if (marker === 'square') {
+                    plot.context.rect(canvX - 5, canvY - 5, 10, 10);
+                }
+                if (marker === 'triangle') {
+                    plot.context.moveTo(canvX, canvY - 5 * Math.tan(Math.PI / 3) / 2);
+                    plot.context.lineTo(canvX + 5, canvY + 5 * Math.tan(Math.PI / 3) / 2);
+                    plot.context.lineTo(canvX - 5, canvY + 5 * Math.tan(Math.PI / 3) / 2);
+                    plot.context.lineTo(canvX, canvY - 5 * Math.tan(Math.PI / 3) / 2);
+                }
 
                 //x error bar left:
                 plot.context.moveTo(canvX, canvY);

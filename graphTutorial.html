@@ -70,7 +70,14 @@ graph can be created and drawn as follows.*/
   </script>
   <canvas id="canvas1" width="600" height="450"></canvas>
   <script type="text/JavaScript">
-  firstGraph.draw('canvas1', 0, 6, 50, 100, 'data points', 'x-axis', 'y-axis');
+
+  //try some PlotStyle() options on Graph() objects:
+  var style = new PlotStyle();
+  style.color = 'red';
+  style.lineWidth = 1;
+  style.marker = 'square';
+
+  firstGraph.draw('canvas1', 0, 6, 50, 100, 'data points', 'x-axis', 'y-axis', style);
 
   //-----add() mehtod------------------------------------------------------------------
   //add(<x>, <y>, <sigma x>, <sigma y>)
@@ -98,7 +105,7 @@ graph can be created and drawn as follows.*/
   firstGraph.add(x2, y2, sigx2, sigy2);
 
 
-  document.write('</br></br>Notice that uncertainties get clipped if they leave the plot range!</br></br>');
+  document.write('</br></br>The same points as above, without the style, and with three extra points added to the end.  Notice that uncertainties get clipped if they leave the plot range!</br></br>');
   </script>
   <canvas id="canvas2" width="600" height="450"></canvas>
   <script type="text/JavaScript">

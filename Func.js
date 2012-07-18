@@ -1,9 +1,5 @@
 //-----Clairvoyant.js user defined function class -------------------------------------- 
-// USAGE: userString must be some evaluate - able expression in n dimensions, where
-// the coordinates are represented as x[0], x[1], ..., x[n - 1], and m parameters are 
-// represented similarly as par[0], par[1], ..., par[m - 1].
-// Currently  < name >  needs to be the same as the var name of the object itself in order for getExtremum
-// to work, might fix this in future.
+
 function Func(func, parameters) {
     'use strict';
 
