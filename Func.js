@@ -389,69 +389,17 @@ function Func(func, parameters) {
 
     };
 
-
-    this.minimize = function (dim, minBounds, maxBounds) {
-        var coords, copyFunc, dimension, funcs, functions, i, j, lower, protoFunc;
-        
-        dimension = dim;
-        functions = [];
-        funcs = [];
-        coords = [];
-        for (i = 0; i < dimension; i++) {
-            coords.push(0);
-        }
-
-        funcs[0] = this;
-        functions[0] = this.func;
-        
-        for (i = 1; i < dimension; i++) { 
-            functions[i] = function (i, x) {
-                var split = function (i, x, y) {
-                    var arg = [];
-                    if (x instanceof Array) {
-                        for (j = 0; j < x.length; j++) {
-                            arg[j] = x[j];
-                        }
-                        arg.push(y)
-                    } else {
-                        arg[0] = x;
-                        arg[1] = y;
-                    }
-                    
-                    return curry(functions[i-1], arg)();
-                }
-                split = curry(split, i, x);
-            
-                funcs[i] = new Func(split);
-            
-                coords[i-1] = funcs[i].getExtremum(minBounds[dimension-i], maxBounds[dimension-i])[0];
-                //alert(coords[i-1])
-                return funcs[i].evaluate(coords[i-1])
-            }
-            functions[i] = curry(functions[i], i);
-        }
-
-        var last = new Func(functions[functions.length-1]);
-        coords[dimension-1] = last.getExtremum(minBounds[0],maxBounds[0])[0]
-        
-        coords.reverse();
-        
-        return coords;
-
-
-    };
-
-    this.gradientWalk = function (start, tol) {
+    this.minimize = function (start, tol) {
         var grad, here, location, previous, step, tolerance;
-        
+
         step = 1;
-        
+
         tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
-        
+
         //Func values at the current and previous points:
         here = this.evaluate(start);
         previous = here + 2 * tolerance;
-        
+
         //Vector pointing at the current point:
         location = new Vector(start);
         //Vector gradient of the function at the current point:
@@ -470,7 +418,7 @@ function Func(func, parameters) {
                 step = step / 10;
             }
         }
-    
+
         return location.elements;
 
     };
@@ -479,14 +427,4 @@ function Func(func, parameters) {
 
 
 
-}
-
-
-//shamelessly ripped from StackOverflow:
-function curry (fn) {
-    var slice = Array.prototype.slice,
-        args = slice.apply(arguments, [1]);
-    return function () {
-        return fn.apply(null, args.concat(slice.apply(arguments)));
-    };
 }
