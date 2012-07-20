@@ -441,43 +441,44 @@ function Func(func, parameters) {
 
     };
 
-
-
-
-
-
-/*
-    //derping around with curry:
-    this.minimize = function (dim) {
-        var copyFunc, dimension, Funcs, functions, i, j, lower, protoFunc;
+    this.gradientWalk = function (start, tol) {
+        var grad, here, location, previous, step, tolerance;
         
-        dimension = dim;
-        functions = [];
-        Funcs = [];
+        step = 1;
         
-        //this will get curried at each step, reducing dimensionality one at a time.
-        protoFunc = function (i, x) {
-            var x_reduced = [];
-            for (j = 0; j < i; j++) {
-                x_reduced[j] = x[j];
+        tolerance = typeof tol !== 'undefined' ? tol : 0.000001;
+        
+        //Func values at the current and previous points:
+        here = this.evaluate(start);
+        previous = here + 2 * tolerance;
+        
+        //Vector pointing at the current point:
+        location = new Vector(start);
+        //Vector gradient of the function at the current point:
+        grad = new Vector(this.gradient(start));
+        
+        while ((Math.abs(here - previous) > tolerance)) {
+            previous = this.evaluate(location.elements);
+            grad = new Vector(this.gradient(location.elements));
+            if (grad.getLength() === 0) {
+                return location.elements;
             }
-            x_reduced[i] = 1;
-                
-            return Funcs[i-1].evaluate(x_reduced)
+            grad = grad.scale(-1 * step / grad.getLength());
+            location = location.add(grad);
+            here = this.evaluate(location.elements);
+            if (here >= previous) {
+                step = step / 10;
+            }
         }
+    
+        return location.elements;
 
-        Funcs[0] = this;
-
-        for (i = 1; i < dimension; i++) {
-            
-            functions[i] = curry(protoFunc, i)
-            
-            Funcs[i] = new Func(functions[i]);
-        }
-
-        return Funcs[1].evaluate([2])
     };
-*/
+
+
+
+
+
 }
 
 
