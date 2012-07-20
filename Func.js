@@ -62,8 +62,8 @@ function Func(func, parameters) {
         ddxFunc = function (x, par) {
             return copyFunc.derivative(x, 0, 0.000001,0);
         }
-        ddx = new Func(ddxFunc)
-        
+        ddx = new Func(ddxFunc);
+
         extrema = ddx.brentSoln(min, max, tolerance);
         concavity = ddx.derivative(extrema);
 
@@ -389,4 +389,103 @@ function Func(func, parameters) {
 
     };
 
+
+    this.minimize = function (dim, minBounds, maxBounds) {
+        var coords, copyFunc, dimension, funcs, functions, i, j, lower, protoFunc;
+        
+        dimension = dim;
+        functions = [];
+        funcs = [];
+        coords = [];
+        for (i = 0; i < dimension; i++) {
+            coords.push(0);
+        }
+
+        funcs[0] = this;
+        functions[0] = this.func;
+        
+        for (i = 1; i < dimension; i++) { 
+            functions[i] = function (i, x) {
+                var split = function (i, x, y) {
+                    var arg = [];
+                    if (x instanceof Array) {
+                        for (j = 0; j < x.length; j++) {
+                            arg[j] = x[j];
+                        }
+                        arg.push(y)
+                    } else {
+                        arg[0] = x;
+                        arg[1] = y;
+                    }
+                    
+                    return curry(functions[i-1], arg)();
+                }
+                split = curry(split, i, x);
+            
+                funcs[i] = new Func(split);
+            
+                coords[i-1] = funcs[i].getExtremum(minBounds[dimension-i], maxBounds[dimension-i])[0];
+                //alert(coords[i-1])
+                return funcs[i].evaluate(coords[i-1])
+            }
+            functions[i] = curry(functions[i], i);
+        }
+
+        var last = new Func(functions[functions.length-1]);
+        coords[dimension-1] = last.getExtremum(minBounds[0],maxBounds[0])[0]
+        
+        coords.reverse();
+        
+        return coords;
+
+
+    };
+
+
+
+
+
+
+/*
+    //derping around with curry:
+    this.minimize = function (dim) {
+        var copyFunc, dimension, Funcs, functions, i, j, lower, protoFunc;
+        
+        dimension = dim;
+        functions = [];
+        Funcs = [];
+        
+        //this will get curried at each step, reducing dimensionality one at a time.
+        protoFunc = function (i, x) {
+            var x_reduced = [];
+            for (j = 0; j < i; j++) {
+                x_reduced[j] = x[j];
+            }
+            x_reduced[i] = 1;
+                
+            return Funcs[i-1].evaluate(x_reduced)
+        }
+
+        Funcs[0] = this;
+
+        for (i = 1; i < dimension; i++) {
+            
+            functions[i] = curry(protoFunc, i)
+            
+            Funcs[i] = new Func(functions[i]);
+        }
+
+        return Funcs[1].evaluate([2])
+    };
+*/
+}
+
+
+//shamelessly ripped from StackOverflow:
+function curry (fn) {
+    var slice = Array.prototype.slice,
+        args = slice.apply(arguments, [1]);
+    return function () {
+        return fn.apply(null, args.concat(slice.apply(arguments)));
+    };
 }
