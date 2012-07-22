@@ -9,6 +9,7 @@ function rightCrosshatch(lineWidth, color) {
         rchContext = rch.getContext('2d');
         rchContext.lineWidth = lineWidth;
         rchContext.strokeStyle = color;
+        rchContext.lineCap = 'square'
         for (i = 0; i < 10; i++) {
             rchContext.moveTo(0, i*5);
             rchContext.lineTo(i*5, 0);
@@ -31,6 +32,7 @@ function leftCrosshatch(lineWidth, color) {
         lchContext = lch.getContext('2d');
         lchContext.lineWidth = lineWidth;
         lchContext.strokeStyle = color;
+        lchContext.lineCap = 'square'
         for (i = 0; i < 10; i++) {
             lchContext.moveTo(i*5, 0);
             lchContext.lineTo(50, 50-i*5);
@@ -42,4 +44,29 @@ function leftCrosshatch(lineWidth, color) {
         leftCrosshatch = lchContext.createPattern(lch, "repeat");
         
         return leftCrosshatch;
+}
+
+function dots(lineWidth, color) {
+    var dotContext, dotTile, i, j, x, y;
+    
+    dotTile = document.createElement('canvas');
+    dotTile.width = 50;
+    dotTile.height = 50;
+    dotContext = dotTile.getContext('2d');
+    dotContext.lineWidth = 1; //lineWidth;
+    dotContext.strokeStyle = color;
+    
+    for (i = 0; i < 11; i++) {
+        x = i * 5;
+        for (j = 0; j < 11; j++) {
+            y = j * 5;
+            dotContext.beginPath();
+            dotContext.arc(x,y,1,0,2*Math.PI);
+            dotContext.stroke();
+        }
+    }
+    //dotContext.stroke();
+    dot = dotContext.createPattern(dotTile, "repeat");
+
+    return dot;
 }

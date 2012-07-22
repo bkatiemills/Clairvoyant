@@ -197,6 +197,9 @@ function PlotStyle() {
     this.lineWidth = 2;
     this.axisLineWidth = 2;
     
+    //marker style
+    this.marker = 'circle';
+    
     //fill colors
     this.fill = 'white';
 
@@ -271,6 +274,9 @@ function Legend(canvas, x, y) {
             }
             if (this.entryStyle[i].fill === 'leftCrosshatch') {
                 this.context.fillStyle = leftCrosshatch(this.entryStyle[i].lineWidth, this.entryStyle[i].color);
+            }
+            if (this.entryStyle[i].fill === 'dots') {
+                this.context.fillStyle = dots(this.entryStyle[i].lineWidth, this.entryStyle[i].color);
             }
             this.context.fillRect(this.x + border, this.y + border + i*(thumbHeight+5), thumbWidth, thumbHeight);
             
