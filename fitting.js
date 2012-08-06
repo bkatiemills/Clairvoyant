@@ -11,7 +11,8 @@ function fit (theory, data, guess) {
     results.parameters = seek.minimize(guess);
     theory.setParameters(results.parameters);
     
-    findParameterUncertainty(theory, data, results);
+    findParameterCovariance(theory, data, results);
+    
     results.chi2 = chi2(data, theory);
     results.reducedChi2 = results.chi2 / (data.length - theory.params.length);
     
@@ -54,53 +55,56 @@ function chi2(data, theory) {
     
 }
 
-function findParameterUncertainty (theory, data, results) {
-    var chiHere, chiMin, i, parNominal, step, tolerance;
-    
-    tolerance = 0.000001;
-    
-    chiMin = chi2(data, theory);
-    chiHere = chiMin - 1;
-    
-    for (i = 0; i < theory.params.length; i++) {
-        results.parameterUncertainty[i] = [];
+function findParameterCovariance (theory, data, results) {
 
-        //Lower 1 sigma:
-        chiHere = chiMin - 1;
-        step = Math.abs(theory.params[i]) / 100;
-        parNominal = theory.params[i];
-        while (Math.abs(chiMin + 1 - chiHere) > tolerance) {
-            if (chiHere < chiMin + 1) {
-                theory.params[i] -= step;
-            } else if (chiHere > chiMin + 1) {
-                theory.params[i] += step;
-                step = step / 10;
-            }
-            chiHere = chi2(data, theory);
+    var aij, argument, d, dataCopy, i, j, nPars, parDer1, parDer2, parDerFunc1, parDerFunc2, result, uncertainty;
+    
+    //number of parameters
+    nPars = theory.params.length;
+    
+    //initialize covariance matrix:
+    results.covarianceMatrix = new Matrix(nPars, nPars);
+    
+    //copy of the data matrix
+    dataCopy = [];
+    for (i = 0; i < data.length; i++) {
+        dataCopy[i] = [];
+        for (j = 0; j < data[i].length; j++) {
+            dataCopy[i][j] = data[i][j];
         }
-        results.parameterUncertainty[i].push(theory.params[i]);
-        theory.params[i] = parNominal;
-        
-        //Upper 1 sigma:
-        chiHere = chiMin - 1;
-        step = Math.abs(theory.params[i]) / 100;
-        parNominal = theory.params[i];
-        while (Math.abs(chiMin + 1 - chiHere) > tolerance) {
-            if (chiHere < chiMin + 1) {
-                theory.params[i] += step;
-            } else if (chiHere > chiMin + 1) {
-                theory.params[i] -= step;
-                step = step / 10;
-            }
-            chiHere = chi2(data, theory);
-        }
-        results.parameterUncertainty[i].push(theory.params[i]);
-        theory.params[i] = parNominal;
-
     }
+
+
+    for (d = 0; d < dataCopy.length; d++) {
+        argument = dataCopy[d];
+        uncertainty = argument.pop();
+        result = argument.pop();
+                
+        parDer1 = curry(parameterFunction, theory, argument);
+        parDer2 = curry(parameterFunction, theory, argument);
+                
+        parDerFunc1 = new Func(parDer1);
+        parDerFunc2 = new Func(parDer2);
+                
+        for (i = 0; i < nPars; i++) {
+            for (j = i; j < nPars; j++) {                
+                results.covarianceMatrix.elements[i][j] += parDerFunc1.derivative(theory.params, i) * parDerFunc2.derivative(theory.params, j) / uncertainty / uncertainty;
+                results.covarianceMatrix.elements[j][i] = results.covarianceMatrix.elements[i][j];
+            }
+        }
+    }
+
+    results.covarianceMatrix = results.covarianceMatrix.getInverse();
 
 }
 
+//turns a Func of x with fixed parameters into a function of those
+//parameters with fixed x.
+function parameterFunction(func, x, pars) {
+    func.setParameters(pars);
+    
+    return func.evaluate(x);
+}
 
 function curry (fn) {
     var slice = Array.prototype.slice,
@@ -115,8 +119,8 @@ function FitInfo() {
     'use strict';
     
     this.parameters = [];
-    this.parameterUncertainty = [];
     this.chi2;
     this.reducedChi2;
+    this.covarianceMatrix;
     
 }
