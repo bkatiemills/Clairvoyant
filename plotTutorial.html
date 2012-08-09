@@ -44,10 +44,13 @@
 
   -----colors-----
   color			line color (default black)
-  fill			fill color (default white)
+  fill			fill color; accepts functions of bin number for highlighting (default white)
                         NOTE Clairvoyant defines its own fill patterns as well as colors;
                         currently only left and right crosshatching and dots  are implemented, see the 
                         example in histogramTutorial.html.
+  opacity               controls the opacity of the fill, 1 = solid, 0 = invisible.  Accepts functions
+                        of bin number (default 1).
+
 
   -----lines-----
   lineWidth		line width in pixels, exactly as the HTML5 canvas property lineWidth (default 2)
