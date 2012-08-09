@@ -27,11 +27,15 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     this.majorX = typeof plotstyle !== 'undefined' ? plotstyle.majorX : 3;
     //number of minor divisions between major divisions on the x axis:
     this.minorX = typeof plotstyle !== 'undefined' ? plotstyle.minorX : 9;
+    //number of decimal places to keep for x-axis labels:
+    this.xDecimal = typeof plotstyle !== 'undefined' ? plotstyle.xDecimal : 0;    
 
     //number of major divisions on the y axis:
     this.majorY = typeof plotstyle !== 'undefined' ? plotstyle.majorY : 3;
     //number of minor divisions between major divisions on the y axis:
     this.minorY = typeof plotstyle !== 'undefined' ? plotstyle.minorY : 9;
+    //number of decimal places to keep for y-axis labels:
+    this.yDecimal = typeof plotstyle !== 'undefined' ? plotstyle.yDecimal : 0;
     
     //fonts:
     this.scaleFont = typeof plotstyle !== 'undefined' ? plotstyle.scaleFont : '15px sans-serif';
@@ -59,8 +63,10 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.smallTick = plotstyle.smallTick;
             this.majorX = plotstyle.majorX;
             this.minorX = plotstyle.minorX;
+            this.xDecimal = plotstyle.xDecimal;
             this.majorY = plotstyle.majorY;
             this.minorY = plotstyle.minorY;
+            this.yDecimal = plotstyle.yDecimal;
             this.scaleFont = plotstyle.scaleFont;
             this.titleFont = plotstyle.titleFont;        
             this.titleNudgeX = plotstyle.titleNudgeX;
@@ -112,7 +118,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.context.lineTo(this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick);
 
             this.context.font = this.scaleFont;
-            this.context.fillText(((this.xmax - this.xmin) / (this.majorX - 1) * i + this.xmin).toFixed(), this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick + 12);
+            this.context.fillText(((this.xmax - this.xmin) / (this.majorX - 1) * i + this.xmin).toFixed(this.xDecimal), this.marginScaleY * this.marginSize + i * majorTickSpacingX, this.canvas.height - this.marginSize + this.bigTick + 12);
 
             if (i < this.majorX - 1) {
                 for (j = 0; j < this.minorX; j++) {
@@ -132,7 +138,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.context.font = this.scaleFont;
             this.context.textBaseline = "middle";
             this.context.textAlign = "right";
-            this.context.fillText(((this.ymax - this.ymin) / (this.majorY - 1) * i + this.ymin).toFixed(), this.marginScaleY * this.marginSize - this.bigTick - 12, this.canvas.height - this.marginSize - i * majorTickSpacingY);
+            this.context.fillText(((this.ymax - this.ymin) / (this.majorY - 1) * i + this.ymin).toFixed(this.yDecimal), this.marginScaleY * this.marginSize - this.bigTick - 12, this.canvas.height - this.marginSize - i * majorTickSpacingY);
 
             if (i < this.majorY - 1) {
                 for (j = 0; j < this.minorY; j++) {
@@ -184,11 +190,15 @@ function PlotStyle() {
     this.majorX = 3;
     //number of minor divisions between major divisions on the x axis:
     this.minorX = 9;
+    //number of decimal places to keep for x-axis labels:
+    this.xDecimal = 0;
 
     //number of major divisions on the y axis:
     this.majorY = 3;
     //number of minor divisions between major divisions on the y axis:
     this.minorY = 9;
+    //number of decimal places to keep for y-axis labels:
+    this.yDecimal = 0;
 
     //line colors
     this.color = 'black';
