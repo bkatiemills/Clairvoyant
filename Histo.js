@@ -299,10 +299,25 @@ function Histo(nBins, min, max) {
         if (fill === 'leftCrosshatch') {
             plot.context.fillStyle = leftCrosshatch(lineWidth, color);
         }
-        
+        if (fill === 'dots') {
+            plot.context.fillStyle = dots(lineWidth, color);
+        }
         plot.context.lineWidth = lineWidth;
+        
         binWidth = (plot.canvas.width - (1 + plot.marginScaleY) * plot.marginSize) / this.nBins;
         for (i = 0; i < this.nBins; i++) {
+        
+            //-----functional plotstyle--------------------------
+            if (typeof plotstyle !== 'undefined') {
+                if (typeof plotstyle.fill !== 'string') {
+                    plot.context.fillStyle = plotstyle.fill(i);
+                }
+                if (typeof plotstyle.opacity !== 'number') {
+                    plot.context.globalAlpha = plotstyle.opacity(i);
+                }                
+            }
+            //---------------------------------------------------
+        
             if (this.bins[i].weight < ymin) {
                 binHeight = 0;
             } else if (this.bins[i].weight > yMax) {
