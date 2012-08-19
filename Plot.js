@@ -11,6 +11,9 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     this.ytitle = ytitle;
     this.title = title;
 
+    //plot background
+    this.background = typeof plotstyle !== 'undefined' ? plotstyle.background : 'white';
+ 
     //base margin size, in pixels:
     this.marginSize = typeof plotstyle !== 'undefined' ? plotstyle.marginSize : 70;
     //scale y-margin to accomodate tick mark labels & axis title
@@ -40,6 +43,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     //fonts:
     this.scaleFont = typeof plotstyle !== 'undefined' ? plotstyle.scaleFont : '15px sans-serif';
     this.titleFont = typeof plotstyle !== 'undefined' ? plotstyle.titleFont : 'italic 24px times new roman';
+    this.textColor = typeof plotstyle !== 'undefined' ? plotstyle.textColor : 'black';
     
     //nudges:
     this.titleNudgeX = typeof plotstyle !== 'undefined' ? plotstyle.titleNudgeX : 0;
@@ -57,6 +61,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
     this.draw = function (plotstyle) {
 
         if (typeof plotstyle !== 'undefined') {
+            this.background = plotstyle.background;
             this.marginSize = plotstyle.marginSize;
             this.marginScaleY = plotstyle.marginScaleY;
             this.bigTick = plotstyle.bigTick;
@@ -69,6 +74,7 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
             this.yDecimal = plotstyle.yDecimal;
             this.scaleFont = plotstyle.scaleFont;
             this.titleFont = plotstyle.titleFont;        
+            this.textColor = plotstyle.textColor;
             this.titleNudgeX = plotstyle.titleNudgeX;
             this.titleNudgeY = plotstyle.titleNudgeY;
             this.xLabelNudgeX = plotstyle.xLabelNudgeX;
@@ -79,6 +85,13 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
         }
 
         var i, j, majorTickSpacingX, minorTickSpacingX, majorTickSpacingY, minorTickSpacingY;
+
+        //background
+        this.context.fillStyle = this.background;
+        this.context.fillRect(0,0,this.canvas.width, this.canvas.height);
+        
+        //text color
+        this.context.fillStyle = this.textColor;
 
         //gridlines if requested
         if (typeof plotstyle !== 'undefined' && plotstyle.gridLines !== 0) {
@@ -172,10 +185,13 @@ function Plot(canvas, xmin, xmax, ymin, ymax, title, xtitle, ytitle, plotstyle) 
 
 //-----PlotStyle class------------------------------------------------
 
-function PlotStyle() {
+function PlotStyle(bin) {
     'use strict';
 
     var i;
+    
+    //background color
+    this.background = 'white';
 
     //base margin size, in pixels:
     this.marginSize = 70;
@@ -216,6 +232,7 @@ function PlotStyle() {
     //fonts
     this.scaleFont = '15px sans-serif';
     this.titleFont = 'italic 24px times new roman';
+    this.textColor = 'black';
 
     //suppress axes and labels (for drawing multiple things on the same canvas)
     this.suppress = 0;
