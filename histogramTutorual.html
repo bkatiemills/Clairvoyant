@@ -78,6 +78,25 @@
   firstHist.dump();
   document.write('</br>Notice the 0 bin got incremented by 3 since 0 is included, but incrementing 10 by 7 did nothing since 10 (the upper bound of the histo) is excluded.');
 
+  //-----lowerTail Method----------------------------------------
+  //lwerTail(<CL>)
+  //  <CL>  fraction of the distribution to leave in the lower tail
+  //Return type: number indicating the cut in x below which <CL> of the distribution sits, linearly interpolated between bin boundaries.
+  
+  document.write('</br></br>/////////////////// .lowerTail examples //////////////////////////////////</br>');
+
+  document.write('Bottom 5% of firstHist is below x = ');
+  document.write(firstHist.lowerTail(0.05));
+
+  //-----upperTail Method----------------------------------------
+  //upperTail(<CL>)
+  //  <CL>  fraction of the distribution to leave in the upper tail
+  //Return type: number indicating the cut in x above which <CL> of the distribution sits, linearly interpolated between bin boundaries.
+
+  document.write('</br></br>/////////////////// .upperTail examples //////////////////////////////////</br>');
+
+  document.write('Top 5% of firstHist is above x = ');
+  document.write(firstHist.upperTail(0.05));
 
   //-----draw Method---------------------------------------------
   //draw(<canvas>,<ymin>, <ymax>, <title>, <xtitle>, <ytitle>)

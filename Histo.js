@@ -334,4 +334,56 @@ function Histo(nBins, min, max) {
         }
     };
 
+    //returns the x-axis boundary below which <CL> fraction of the sample is found.
+    //linearly interpolates between bin boundaries.
+    this.lowerTail = function (CL) {
+        var boundary, fraction, lowTail, i, tail, total;
+        
+        if (CL < 0 || CL > 1 || CL === 'undefined' || typeof CL !== 'number') {
+            alert('upperTail requires an argument on [0, 1]');
+            return;
+        }
+        
+        total = this.integrate();
+        lowTail = CL * total;
+        tail = 0;
+        i = 0;
+        
+        while (tail + this.bins[i].weight < lowTail) {
+            tail += this.bins[i].weight;
+            i++;
+        }
+        
+        fraction = (lowTail - tail) / this.bins[i].weight;
+        boundary = i / this.nBins * (this.max - this.min) + fraction * this.binSize;
+        
+        return boundary;
+    };
+    
+    //returns the x-axis boundary above which <CL> fraction of the sample is found.
+    //linearly interpolates between bin boundaries.
+    this.upperTail = function (CL) {
+        var boundary, fraction, highTail, i, tail, total;
+        
+        if (CL < 0 || CL > 1 || CL === 'undefined' || typeof CL !== 'number') {
+            alert('upperTail requires an argument on [0, 1]');
+            return;
+        }
+        
+        total = this.integrate();
+        highTail = CL * total;
+        tail = 0;
+        i = this.nBins-1;
+        
+        while (tail + this.bins[i].weight < highTail) {
+            tail += this.bins[i].weight;
+            i--;
+        }
+        
+        fraction = (highTail - tail) / this.bins[i].weight;
+        boundary = (i+1) / this.nBins * (this.max - this.min) - fraction * this.binSize;
+        
+        return boundary;
+    };
+
 }
